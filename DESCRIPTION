@@ -1,0 +1,24 @@
+Package: fffprocessr
+Title: Process FFF-UV-MALS-ICP-MS Data
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Benjamin",
+           family = "Trueman",
+           role = c("aut", "cre"),
+           email = "benjamin.trueman@dal.ca",
+           comment = c(ORCID = "0000-0002-1539-3092"))
+Description: fffprocessr facilitates FFF data processing and is primarily intended for users at the Centre for Water Resources Studies, Dalhousie University, Halifax, CAN.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    dplyr,
+    rlang,
+    purrr,
+    stringr,
+    readxl,
+    tidyr,
+    tidyselect,
+    readr
