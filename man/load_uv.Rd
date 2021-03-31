@@ -2,12 +2,12 @@
 % Please edit documentation in R/load_uv.R
 \name{load_uv}
 \alias{load_uv}
-\title{Title}
+\title{Load FFF-UV/Vis files (.txt)}
 \usage{
 load_uv(path, nm1 = X2, nm2 = X4, nm3 = X6)
 }
 \arguments{
-\item{path}{The relative path to the ICP-MS (.csv) files.}
+\item{path}{The relative path to the UV (.txt) files.}
 
 \item{nm1}{Name of column 2.}
 
@@ -19,5 +19,5 @@ load_uv(path, nm1 = X2, nm2 = X4, nm3 = X6)
 
 }
 \description{
-Title
+Load FFF-UV/Vis files (.txt)
 }

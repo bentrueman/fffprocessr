@@ -1,13 +1,14 @@
 
-#' Title
+#' Load FFF-UV/Vis files (.txt)
 #'
-#' @param path The relative path to the ICP-MS (.csv) files.
+#' @param path The relative path to the UV (.txt) files.
 #' @param nm1 Name of column 2.
 #' @param nm2 Name of column 4.
 #' @param nm3 Name of column 6.
 #'
 #' @return
 #' @importFrom rlang :=
+#' @importFrom dplyr %>%
 #' @export
 #'
 #' @examples

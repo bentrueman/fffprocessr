@@ -22,4 +22,6 @@ Imports:
     tidyr,
     tidyselect,
     readr,
-    stats
+    stats,
+    tibble,
+    imputeTS
