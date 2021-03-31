@@ -17,7 +17,7 @@ load_icp <- function(path, calibrate = TRUE) {
       purrr::map_dfr(readxl::read_excel, .id = "file") %>%
       dplyr::mutate(date = stringr::str_extract(file, "\\d{4}-\\d{2}-\\d{2}") %>% as.Date()) %>%
       dplyr::group_by(date, param = element) %>%
-      dplyr::summarize(coef = lm(defined ~ 0 + mean_cps) %>% coef()) %>%
+      dplyr::summarize(coef = stats::lm(defined ~ 0 + mean_cps) %>% stats::coef()) %>%
       dplyr::ungroup()
   } else NULL
 
