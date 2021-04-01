@@ -91,8 +91,8 @@ deconvolve_fff <- function(
   coefs <- stats::coef(model)
 
   peaks <- purrr::map(seq_len(peaks), ~ component_peaks(x, coefs, peak = .x)) %>%
-    dplyr::bind_cols() %>%
-    dplyr::rename_all(function(x) paste0("peak", stringr::str_extract(x, "\\d+")))
+    rlang::set_names(nm = seq_len(length(.)) %>% paste0("peak", .)) %>%
+    dplyr::bind_cols()
 
   list("model" = model, "fitted" = stats::predict(model), "peaks" = peaks)
 

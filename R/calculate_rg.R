@@ -56,9 +56,17 @@ calculate_rg <- function(data, window = .1, method = "zimm") {
       coef = purrr::map(model, ~ stats::coef(.x)),
       # include the index of refraction of water (1.33)?
       # Many texts leave it out, but it does result in a match to the PostNova program output
-      rg_zimm = purrr::map(coef, ~ if(method == "zimm") {sqrt(3 * 532 ^ 2 * (.x[2] / .x[1]) / (16 * pi ^ 2 * 1.33 ^ 2))} else NA_real_),
+      rg_zimm = purrr::map(coef,
+        ~ if(method == "zimm") {
+          suppressWarnings(sqrt(3 * 532 ^ 2 * (.x[2] / .x[1]) / (16 * pi ^ 2 * 1.33 ^ 2)))
+        } else NA_real_
+      ),
       # from https://doi.org/10.1007/s11051-018-4397-x
-      rg_watt = purrr::map(coef, ~ if(method == "watt") {sqrt(3 * 532 ^ 2 * (-.x[2]/.x[1])/ (16 * pi ^ 2))} else NA_real_),
+      rg_watt = purrr::map(coef,
+        ~ if(method == "watt") {
+          suppressWarnings(sqrt(3 * 532 ^ 2 * (-.x[2]/.x[1])/ (16 * pi ^ 2)))
+        } else NA_real_
+      ),
     ) %>%
     tidyr::unnest(c(tidyselect::starts_with("rg"), data)) %>%
     dplyr::select_if(~ !is.list(.x))

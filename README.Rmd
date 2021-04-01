@@ -1,6 +1,5 @@
 ---
 output: github_document
-bibliography: references.bib
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -145,7 +144,7 @@ The function `deconvolve_fff()` will perform a deconvolution of incompletely res
 
 <!-- $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$ -->
 ```{r, echo=FALSE, out.width = "35%"}
-knitr::include_graphics("man/figures/CodeCogsEqn (1) copy.png", dpi = 500)
+knitr::include_graphics("man/figures/CodeCogsEqn_1.png", dpi = 500)
 ```
 
 where *y* denotes the instantaneous concentration, *x* the retention volume, *h* the peak height, *mu* the mean, *sigma* the standard deviation, *gamma* the shape parameter, and *erf* the error function.
@@ -154,7 +153,7 @@ Alternatively, fractograms can be fitted as sums of exponentially modified Gauss
 
 <!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}}exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
 ```{r, echo=FALSE, out.width = "60%"}
-knitr::include_graphics("man/figures/CodeCogsEqn (3) copy.png", dpi = 500)
+knitr::include_graphics("man/figures/CodeCogsEqn_3.png", dpi = 500)
 ```
 
 where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the other parameters are as defined above.
@@ -298,14 +297,14 @@ Calculate *r~g~* using `calculate_rg()`, removing data collected at the smallest
 
 <!-- $$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$ -->
 ```{r, echo=FALSE, out.width = "35%"}
-knitr::include_graphics("man/figures/CodeCogsEqn copy.png", dpi = 500)
+knitr::include_graphics("man/figures/CodeCogsEqn.png", dpi = 500)
 ```
 
 where *K* is a constant, *c* and *M* are the concentration and molar mass of the analyte, respectively, *lambda* is the wavelength of the incident light, *theta* is the scattering angle, and *R* is the Rayleigh ratio (the scattering intensity above the baseline). For environmental colloids, *K*, *c*, and *M* are usually unknown. But *r~g~^2^* can be estimated by a linear regression of *1/R* on *sin^2^(theta/2)*. That is,
 
 <!-- $$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$-->
 ```{r, echo=FALSE, out.width = "15%"}
-knitr::include_graphics("man/figures/CodeCogsEqn (2) copy.png", dpi = 500)
+knitr::include_graphics("man/figures/CodeCogsEqn_2.png", dpi = 500)
 ```
 
 where *beta~0~* and *beta~1~* are the intercept and slope of the linear regression. This is the Zimm model; see @kammer_field_flow_2005 (and references therein) for details (the PostNova AF2000 software manual will also be helpful).  
@@ -414,6 +413,12 @@ data %>%
 ```
 
 ## References  
+
+Kammer, F. v. d., M. Baborowski, and K. Friese. 2005. “Field-Flow Fractionation Coupled to Multi-Angle Laser Light Scattering Detectors: Applicability and Analytical Benefits for the Analysis of Environmental Colloids.” Analytica Chimica Acta 552 (1-2): 166–74. https://doi.org/10.1016/j.aca.2005.07.049.
+
+Trueman, Benjamin F., Tim Anaviapik-Soucie, Vincent L’Hérault, and Graham A. Gagnon. 2019. “Characterizing Colloidal Metals in Drinking Water by Field Flow Fractionation.” Environmental Science: Water Research & Technology 5 (12): 2202–9. https://doi.org/10.1039/C9EW00560A.
+
+Wyatt, Philip J. 2018. “Measuring Nanoparticles in the Size Range to 2000 nm.” Journal of Nanoparticle Research 20 (12): 322. https://doi.org/10.1007/s11051-018-4397-x.
 
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
 
