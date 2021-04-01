@@ -49,7 +49,7 @@ external data as follows.
 
 ``` r
 system.file("extdata", package = "fffprocessr")
-#> [1] "/private/var/folders/fy/v4w9p72s7c996w8l8qfthxq40000gn/T/RtmpK7SvEZ/temp_libpath10a1b504f5f15/fffprocessr/extdata"
+#> [1] "/private/var/folders/fy/v4w9p72s7c996w8l8qfthxq40000gn/T/RtmpK7SvEZ/temp_libpath10a1b7d1f9da3/fffprocessr/extdata"
 ```
 
 ICP-MS data files are loaded using the `load_icp()` function. If ICP-MS
@@ -180,7 +180,7 @@ data %>%
 
 <img src="man/figures/README-fff-data-1.png" width="100%" />
 
-## Deconvolution and peak integration
+### Deconvolution and peak integration
 
 The function `deconvolve_fff()` will perform a deconvolution of
 incompletely resolved peaks. It approximates fractograms as the sum of
@@ -190,10 +190,9 @@ skewed Gaussians, each of which takes the following form:
 
 <img src="man/figures/CodeCogsEqn (1) copy.png" width="35%" />
 
-where \(y\) denotes the instantaneous concentration, \(x\) the retention
-volume, \(h\) the peak height, \(\mu\) the mean, \(\sigma\) the standard
-deviation, \(\gamma\) the shape parameter, and \(erf\) the error
-function.
+where *y* denotes the instantaneous concentration, *x* the retention
+volume, *h* the peak height, *mu* the mean, *sigma* the standard
+deviation, *gamma* the shape parameter, and *erf* the error function.
 
 Alternatively, fractograms can be fitted as sums of exponentially
 modified Gaussians:
@@ -202,7 +201,7 @@ modified Gaussians:
 
 <img src="man/figures/CodeCogsEqn (3) copy.png" width="60%" />
 
-where \(\tau\) is the shape parameter, *erfc(x) = 1 - erf(x)*, and the
+where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the
 other parameters are as defined above.
 
 Users supply initial guesses for the peak height (`h`), mean (`mu`),
@@ -292,7 +291,7 @@ deconvolved %>%
 #> 6 2021-03-16 sample_jdk_raw     65Cu  peak3    2.38
 ```
 
-## Estimating the radius of gyration
+### Estimating the radius of gyration
 
 To estimate the radius of gyration, *r<sub>g</sub>*, you’ll need to load
 FFF-MALS files at all scattering angles using `load_mals()`. These files
@@ -322,30 +321,30 @@ mals %>%
 <img src="man/figures/README-fff-mals-1.png" width="100%" />
 
 Calculate *r<sub>g</sub>* using `calculate_rg()`, removing data
-collected at the smallest scattering angle (\(\theta\) = 7°). This
-function solves the following equation for \(\langle{r^2_g}\rangle\),
-the mean squared radius of gyration:
+collected at the smallest scattering angle (7°). This function solves
+the following equation for *r<sub>g</sub><sup>2</sup>*, the mean squared
+radius of gyration:
 
 <!-- $$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$ -->
 
-<img src="man/figures/CodeCogsEqn copy.png" width="50%" />
+<img src="man/figures/CodeCogsEqn copy.png" width="40%" />
 
-where \(K\) is a constant, \(c\) and \(M\) are the concentration and
-molar mass of the analyte, respectively, \(\lambda\) is the wavelength
-of the incident light, \(\theta\) is the scattering angle, and
-\(R(\theta)\) is the Rayleigh ratio (the scattering intensity above the
-baseline). For environmental colloids, \(K\), \(c\), and \(M\) are
-usually unknown. But \(\langle{r^2_g}\rangle\) can be estimated by a
-linear regression of \(1/R(\theta)\) on \(sin^2(\theta/2)\). That is,
+where *K* is a constant, *c* and *M* are the concentration and molar
+mass of the analyte, respectively, *lambda* is the wavelength of the
+incident light, *theta* is the scattering angle, and *R* is the Rayleigh
+ratio (the scattering intensity above the baseline). For environmental
+colloids, *K*, *c*, and *M* are usually unknown. But
+*r<sub>g</sub><sup>2</sup>* can be estimated by a linear regression of
+*1/R* on *sin<sup>2</sup>(theta/2)*. That is,
 
 <!-- $$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$-->
 
 <img src="man/figures/CodeCogsEqn (2) copy.png" width="20%" />
 
-where \(\beta_0\) and \(\beta_1\) are the intercept and slope of the
-linear regression. This is the Zimm model; see Kammer, Baborowski, and
-Friese (2005) (and references therein) for details, and the PostNova
-AF2000 software manual will also be helpful.
+where *beta<sub>0</sub>* and *beta<sub>1</sub>* are the intercept and
+slope of the linear regression. This is the Zimm model; see Kammer,
+Baborowski, and Friese (2005) (and references therein) for details, and
+the PostNova AF2000 software manual will also be helpful.
 
 ``` r
 mals_rg <- mals %>% 
@@ -425,7 +424,7 @@ mals %>%
 #> 1    135.   349.
 ```
 
-## Estimating the hydrodynamic radius
+### Estimating the hydrodynamic radius
 
 Provided that the cross-flow is constant, use `calculate_rh()` to
 calculate the hydrodynamic radius. The only input without a default is
@@ -447,7 +446,7 @@ data %>%
 
 <img src="man/figures/README-rh-1.png" width="100%" />
 
-# References
+## References
 
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
 
