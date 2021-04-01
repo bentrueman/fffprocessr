@@ -1,5 +1,6 @@
 ---
 output: github_document
+bibliography: references.bib
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -137,7 +138,7 @@ data %>%
 The function `deconvolve_fff()` will perform a deconvolution of incompletely resolved peaks. It approximates fractograms as the sum of skewed Gaussians, each of which takes the following form:
 
 <!-- $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$ -->
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = "50%"}
 knitr::include_graphics("man/figures/CodeCogsEqn (1) copy.png", dpi = 500)
 ```
 
@@ -146,7 +147,7 @@ where $y$ denotes the instantaneous concentration, $x$ the retention volume, $h$
 Alternatively, fractograms can be fitted as sums of exponentially modified Gaussians:
 
 <!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}}exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = "60%"}
 knitr::include_graphics("man/figures/CodeCogsEqn (3) copy.png", dpi = 500)
 ```
 
@@ -264,14 +265,14 @@ mals %>%
 Calculate *r~g~* using `calculate_rg()`, removing data collected at the smallest scattering angle ($\theta$ = 7&deg;). This function solves the following equation for $\langle{r^2_g}\rangle$, the mean squared radius of gyration:
 
 <!-- $$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$ -->
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = "50%"}
 knitr::include_graphics("man/figures/CodeCogsEqn copy.png", dpi = 500)
 ```
 
 where $K$ is a constant, $c$ and $M$ are the concentration and molar mass of the analyte, respectively, $\lambda$ is the wavelength of the incident light, $\theta$ is the scattering angle, and $R(\theta)$ is the Rayleigh ratio (the scattering intensity above the baseline). For environmental colloids, $K$, $c$, and $M$ are usually unknown. But $\langle{r^2_g}\rangle$ can be estimated by a linear regression of $1/R(\theta)$ on $sin^2(\theta/2)$. That is,
 
 <!-- $$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$-->
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = "20%"}
 knitr::include_graphics("man/figures/CodeCogsEqn (2) copy.png", dpi = 500)
 ```
 
