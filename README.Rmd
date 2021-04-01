@@ -45,9 +45,9 @@ library("tidyverse")
 theme_set(theme_classic() + theme(strip.background = element_blank()))
 ```
 
-`fffprocessr` includes external data which we use here to demonstrate the loading functions. The external data folder should contain ICP-MS data files in .csv format, UV-MALS data files in .txt format, and ICP-MS calibration files in .xlsx format. The data loading functions assume the following naming convention: ISO 8601 date (YYYY-MM-DD), underscore, filename (e.g., 2021-01-23_pockwock.csv). Sample names that include the word "blank" will be treated as blanks. Determine the path to the external data as follows.
+`fffprocessr` includes external data which we use here to demonstrate the loading functions. The external data folder should contain ICP-MS data files in .csv format, UV-MALS data files in .txt format, and ICP-MS calibration files in .xlsx format. The data loading functions assume the following naming convention: ISO 8601 date (YYYY-MM-DD), underscore, filename (e.g., 2021-01-23_pockwock.csv). Sample names that include the word "blank" will be treated as blanks. Determine the path to the external data as follows:
 
-```{r}
+```{r eval=FALSE}
 system.file("extdata", package = "fffprocessr")
 ```
 
@@ -198,7 +198,7 @@ deconvolved %>%
   unnest(c(data, fitted, peaks)) %>% 
   pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
   ggplot(aes(time, value, col = name, size = name)) + 
-  facet_grid(rows = vars(param), cols = vars(sample)) +
+  facet_wrap(vars(sample)) +
   scale_colour_manual(
     values = c("black", "firebrick", "grey", "grey", "grey"), 
     labels = function(breaks) str_replace(breaks, "conc", "data")
@@ -239,7 +239,6 @@ deconvolved_emg %>%
   unnest(c(data, fitted, peaks)) %>% 
   pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
   ggplot(aes(time, value, col = name, size = name)) + 
-  facet_grid(rows = vars(param), cols = vars(sample)) +
   scale_colour_manual(
     values = c("black", "firebrick", "grey", "grey", "grey"), 
     labels = function(breaks) str_replace(breaks, "conc", "data")
@@ -249,10 +248,10 @@ deconvolved_emg %>%
     labels = function(breaks) str_replace(breaks, "conc", "data")
   ) +
   geom_line() + 
-  labs(x = "Retention time (min.)", y = "[Cu] (µg/L)", col = NULL, size = NULL)
+  labs(x = "Retention time (min.)", y = "[Fe] (µg/L)", col = NULL, size = NULL)
 ```
 
-Finally, use the `integrate_peak()` function to assign a concentration estimate to each peak. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. 
+Use the `integrate_peak()` function to assign a concentration estimate to each peak. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. 
 
 ```{r}
 deconvolved %>% 
@@ -298,18 +297,18 @@ mals %>%
 Calculate *r~g~* using `calculate_rg()`, removing data collected at the smallest scattering angle (7&deg;). This function solves the following equation for *r~g~^2^*, the mean squared radius of gyration:
 
 <!-- $$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$ -->
-```{r, echo=FALSE, out.width = "40%"}
+```{r, echo=FALSE, out.width = "35%"}
 knitr::include_graphics("man/figures/CodeCogsEqn copy.png", dpi = 500)
 ```
 
 where *K* is a constant, *c* and *M* are the concentration and molar mass of the analyte, respectively, *lambda* is the wavelength of the incident light, *theta* is the scattering angle, and *R* is the Rayleigh ratio (the scattering intensity above the baseline). For environmental colloids, *K*, *c*, and *M* are usually unknown. But *r~g~^2^* can be estimated by a linear regression of *1/R* on *sin^2^(theta/2)*. That is,
 
 <!-- $$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$-->
-```{r, echo=FALSE, out.width = "20%"}
+```{r, echo=FALSE, out.width = "15%"}
 knitr::include_graphics("man/figures/CodeCogsEqn (2) copy.png", dpi = 500)
 ```
 
-where *beta~0~* and *beta~1~* are the intercept and slope of the linear regression. This is the Zimm model; see @kammer_field_flow_2005 (and references therein) for details, and the PostNova AF2000 software manual will also be helpful.  
+where *beta~0~* and *beta~1~* are the intercept and slope of the linear regression. This is the Zimm model; see @kammer_field_flow_2005 (and references therein) for details (the PostNova AF2000 software manual will also be helpful).  
 
 ```{r, warning=FALSE}
 mals_rg <- mals %>% 
@@ -336,11 +335,11 @@ mals_rg %>%
 mals_rg %>% 
   filter(param == "ls90") %>% 
   pivot_longer(c(rg_zimm, conc)) %>% 
-  mutate(name = fct_recode(name, "ls90" = "conc", "Radius of gyration (nm)" = "rg_zimm")) %>% 
+  mutate(name = fct_recode(name, "LS[90]" = "conc", "r[g]~(nm)" = "rg_zimm")) %>% 
   ggplot(aes(time, value)) + 
-  facet_wrap(vars(name), scales = "free_y", ncol = 1) +
-  geom_point(data = function(x) filter(x, name == "Radius of gyration (nm)")) +
-  geom_line(data = function(x) filter(x, name == "ls90")) + 
+  facet_wrap(vars(name), scales = "free_y", ncol = 1, labeller = label_parsed) +
+  geom_point(data = function(x) filter(x, name == "r[g]~(nm)")) +
+  geom_line(data = function(x) filter(x, name == "LS[90]")) + 
   geom_hline(yintercept = 0, col = "grey", linetype = 3) +
   labs(x = "Retention time (min.)", y = NULL, col = NULL)
 ```

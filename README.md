@@ -45,11 +45,10 @@ calibration files in .xlsx format. The data loading functions assume the
 following naming convention: ISO 8601 date (YYYY-MM-DD), underscore,
 filename (e.g., 2021-01-23\_pockwock.csv). Sample names that include the
 word “blank” will be treated as blanks. Determine the path to the
-external data as follows.
+external data as follows:
 
 ``` r
 system.file("extdata", package = "fffprocessr")
-#> [1] "/private/var/folders/fy/v4w9p72s7c996w8l8qfthxq40000gn/T/RtmpK7SvEZ/temp_libpath10a1b7d1f9da3/fffprocessr/extdata"
 ```
 
 ICP-MS data files are loaded using the `load_icp()` function. If ICP-MS
@@ -268,9 +267,9 @@ deconvolved_emg <- data %>%
 
 <img src="man/figures/README-deconvolve-fe-1.png" width="100%" />
 
-Finally, use the `integrate_peak()` function to assign a concentration
-estimate to each peak. You’ll have to supply the injection volume (L)
-and the flowrate (L/min) to get a concentration in the expected units.
+Use the `integrate_peak()` function to assign a concentration estimate
+to each peak. You’ll have to supply the injection volume (L) and the
+flowrate (L/min) to get a concentration in the expected units.
 
 ``` r
 deconvolved %>% 
@@ -327,7 +326,7 @@ radius of gyration:
 
 <!-- $$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$ -->
 
-<img src="man/figures/CodeCogsEqn copy.png" width="40%" />
+<img src="man/figures/CodeCogsEqn copy.png" width="35%" />
 
 where *K* is a constant, *c* and *M* are the concentration and molar
 mass of the analyte, respectively, *lambda* is the wavelength of the
@@ -339,12 +338,12 @@ colloids, *K*, *c*, and *M* are usually unknown. But
 
 <!-- $$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$-->
 
-<img src="man/figures/CodeCogsEqn (2) copy.png" width="20%" />
+<img src="man/figures/CodeCogsEqn (2) copy.png" width="15%" />
 
 where *beta<sub>0</sub>* and *beta<sub>1</sub>* are the intercept and
 slope of the linear regression. This is the Zimm model; see Kammer,
-Baborowski, and Friese (2005) (and references therein) for details, and
-the PostNova AF2000 software manual will also be helpful.
+Baborowski, and Friese (2005) (and references therein) for details (the
+PostNova AF2000 software manual will also be helpful).
 
 ``` r
 mals_rg <- mals %>% 
@@ -485,7 +484,7 @@ Research & Technology* 5 (12): 2202–9.
 <div id="ref-wyatt_measuring_2018">
 
 Wyatt, Philip J. 2018. “Measuring Nanoparticles in the Size Range to
-2000 Nm.” *Journal of Nanoparticle Research* 20 (12): 322.
+2000 nm.” *Journal of Nanoparticle Research* 20 (12): 322.
 <https://doi.org/10.1007/s11051-018-4397-x>.
 
 </div>
