@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_rg.R
 \name{calculate_rg}
 \alias{calculate_rg}
-\title{Calculate the radius of gyration}
+\title{Calculate the radius of gyration from FFF-MALS data}
 \usage{
 calculate_rg(data, window = 0.1, method = "zimm")
 }
@@ -17,5 +17,5 @@ calculate_rg(data, window = 0.1, method = "zimm")
 
 }
 \description{
-Calculate the radius of gyration
+Calculate the radius of gyration from FFF-MALS data
 }

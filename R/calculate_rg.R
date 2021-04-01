@@ -1,5 +1,5 @@
 
-#' Calculate the radius of gyration
+#' Calculate the radius of gyration from FFF-MALS data
 #'
 #' @param data A data frame.
 #' @param window The time interval on which to return calculated radii.
