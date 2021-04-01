@@ -437,10 +437,7 @@ data %>%
   filter(param == "65Cu", time > 10.5, time < 16) %>% 
   mutate(dh = 2 * 1e9 * calculate_rh(time) ) %>% 
   ggplot(aes(dh, conc, col = sample)) + 
-  geom_line() + 
-  scale_x_continuous(
-    labels = function(breaks) if_else(breaks < 0, "", as.character(breaks))
-  )
+  geom_line()
 ```
 
 <img src="man/figures/README-rh-1.png" width="100%" />

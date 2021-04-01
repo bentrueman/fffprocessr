@@ -193,7 +193,7 @@ deconvolved %>%
   geom_line()
 ```
 
-```{r deconvolve-cu, fig.height=3, echo=FALSE}
+```{r deconvolve-cu, fig.height=2.5, echo=FALSE}
 deconvolved %>% 
   unnest(c(data, fitted, peaks)) %>% 
   pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
@@ -234,7 +234,7 @@ deconvolved_emg <- data %>%
     )
 ```
 
-```{r deconvolve-fe, fig.height=3, echo=FALSE}
+```{r deconvolve-fe, fig.height=2.5, echo=FALSE}
 deconvolved_emg %>% 
   unnest(c(data, fitted, peaks)) %>% 
   pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
@@ -331,7 +331,7 @@ mals_rg %>%
   geom_hline(yintercept = 0, col = "grey", linetype = 3)
 ```
 
-```{r rg, fig.height=4, warning=FALSE, echo=FALSE}
+```{r rg, fig.height=3.5, warning=FALSE, echo=FALSE}
 mals_rg %>% 
   filter(param == "ls90") %>% 
   pivot_longer(c(rg_zimm, conc)) %>% 
@@ -400,10 +400,7 @@ data %>%
   filter(param == "65Cu", time > 10.5, time < 16) %>% 
   mutate(dh = 2 * 1e9 * calculate_rh(time) ) %>% 
   ggplot(aes(dh, conc, col = sample)) + 
-  geom_line() + 
-  scale_x_continuous(
-    labels = function(breaks) if_else(breaks < 0, "", as.character(breaks))
-  )
+  geom_line()
 ```
 
 ```{r rh, fig.height=2.5, echo=FALSE}
@@ -412,9 +409,6 @@ data %>%
   mutate(dh = 2 * 1e9 * calculate_rh(time) ) %>% 
   ggplot(aes(dh, conc, col = sample)) + 
   geom_line() + 
-  scale_x_continuous(
-    labels = function(breaks) if_else(breaks < 0, "", as.character(breaks))
-  ) +
   scale_colour_manual(values = c("firebrick", "grey")) +
   labs(x = "Calculated hydrodynamic diameter (nm)", y = "[Cu] (µg/L)", col = NULL)
 ```
