@@ -4,7 +4,7 @@
 \alias{load_uv}
 \title{Load FFF-UV/Vis files (.txt)}
 \usage{
-load_uv(path, nm1 = X2, nm2 = X4, nm3 = X6)
+load_uv(path, nm1, nm2, nm3)
 }
 \arguments{
 \item{path}{The relative path to the UV (.txt) files.}

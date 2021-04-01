@@ -8,6 +8,7 @@
 #' @return
 #' @export
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @examples
 calculate_rg <- function(data, window = .1, method = "zimm") {
   # mals calibration coefficients:
@@ -38,31 +39,33 @@ calculate_rg <- function(data, window = .1, method = "zimm") {
 
   data %>%
     dplyr::mutate(
-      theta = stringr::str_extract(param, "\\d+") %>% as.numeric(),
-      theta_rad = pi * theta / 180, # convert to radians
-      x = sin(theta_rad / 2) ^ 2
+      theta = stringr::str_extract(.data$param, "\\d+") %>% as.numeric(),
+      theta_rad = pi * .data$theta / 180, # convert to radians
+      x = sin(.data$theta_rad / 2) ^ 2
     ) %>%
     # MALS calibration coefficients
     dplyr::left_join(mals_calib, by = "theta") %>%
     dplyr::mutate(
-      rayleigh_ratio = conc * coefficient,
-      y = 1 / rayleigh_ratio
+      rayleigh_ratio = .data$conc * .data$coefficient,
+      y = 1 / .data$rayleigh_ratio
     ) %>%
-    dplyr::group_by(date, sample, timeslice = plyr::round_any(time, window)) %>%
+    dplyr::group_by(date, sample, timeslice = plyr::round_any(.data$time, window)) %>%
     tidyr::nest() %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
       model = purrr::map(data, ~ if(method == "zimm") {stats::lm(y ~ x, data = .x)} else {stats::lm(rayleigh_ratio ~ x + I(x ^ 2), data = .x)}),
-      coef = purrr::map(model, ~ stats::coef(.x)),
+      coef = purrr::map(.data$model, ~ stats::coef(.x)),
       # include the index of refraction of water (1.33)?
       # Many texts leave it out, but it does result in a match to the PostNova program output
-      rg_zimm = purrr::map(coef,
+      rg_zimm = purrr::map(
+        .data$coef,
         ~ if(method == "zimm") {
           suppressWarnings(sqrt(3 * 532 ^ 2 * (.x[2] / .x[1]) / (16 * pi ^ 2 * 1.33 ^ 2)))
         } else NA_real_
       ),
       # from https://doi.org/10.1007/s11051-018-4397-x
-      rg_watt = purrr::map(coef,
+      rg_watt = purrr::map(
+        .data$coef,
         ~ if(method == "watt") {
           suppressWarnings(sqrt(3 * 532 ^ 2 * (-.x[2]/.x[1])/ (16 * pi ^ 2)))
         } else NA_real_

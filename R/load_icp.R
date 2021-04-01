@@ -6,6 +6,7 @@
 #'
 #' @return
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
@@ -16,7 +17,7 @@ load_icp <- function(path, calibrate = TRUE) {
       rlang::set_names() %>%
       purrr::map_dfr(readxl::read_excel, .id = "file") %>%
       dplyr::mutate(date = stringr::str_extract(file, "\\d{4}-\\d{2}-\\d{2}") %>% as.Date()) %>%
-      dplyr::group_by(date, param = element) %>%
+      dplyr::group_by(date, param = .data$element) %>%
       dplyr::summarize(coef = stats::lm(defined ~ 0 + mean_cps) %>% stats::coef()) %>%
       dplyr::ungroup()
   } else NULL
@@ -32,21 +33,21 @@ load_icp <- function(path, calibrate = TRUE) {
   out <- if(is.null(calib)) {
     data %>%
       dplyr::mutate(
-        conc = cps,
-        time = Time / 6e4
+        conc = .data$cps,
+        time = .data$Time / 6e4
       ) %>%
-      dplyr::filter(!is.na(conc))
+      dplyr::filter(!is.na(.data$conc))
   } else {
     data %>%
       dplyr::left_join(calib, by = c("date", "param")) %>%
       dplyr::mutate(
-        conc = coef * cps,
-        time = Time / 6e4
+        conc = .data$coef * .data$cps,
+        time = .data$Time / 6e4
       ) %>%
-      dplyr::filter(!is.na(conc))
+      dplyr::filter(!is.na(.data$conc))
   }
 
   out %>%
-    dplyr::select(file, date, param, time, conc)
+    dplyr::select(file, date, .data$param, .data$time, .data$conc)
 
 }

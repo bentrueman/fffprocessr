@@ -6,6 +6,7 @@
 #'
 #' @return
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
@@ -17,26 +18,28 @@ load_mals <- function(
   angles <- suppressMessages(
     tibble::as_tibble(matrix(angles, byrow = TRUE, nrow = 7), .name_repair = "unique")
   ) %>%
-    dplyr::rename_all(~ stringr::str_extract(.x, "\\d+") %>% paste0("v", .))
+    dplyr::rename_all(~ paste0("v", stringr::str_extract(.x, "\\d+")))
 
-  list.files(path = path, pattern = ".+\\.txt", full.names = TRUE) %>%
-    tibble::tibble(file = .) %>%
+ tibble::tibble(file = list.files(path = path, pattern = ".+\\.txt", full.names = TRUE)) %>%
     # extract first of three consecutive angles in each file:
     dplyr::mutate(v1 = stringr::str_replace(file, "(.+)(_ls)(\\d+)(.+)", "\\3") %>% as.numeric()) %>%
     dplyr::left_join(angles, by = "v1") %>%
     dplyr::mutate_at(dplyr::vars(tidyselect::starts_with("v")), ~ paste0("ls", .x)) %>%
     dplyr::mutate(
       data = purrr::map(file, ~ readr::read_table2(.x, col_names = FALSE)),
-      renamed = purrr::pmap(list(data, v1, v2, v3), function(a, b, c, d) {names(a) <- c("time", b, "X3", c, "X5", d, "X7"); a}),
-      long = purrr::map(renamed,
+      renamed = purrr::pmap(
+        list(.data$data, .data$v1, .data$v2, .data$v3),
+        function(a, b, c, d) {names(a) <- c("time", b, "X3", c, "X5", d, "X7"); a}
+      ),
+      long = purrr::map(.data$renamed,
         ~ dplyr::select_at(.x, dplyr::vars(-tidyselect::starts_with("X"))) %>%
-          tidyr::pivot_longer(-time, names_to = "param", values_to = "conc")
+          tidyr::pivot_longer(-.data$time, names_to = "param", values_to = "conc")
       )
     ) %>%
-    tidyr::unnest(long) %>%
+    tidyr::unnest(.data$long) %>%
     dplyr::mutate(
       date = stringr::str_extract(file, "\\d{4}-\\d{2}-\\d{2}") %>% as.Date(),
       sample = stringr::str_replace(file, "(.+)(\\d{4}-\\d{2}-\\d{2}_)(.+)(_ls.+)(\\.[:alpha:]+)", "\\3")
     ) %>%
-    dplyr::select(file, date, sample, param, time, conc)
+    dplyr::select(file, date, sample, .data$param, .data$time, .data$conc)
 }

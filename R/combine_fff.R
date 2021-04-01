@@ -8,6 +8,7 @@
 #'
 #' @return
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
@@ -22,24 +23,24 @@ combine_fff <- function(icp, uv, subtract_blank = TRUE, focus = 10) {
       sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
     ) %>%
     # add 3 * sigma detection limit as a new column:
-    dplyr::group_by(date, sample, param) %>%
-    dplyr::mutate(blank = dplyr::if_else(sample == "blank" & time > focus, conc, NA_real_)) %>%
+    dplyr::group_by(date, sample, .data$param) %>%
+    dplyr::mutate(blank = dplyr::if_else(sample == "blank" & .data$time > focus, .data$conc, NA_real_)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(date, param) %>%
-    dplyr::mutate(three_sigma = 3 * stats::sd(blank, na.rm = TRUE)) %>%
+    dplyr::group_by(date, .data$param) %>%
+    dplyr::mutate(three_sigma = 3 * stats::sd(.data$blank, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-blank)
+    dplyr::select(-.data$blank)
 
   out <- if(subtract_blank) {
     combined  %>%
-      tidyr::pivot_wider(-file, names_from = sample, values_from = conc, values_fn = mean) %>%
+      tidyr::pivot_wider(-file, names_from = sample, values_from = .data$conc, values_fn = mean) %>%
       # linear interpolation here:
-      dplyr::arrange(date, param, time) %>%
+      dplyr::arrange(date, .data$param, .data$time) %>%
       dplyr::mutate_at(dplyr::vars(tidyselect::starts_with("sample_"), tidyselect::matches("^blank$")), imputeTS::na_interpolation) %>%
       tidyr::pivot_longer(cols = tidyselect::starts_with("sample_"), names_to = "sample", values_to = "conc") %>%
-      dplyr::mutate(conc = conc - blank)
+      dplyr::mutate(conc = .data$conc - .data$blank)
   } else combined
 
   out %>%
-    dplyr::select(date, sample, param, time, conc, three_sigma)
+    dplyr::select(date, sample, .data$param, .data$time, .data$conc, .data$three_sigma)
 }

@@ -9,17 +9,18 @@
 #' @return
 #' @importFrom rlang :=
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
-load_uv <- function(path, nm1 = X2, nm2 = X4, nm3 = X6) {
+load_uv <- function(path, nm1, nm2, nm3) {
   list.files(path = path, pattern = "*.txt", full.names = TRUE) %>%
     rlang::set_names() %>%
     purrr::map_dfr(~ readr::read_table2(.x, col_names = FALSE), .id = "file") %>%
-    dplyr::rename(time = X1, {{nm1}} := X2, {{nm2}} := X4, {{nm3}} := X6) %>%
+    dplyr::rename(time = .data$X1, {{nm1}} := .data$X2, {{nm2}} := .data$X4, {{nm3}} := .data$X6) %>%
     dplyr::select_at(dplyr::vars(-tidyselect::starts_with("X"))) %>%
     dplyr::mutate(date = stringr::str_extract(file, "\\d{4}-\\d{2}-\\d{2}") %>% as.Date()) %>%
-    tidyr::pivot_longer(-c(file, date, time), names_to = "param", values_to = "conc") %>%
-    dplyr::filter(!stringr::str_detect(param, "^X\\d$")) %>%  # remove unnamed parameters
-    dplyr::select(file, date, time, param, conc)
+    tidyr::pivot_longer(-c(file, date, .data$time), names_to = "param", values_to = "conc") %>%
+    dplyr::filter(!stringr::str_detect(.data$param, "^X\\d$")) %>%  # remove unnamed parameters
+    dplyr::select(file, date, .data$time, .data$param, .data$conc)
 }
