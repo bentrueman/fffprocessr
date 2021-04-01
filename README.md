@@ -361,7 +361,7 @@ mals_rg %>%
   filter(param == "ls90") %>% 
   pivot_longer(c(rg_zimm, conc)) %>% 
   ggplot(aes(time, value)) + 
-  facet_wrap(vars(name), scales = "free_y", ncol = 1) +
+  facet_wrap(vars(name), scales = "free_y") +
   geom_point() +
   geom_hline(yintercept = 0, col = "grey", linetype = 3)
 ```

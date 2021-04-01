@@ -326,19 +326,19 @@ mals_rg %>%
   filter(param == "ls90") %>% 
   pivot_longer(c(rg_zimm, conc)) %>% 
   ggplot(aes(time, value)) + 
-  facet_wrap(vars(name), scales = "free_y", ncol = 1) +
+  facet_wrap(vars(name), scales = "free_y") +
   geom_point() +
   geom_hline(yintercept = 0, col = "grey", linetype = 3)
 ```
 
-```{r rg, fig.height=3.5, warning=FALSE, echo=FALSE}
+```{r rg, fig.height=2.5, warning=FALSE, echo=FALSE}
 mals_rg %>% 
   filter(param == "ls90") %>% 
   pivot_longer(c(rg_zimm, conc)) %>% 
   mutate(name = fct_recode(name, "LS[90]" = "conc", "r[g]~(nm)" = "rg_zimm")) %>% 
   ggplot(aes(time, value)) + 
-  facet_wrap(vars(name), scales = "free_y", ncol = 1, labeller = label_parsed) +
-  geom_point(data = function(x) filter(x, name == "r[g]~(nm)")) +
+  facet_wrap(vars(name), scales = "free_y", ncol = 2, labeller = label_parsed) +
+  geom_point(data = function(x) filter(x, name == "r[g]~(nm)", time < 60), alpha = .2, shape = 16) +
   geom_line(data = function(x) filter(x, name == "LS[90]")) + 
   geom_hline(yintercept = 0, col = "grey", linetype = 3) +
   labs(x = "Retention time (min.)", y = NULL, col = NULL)
