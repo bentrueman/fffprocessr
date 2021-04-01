@@ -49,7 +49,7 @@ external data as follows.
 
 ``` r
 system.file("extdata", package = "fffprocessr")
-#> [1] "/private/var/folders/fy/v4w9p72s7c996w8l8qfthxq40000gn/T/RtmpK7SvEZ/temp_libpath10a1b655faf51/fffprocessr/extdata"
+#> [1] "/private/var/folders/fy/v4w9p72s7c996w8l8qfthxq40000gn/T/RtmpK7SvEZ/temp_libpath10a1b504f5f15/fffprocessr/extdata"
 ```
 
 ICP-MS data files are loaded using the `load_icp()` function. If ICP-MS
@@ -188,7 +188,7 @@ skewed Gaussians, each of which takes the following form:
 
 <!-- $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$ -->
 
-<img src="man/figures/CodeCogsEqn (1) copy.png" width="50%" />
+<img src="man/figures/CodeCogsEqn (1) copy.png" width="35%" />
 
 where \(y\) denotes the instantaneous concentration, \(x\) the retention
 volume, \(h\) the peak height, \(\mu\) the mean, \(\sigma\) the standard
@@ -364,8 +364,7 @@ mals_rg %>%
   pivot_longer(c(rg_zimm, conc)) %>% 
   ggplot(aes(time, value)) + 
   facet_wrap(vars(name), scales = "free_y", ncol = 1) +
-  geom_point(data = function(x) filter(x, name == "rg_zimm")) +
-  geom_line(data = function(x) filter(x, name == "conc")) + 
+  geom_point() +
   geom_hline(yintercept = 0, col = "grey", linetype = 3)
 ```
 
@@ -443,8 +442,7 @@ data %>%
   geom_line() + 
   scale_x_continuous(
     labels = function(breaks) if_else(breaks < 0, "", as.character(breaks))
-  ) +
-  labs(x = "Calculated hydrodynamic diameter (nm)")
+  )
 ```
 
 <img src="man/figures/README-rh-1.png" width="100%" />
