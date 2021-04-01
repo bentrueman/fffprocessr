@@ -24,4 +24,5 @@ Imports:
     readr,
     stats,
     tibble,
-    imputeTS
+    imputeTS,
+    plyr

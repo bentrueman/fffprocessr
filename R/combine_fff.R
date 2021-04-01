@@ -35,7 +35,7 @@ combine_fff <- function(icp, uv, subtract_blank = TRUE, focus = 10) {
       tidyr::pivot_wider(-file, names_from = sample, values_from = conc, values_fn = mean) %>%
       # linear interpolation here:
       dplyr::arrange(date, param, time) %>%
-      dplyr::mutate_at(dplyr::vars(tidyselect::starts_with("sample_"), matches("^blank$")), imputeTS::na_interpolation) %>%
+      dplyr::mutate_at(dplyr::vars(tidyselect::starts_with("sample_"), tidyselect::matches("^blank$")), imputeTS::na_interpolation) %>%
       tidyr::pivot_longer(cols = tidyselect::starts_with("sample_"), names_to = "sample", values_to = "conc") %>%
       dplyr::mutate(conc = conc - blank)
   } else combined

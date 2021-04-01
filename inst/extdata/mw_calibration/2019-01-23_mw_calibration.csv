@@ -1,0 +1,7 @@
+filename,peak_retention_time,mw_kda,name
+raw_data/mw_calibration/2019-01-23_blue_dex_bromo_blue_590.txt,11.3589,0.69,bromophenol blue
+raw_data/mw_calibration/2019-01-23_blue_dex_bromo_blue.txt,19.497732,2.00E+03,blue dextran
+raw_data/mw_calibration/2019-01-23_ferritin_ovalbumin.txt,19.241726,440,ferritin
+raw_data/mw_calibration/2019-01-23_tannic_acid.txt,13.883102,1.8,tannic acid
+raw_data/mw_calibration/2019-01-23_thyroglobulin_aldolase.txt,18.730007,158,aldolase
+raw_data/mw_calibration/2019-01-23_ferritin_ovalbumin.txt,17.673153,44,ovalbumin
