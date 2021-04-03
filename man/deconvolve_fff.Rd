@@ -32,15 +32,23 @@ deconvolve_fff(
 
 \item{fn}{Function for peak fitting: skew Gaussian or exponentially modified Gaussian ("skew_gaussian" or "emg").}
 
-\item{algorithm}{Refer to nls() in the stats:: package.}
+\item{algorithm}{Refer to nls() in the 'stats' package.}
 
-\item{iter}{Refer to nls() in the stats:: package.}
+\item{iter}{Refer to nls() in the 'stats' package.}
 
-\item{tol}{Refer to nls() in the stats:: package.}
+\item{tol}{Refer to nls() in the 'stats' package.}
 }
 \value{
-
+A list containing the nls() model, the fitted model evaluated at x, and a tibble with a
+column for each of the component peaks evaluated at x.
 }
 \description{
 Deconvolve incompletely resolved peaks
+}
+\examples{
+set.seed(0)
+x <- seq(0, 10, length.out = 100)
+# two gaussian peaks:
+y <- exp(-(x - 3) ^ 2 / 2) + exp(-(x - 7) ^ 2 / 2) + rnorm(100, 0, .1)
+deconvolve_fff(x, y, h = c(1, 1), mu = c(3, 7), s = c(1, 1), g = c(1, 1))
 }

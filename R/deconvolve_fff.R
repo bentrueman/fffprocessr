@@ -8,15 +8,21 @@
 #' @param s A vector of guesses for peak standard deviations, with length equal to the desired number of peaks.
 #' @param g A vector of guesses for peak shape parameters, with length equal to the desired number of peaks.
 #' @param fn Function for peak fitting: skew Gaussian or exponentially modified Gaussian ("skew_gaussian" or "emg").
-#' @param algorithm Refer to nls() in the stats:: package.
-#' @param iter Refer to nls() in the stats:: package.
-#' @param tol Refer to nls() in the stats:: package.
+#' @param algorithm Refer to nls() in the 'stats' package.
+#' @param iter Refer to nls() in the 'stats' package.
+#' @param tol Refer to nls() in the 'stats' package.
 #'
-#' @return
+#' @return A list containing the nls() model, the fitted model evaluated at x, and a tibble with a
+#' column for each of the component peaks evaluated at x.
 #' @importFrom dplyr %>%
 #' @export
 #'
 #' @examples
+#' set.seed(0)
+#' x <- seq(0, 10, length.out = 100)
+#' # two gaussian peaks:
+#' y <- exp(-(x - 3) ^ 2 / 2) + exp(-(x - 7) ^ 2 / 2) + rnorm(100, 0, .1)
+#' deconvolve_fff(x, y, h = c(1, 1), mu = c(3, 7), s = c(1, 1), g = c(1, 1))
 deconvolve_fff <- function(
   x, y, h, mu, s, g,
   fn = "skew_gaussian",
