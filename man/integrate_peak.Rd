@@ -7,17 +7,22 @@
 integrate_peak(x, y, injvol = 0.001, flowrate = 0.001)
 }
 \arguments{
-\item{x}{numeric}
+\item{x}{A numeric vector of retention times, in minutes.}
 
-\item{y}{numeric}
+\item{y}{A numeric vector of detector responses, matching x in length.}
 
-\item{injvol}{numeric}
+\item{injvol}{The injection volume in litres.}
 
-\item{flowrate}{numeric}
+\item{flowrate}{The detector flow rate in litres per minute.}
 }
 \value{
-
+A number representing the integrated peak area.
 }
 \description{
 Integrate FFF peaks
+}
+\examples{
+x <- seq(0, 10, by = .1)
+y <- exp(-(x - 5) ^ 2 / 2) # gaussian peak
+integrate_peak(x, y)
 }
