@@ -18,17 +18,26 @@ calibrate_mw(
 
 \item{mw}{A numeric vector of molecular weights.}
 
-\item{type}{"linear" or "quadratic"}
+\item{type}{Chosse from a "linear" or "quadratic" fit.}
 
 \item{newdata}{A vector of retention times or molecular weights.}
 
-\item{output}{"time" or "mw"}
+\item{output}{Choose the output type: "time" for retention time or "mw" for molecular weight.
+Output "time" is an inverse prediction useful primarily for plotting.}
 
 \item{predict}{Logical. Predict from the model?}
 }
 \value{
-
+An object of class "lm" if predict = FALSE, or a vector of model predictions/inverse
+predictions if predict = TRUE.
 }
 \description{
 Perform a molecular weight calibration
+}
+\examples{
+retention <- c(11.35890, 19.49773, 19.24173, 13.88310, 18.73001, 17.67315)
+mw_kda <- c(0.69, 2000.00, 440.00, 1.80, 158.00, 44.00)
+# return tick positions for 1, 10, 100, and 1000 kDa,
+# based on a quadratic calibration curve:
+calibrate_mw(retention, mw_kda, newdata = c(1, 10, 100, 1000), predict = TRUE)
 }
