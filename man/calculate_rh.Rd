@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_rh.R
 \name{calculate_rh}
 \alias{calculate_rh}
-\title{Calculate the hydrodynamic radius}
+\title{Calculate hydrodynamic radii}
 \usage{
 calculate_rh(
   t1,
@@ -36,8 +36,12 @@ calculate_rh(
 \item{eta}{Dynamic viscosity, in N * s / m^2.}
 }
 \value{
-
+A vector of hydrodynamic radii in metres.
 }
 \description{
-Calculate the hydrodynamic radius
+Calculate hydrodynamic radii
+}
+\examples{
+tr <- seq(11.6, 15.6, by = .1)
+calculate_rh(tr)
 }

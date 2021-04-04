@@ -1,5 +1,5 @@
 
-#' Calculate the hydrodynamic radius
+#' Calculate hydrodynamic radii
 #'
 #' @param t1 Retention time, in minutes.
 #' @param focus Focus period, in minutes.
@@ -11,10 +11,12 @@
 #' @param temp Temperature, degrees Celsius.
 #' @param eta Dynamic viscosity, in N * s / m^2.
 #'
-#' @return
+#' @return A vector of hydrodynamic radii in metres.
 #' @export
 #'
 #' @examples
+#' tr <- seq(11.6, 15.6, by = .1)
+#' calculate_rh(tr)
 calculate_rh <- function(
   t1, # retention time (min)
   focus = 10, # focusing period (min)

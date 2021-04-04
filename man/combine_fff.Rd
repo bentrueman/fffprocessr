@@ -2,7 +2,7 @@
 % Please edit documentation in R/combine_fff.R
 \name{combine_fff}
 \alias{combine_fff}
-\title{Combine loaded UV/Vis and ICP-MS data}
+\title{Combine loaded UV-MALS and ICP-MS data}
 \usage{
 combine_fff(icp, uv, subtract_blank = TRUE, focus = 10)
 }
@@ -16,8 +16,14 @@ combine_fff(icp, uv, subtract_blank = TRUE, focus = 10)
 \item{focus}{The focusing period, in minutes.}
 }
 \value{
-
+A tibble with the columns date', 'sample', 'param', 'time', 'conc', and 'three_sigma'.
+The final column, 'three_sigma' represents three times the standard deviation of blank runs
+corresponding to each date and analyte.
 }
 \description{
-Combine loaded UV/Vis and ICP-MS data
+Combine loaded UV-MALS and ICP-MS data
+}
+\examples{
+path <- system.file("extdata", package = "fffprocessr")
+combine_fff(load_icp(path), load_uv(path, UV254_1))
 }

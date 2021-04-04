@@ -1,18 +1,21 @@
 
-#' Load MALS data files (.txt)
+#' Load FFF-MALS data files with extension .txt
 #'
-#' @param path The relative path to the MALS (.txt) files.
-#' @param angles MALS detector angles
+#' @param path The relative path to the .txt input files.
+#' @param angles MALS detector angles.
 #'
-#' @return
+#' @return A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
 #'
 #' @examples
+#' path <- system.file("extdata/mals", package = "fffprocessr")
+#' load_mals(path = path)
 load_mals <- function(
   path,
-  angles = c(7, 12, 20,  28, 36, 44, 52, 60, 68, 76, 84, 90, 100, 108, 116, 124, 132, 140, 148, 156, 164)
+  angles = c(7, 12, 20,  28, 36, 44, 52, 60, 68, 76, 84,
+    90, 100, 108, 116, 124, 132, 140, 148, 156, 164)
 ) {
 
   angles <- suppressMessages(

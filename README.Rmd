@@ -357,6 +357,10 @@ Here are the Zimm plots at time slices representing each peak. The linearity ass
 ```{r eval=FALSE}
 mals_rg %>% 
   filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
+  mutate(
+    x = sin(pi * theta / 360) ^ 2,
+    y = 1 / rayleigh_ratio
+  ) %>% 
   ggplot(aes(x, y)) + 
   facet_wrap(vars(timeslice), scales = "free_y") + 
   geom_smooth(method = "lm") +
@@ -366,7 +370,11 @@ mals_rg %>%
 ```{r zimm, fig.height=2.5, message=FALSE, echo=FALSE}
 mals_rg %>% 
   filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
-  mutate(timeslice = paste(timeslice, "min.")) %>% 
+  mutate(
+    timeslice = paste(timeslice, "min."),
+    x = sin(pi * theta / 360) ^ 2,
+    y = 1 / rayleigh_ratio
+  ) %>% 
   ggplot(aes(x, y)) + 
   facet_wrap(vars(timeslice), scales = "free_y") + 
   geom_smooth(method = "lm") +

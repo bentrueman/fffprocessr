@@ -395,6 +395,10 @@ linearity assumption breaks down completely for the largest particles
 ``` r
 mals_rg %>% 
   filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
+  mutate(
+    x = sin(pi * theta / 360) ^ 2,
+    y = 1 / rayleigh_ratio
+  ) %>% 
   ggplot(aes(x, y)) + 
   facet_wrap(vars(timeslice), scales = "free_y") + 
   geom_smooth(method = "lm") +

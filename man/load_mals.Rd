@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_mals.R
 \name{load_mals}
 \alias{load_mals}
-\title{Load MALS data files (.txt)}
+\title{Load FFF-MALS data files with extension .txt}
 \usage{
 load_mals(
   path,
@@ -11,13 +11,17 @@ load_mals(
 )
 }
 \arguments{
-\item{path}{The relative path to the MALS (.txt) files.}
+\item{path}{The relative path to the .txt input files.}
 
-\item{angles}{MALS detector angles}
+\item{angles}{MALS detector angles.}
 }
 \value{
-
+A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.
 }
 \description{
-Load MALS data files (.txt)
+Load FFF-MALS data files with extension .txt
+}
+\examples{
+path <- system.file("extdata/mals", package = "fffprocessr")
+load_mals(path = path)
 }
