@@ -1,17 +1,27 @@
 
 #' Linear baseline correction with left and right endpoints
 #'
-#' @param x A data frame.
+#' @param x A tibble of the type returned by `load_icp()`.
 #' @param left The left endpoint.
 #' @param right The right endpoint.
 #' @param window The fitting window at each endpoint.
 #'
-#' @return
+#' @return A tibble of the type returned by `load_icp()`, with the column 'conc' modified
+#' by a linear baseline correction.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
 #'
 #' @examples
+#' data <- data.frame(
+#'   date = as.Date("2021-01-01"),
+#'   sample = "a",
+#'   param = "56Fe",
+#'   time = seq(0, 30, by = .1),
+#'   conc = runif(301, 0, 1)
+#' )
+#' data$conc <- data$conc + data$time
+#' correct_baseline(data, left = .2, right = 29.8)
 correct_baseline <- function(x, left = 10, right = 35, window = .2) {
   x %>%
     dplyr::group_by(date, sample, .data$param) %>%

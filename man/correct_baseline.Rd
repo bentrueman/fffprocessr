@@ -7,7 +7,7 @@
 correct_baseline(x, left = 10, right = 35, window = 0.2)
 }
 \arguments{
-\item{x}{A data frame.}
+\item{x}{A tibble of the type returned by \code{load_icp()}.}
 
 \item{left}{The left endpoint.}
 
@@ -16,8 +16,20 @@ correct_baseline(x, left = 10, right = 35, window = 0.2)
 \item{window}{The fitting window at each endpoint.}
 }
 \value{
-
+A tibble of the type returned by \code{load_icp()}, with the column 'conc' modified
+by a linear baseline correction.
 }
 \description{
 Linear baseline correction with left and right endpoints
+}
+\examples{
+data <- data.frame(
+  date = as.Date("2021-01-01"),
+  sample = "a",
+  param = "56Fe",
+  time = seq(0, 30, by = .1),
+  conc = runif(301, 0, 1)
+)
+data$conc <- data$conc + data$time
+correct_baseline(data, left = .2, right = 29.8)
 }
