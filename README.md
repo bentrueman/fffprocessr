@@ -85,18 +85,18 @@ uv_data <- system.file("extdata", package = "fffprocessr") %>%
   load_uv(UV254_1, UV254_2, LS90) # name channels in order from left to right
 uv_data
 #> # A tibble: 9,363 x 5
-#>    file                                          date         time param    conc
-#>    <chr>                                         <date>      <dbl> <chr>   <dbl>
-#>  1 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0173 UV254… 0.0964
-#>  2 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0173 UV254… 0.0720
-#>  3 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0173 LS90   0.196 
-#>  4 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0538 UV254… 0.0963
-#>  5 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0538 UV254… 0.0722
-#>  6 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0538 LS90   0.196 
-#>  7 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0902 UV254… 0.0964
-#>  8 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0902 UV254… 0.0722
-#>  9 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.0902 LS90   0.196 
-#> 10 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 0.127  UV254… 0.0964
+#>    file                                          date       param    time   conc
+#>    <chr>                                         <date>     <chr>   <dbl>  <dbl>
+#>  1 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0173 0.0964
+#>  2 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0173 0.0720
+#>  3 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 LS90   0.0173 0.196 
+#>  4 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0538 0.0963
+#>  5 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0538 0.0722
+#>  6 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 LS90   0.0538 0.196 
+#>  7 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0902 0.0964
+#>  8 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0902 0.0722
+#>  9 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 LS90   0.0902 0.196 
+#> 10 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.127  0.0964
 #> # … with 9,353 more rows
 ```
 
@@ -196,7 +196,7 @@ deviation, *gamma* the shape parameter, and *erf* the error function.
 Alternatively, fractograms can be fitted as sums of exponentially
 modified Gaussians:
 
-<!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}}exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
+<!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
 
 <img src="man/figures/CodeCogsEqn_3.png" width="60%" />
 

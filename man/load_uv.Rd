@@ -2,22 +2,26 @@
 % Please edit documentation in R/load_uv.R
 \name{load_uv}
 \alias{load_uv}
-\title{Load FFF-UV/Vis files (.txt)}
+\title{Load FFF-UV-MALS data files with extension .txt}
 \usage{
-load_uv(path, nm1, nm2, nm3)
+load_uv(path, nm1 = "X2", nm2 = "X4", nm3 = "X6")
 }
 \arguments{
-\item{path}{The relative path to the UV (.txt) files.}
+\item{path}{Relative path to the .txt input files.}
 
-\item{nm1}{Name of column 2.}
+\item{nm1}{Name of column 2 in the input files.}
 
-\item{nm2}{Name of column 4.}
+\item{nm2}{Name of column 4 in the input files.}
 
-\item{nm3}{Name of column 6.}
+\item{nm3}{Name of column 6 in the input files.}
 }
 \value{
-
+A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 }
 \description{
-Load FFF-UV/Vis files (.txt)
+Load FFF-UV-MALS data files with extension .txt
+}
+\examples{
+path <- system.file("extdata", package = "fffprocessr")
+load_uv(path = path, UV254_1, UV254_2, LS90)
 }

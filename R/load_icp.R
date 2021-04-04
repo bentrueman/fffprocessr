@@ -1,15 +1,18 @@
 
-#' Load FFF-ICP files (with extension .csv)
+#' Load FFF-ICP data files with extension .csv
 #'
-#' @param path The relative path to the ICP-MS (.csv) files.
-#' @param calibrate Logical. Convert the raw instantaneous detector counts per second to instantaneous concentrations?
+#' @param path Relative path to the ICP-MS (.csv) input files.
+#' @param calibrate Logical. Convert the raw instantaneous detector counts per second to
+#' instantaneous concentrations?
 #'
-#' @return
+#' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
 #'
 #' @examples
+#' path <- system.file("extdata", package = "fffprocessr")
+#' load_icp(path = path)
 load_icp <- function(path, calibrate = TRUE) {
 
   calib <- if(calibrate) {

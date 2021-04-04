@@ -2,18 +2,23 @@
 % Please edit documentation in R/load_icp.R
 \name{load_icp}
 \alias{load_icp}
-\title{Load FFF-ICP files (with extension .csv)}
+\title{Load FFF-ICP data files with extension .csv}
 \usage{
 load_icp(path, calibrate = TRUE)
 }
 \arguments{
-\item{path}{The relative path to the ICP-MS (.csv) files.}
+\item{path}{Relative path to the ICP-MS (.csv) input files.}
 
-\item{calibrate}{Logical. Convert the raw instantaneous detector counts per second to instantaneous concentrations?}
+\item{calibrate}{Logical. Convert the raw instantaneous detector counts per second to
+instantaneous concentrations?}
 }
 \value{
-
+A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 }
 \description{
-Load FFF-ICP files (with extension .csv)
+Load FFF-ICP data files with extension .csv
+}
+\examples{
+path <- system.file("extdata", package = "fffprocessr")
+load_icp(path = path)
 }
