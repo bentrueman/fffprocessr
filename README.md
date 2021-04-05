@@ -78,7 +78,8 @@ UV-MALS data files (e.g., UV detector output and 1–2 MALS detector
 outputs) are loaded using the `load_uv()` function. Only named detector
 outputs are retained in the output; a sensible naming convention is
 detector followed by wavelength or angle, as in UV254 or LS90. Don’t
-start names with X, or they won’t show up in the output.
+name columns “X” followed by a number, or they won’t show up in the
+output.
 
 ``` r
 uv_data <- system.file("extdata", package = "fffprocessr") %>% 
@@ -434,7 +435,8 @@ calculate the hydrodynamic radius. The only input without a default is
 retention time; the run parameters (cross flow, tip flow, detector flow,
 focus period, transition time), channel thickness, temperature, and the
 dynamic viscosity of the carrier solution can all be changed, but for
-now, the channel dimensions are hard-coded.
+now, the channel dimensions are hard-coded. The function `peak_maxima()`
+may also be useful for determining peak retention times.
 
 ``` r
 data %>% 
