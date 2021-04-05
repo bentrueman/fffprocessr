@@ -1,10 +1,10 @@
 
 #' Combine loaded UV-MALS and ICP-MS data
 #'
-#' @param icp A tibble created by `load_icp()`
-#' @param uv A tibble created by `load_uv()`
+#' @param icp A tibble created by `load_icp()`, or
+#' @param uv A tibble created by `load_uv()`, or both.
 #' @param subtract_blank Logical. Subtract a blank from the sample runs?
-#' @param focus The focusing period, in minutes.
+#' @param focus Focusing period, in minutes.
 #'
 #' @return A tibble with the columns date', 'sample', 'param', 'time', 'conc', and 'three_sigma'.
 #' The final column, 'three_sigma' represents three times the standard deviation of blank runs
@@ -16,7 +16,7 @@
 #' @examples
 #' path <- system.file("extdata", package = "fffprocessr")
 #' combine_fff(load_icp(path), load_uv(path, UV254_1))
-combine_fff <- function(icp, uv, subtract_blank = TRUE, focus = 10) {
+combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10) {
 
   combined <- dplyr::bind_rows(icp, uv) %>%
     dplyr::mutate(

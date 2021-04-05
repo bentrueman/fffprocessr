@@ -4,16 +4,16 @@
 \alias{combine_fff}
 \title{Combine loaded UV-MALS and ICP-MS data}
 \usage{
-combine_fff(icp, uv, subtract_blank = TRUE, focus = 10)
+combine_fff(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10)
 }
 \arguments{
-\item{icp}{A tibble created by \code{load_icp()}}
+\item{icp}{A tibble created by \code{load_icp()}, or}
 
-\item{uv}{A tibble created by \code{load_uv()}}
+\item{uv}{A tibble created by \code{load_uv()}, or both.}
 
 \item{subtract_blank}{Logical. Subtract a blank from the sample runs?}
 
-\item{focus}{The focusing period, in minutes.}
+\item{focus}{Focusing period, in minutes.}
 }
 \value{
 A tibble with the columns date', 'sample', 'param', 'time', 'conc', and 'three_sigma'.
