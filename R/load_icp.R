@@ -3,10 +3,16 @@
 #'
 #' @param path Relative path to the ICP-MS (.csv) input files.
 #' @param calibrate Logical. Convert the raw instantaneous detector counts per second to
-#' instantaneous concentrations?
-#' @param date_regex An optional regular expression for extracting dates from filenames.
+#' instantaneous concentrations? This requires a table for each date, in .xlsx format, with the
+#' following columns: `file`, a character vector of filenames; `element`, a character vector
+#' describing each calibration curve (e.g., `56Fe`); `defined`, a numeric vector of defined
+#' standard concentrations; and `mean_cps` a numeric vector of mean counts per second at each
+#' concentration
+#' @param date_regex An optional regular expression for extracting non-ISO dates from filenames.
 #' @param date_format An optional non-standard date format corresponding to the output of
 #' `date_regex` (see `?strptime`).
+#' @param calib_path Optional. Use if the relative path to the ICP-MS calibration files differs
+#' from the relative path to the data files.
 #'
 #' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
@@ -18,19 +24,23 @@
 #' load_icp(path = path)
 load_icp <- function(
   path, calibrate = TRUE,
-  date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d"
+  date_regex = "\\d{4}-\\d{2}-\\d{2}",
+  date_format = "%Y-%m-%d",
+  calib_path = NULL
 ) {
 
+  if(is.null(calib_path)) calib_path <- path
+
   calib <- if(calibrate) {
-    list.files(path = path, pattern = "*.xlsx", full.names = TRUE) %>%
+    list.files(path = calib_path, pattern = "*.xlsx", full.names = TRUE) %>%
       rlang::set_names() %>%
       purrr::map_dfr(readxl::read_excel, .id = "file") %>%
       dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format)) %>%
+      dplyr::filter(!is.na(date)) %>%
       dplyr::group_by(date, param = .data$element) %>%
       dplyr::summarize(coef = stats::lm(defined ~ 0 + mean_cps) %>% stats::coef()) %>%
       dplyr::ungroup()
   } else NULL
-
 
   data <- list.files(path = path, pattern = "*.csv", full.names = TRUE) %>%
     rlang::set_names() %>%

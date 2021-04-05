@@ -8,19 +8,27 @@ load_icp(
   path,
   calibrate = TRUE,
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
-  date_format = "\%Y-\%m-\%d"
+  date_format = "\%Y-\%m-\%d",
+  calib_path = NULL
 )
 }
 \arguments{
 \item{path}{Relative path to the ICP-MS (.csv) input files.}
 
 \item{calibrate}{Logical. Convert the raw instantaneous detector counts per second to
-instantaneous concentrations?}
+instantaneous concentrations? This requires a table for each date, in .xlsx format, with the
+following columns: \code{file}, a character vector of filenames; \code{element}, a character vector
+describing each calibration curve (e.g., \verb{56Fe}); \code{defined}, a numeric vector of defined
+standard concentrations; and \code{mean_cps} a numeric vector of mean counts per second at each
+concentration}
 
-\item{date_regex}{An optional regular expression for extracting dates from filenames.}
+\item{date_regex}{An optional regular expression for extracting non-ISO dates from filenames.}
 
 \item{date_format}{An optional non-standard date format corresponding to the output of
 \code{date_regex} (see \code{?strptime}).}
+
+\item{calib_path}{Optional. Use if the relative path to the ICP-MS calibration files differs
+from the relative path to the data files.}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
