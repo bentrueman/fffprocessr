@@ -25,4 +25,5 @@ Imports:
     stats,
     tibble,
     imputeTS,
-    plyr
+    plyr,
+    mgcv
