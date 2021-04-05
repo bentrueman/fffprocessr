@@ -4,7 +4,7 @@
 \alias{peak_maxima}
 \title{Detect peak maxima}
 \usage{
-peak_maxima(data, focus = 10, k = 50, peaks = 1)
+peak_maxima(data, focus = 10, k = 35, peaks = 1)
 }
 \arguments{
 \item{data}{A tibble returned by \code{load_icp()}, \code{load_uv()}, \code{load_mals()}, or \code{combine_fff()}}
@@ -24,6 +24,6 @@ Detect peak maxima
 \examples{
 path <- system.file("extdata", package = "fffprocessr")
 data <- combine_fff(load_icp(path))
-data <- data[data$param == "65Cu" & data$sample == "sample_bennery_raw", ]
+data <- data[data$param == "65Cu", ]
 peak_maxima(data, peaks = 3)
 }

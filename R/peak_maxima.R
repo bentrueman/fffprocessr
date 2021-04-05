@@ -14,21 +14,23 @@
 #' @examples
 #' path <- system.file("extdata", package = "fffprocessr")
 #' data <- combine_fff(load_icp(path))
-#' data <- data[data$param == "65Cu" & data$sample == "sample_bennery_raw", ]
+#' data <- data[data$param == "65Cu", ]
 #' peak_maxima(data, peaks = 3)
-peak_maxima <- function(data, focus = 10, k = 50, peaks = 1) {
+peak_maxima <- function(data, focus = 10, k = 35, peaks = 1) {
   data %>%
     dplyr::filter(.data$time > focus) %>%
+    dplyr::group_by(.data$date, .data$sample, .data$param) %>%
     dplyr::mutate(
       fitted = mgcv::gam(.data$conc ~ s(.data$time, bs = "cs", k = k)) %>%
         mgcv::predict.gam(),
       diff = dplyr::lead(.data$fitted) - .data$fitted, # slope
       sign = sign(.data$diff), # sign of slope
       diff_sign = dplyr::lead(.data$sign) - .data$sign, # delta sign of slope
-      region = cumsum(.data$diff_sign > 0)
+      peak = cumsum(.data$diff_sign > 0)
     ) %>%
-    dplyr::filter(.data$region %in% seq_len(peaks)) %>%
-    dplyr::group_by(.data$region) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(.data$peak %in% seq_len(peaks)) %>%
+    dplyr::group_by(.data$date, .data$sample, .data$param, .data$peak) %>%
     dplyr::summarize(
       conc_tr = max(.data$conc),
       tr = .data$time[which.max(.data$conc)]
