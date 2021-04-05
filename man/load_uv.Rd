@@ -4,7 +4,14 @@
 \alias{load_uv}
 \title{Load FFF-UV-MALS data files with extension .txt}
 \usage{
-load_uv(path, nm1 = "X2", nm2 = "X4", nm3 = "X6")
+load_uv(
+  path,
+  nm1 = "X2",
+  nm2 = "X4",
+  nm3 = "X6",
+  date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
+  date_format = "\%Y-\%m-\%d"
+)
 }
 \arguments{
 \item{path}{Relative path to the .txt input files.}
@@ -14,6 +21,11 @@ load_uv(path, nm1 = "X2", nm2 = "X4", nm3 = "X6")
 \item{nm2}{Name of column 4 in the input files.}
 
 \item{nm3}{Name of column 6 in the input files.}
+
+\item{date_regex}{An optional regular expression for extracting dates from filenames.}
+
+\item{date_format}{An optional non-standard date format corresponding to the output of
+\code{date_regex} (see \code{?strptime}).}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.

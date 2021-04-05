@@ -4,13 +4,23 @@
 \alias{load_icp}
 \title{Load FFF-ICP data files with extension .csv}
 \usage{
-load_icp(path, calibrate = TRUE)
+load_icp(
+  path,
+  calibrate = TRUE,
+  date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
+  date_format = "\%Y-\%m-\%d"
+)
 }
 \arguments{
 \item{path}{Relative path to the ICP-MS (.csv) input files.}
 
 \item{calibrate}{Logical. Convert the raw instantaneous detector counts per second to
 instantaneous concentrations?}
+
+\item{date_regex}{An optional regular expression for extracting dates from filenames.}
+
+\item{date_format}{An optional non-standard date format corresponding to the output of
+\code{date_regex} (see \code{?strptime}).}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.

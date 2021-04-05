@@ -7,13 +7,20 @@
 load_mals(
   path,
   angles = c(7, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 90, 100, 108, 116, 124, 132,
-    140, 148, 156, 164)
+    140, 148, 156, 164),
+  date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
+  date_format = "\%Y-\%m-\%d"
 )
 }
 \arguments{
 \item{path}{The relative path to the .txt input files.}
 
 \item{angles}{MALS detector angles.}
+
+\item{date_regex}{An optional regular expression for extracting dates from filenames.}
+
+\item{date_format}{An optional non-standard date format corresponding to the output of
+\code{date_regex} (see \code{?strptime}).}
 }
 \value{
 A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.

@@ -5,6 +5,9 @@
 #' @param nm1 Name of column 2 in the input files.
 #' @param nm2 Name of column 4 in the input files.
 #' @param nm3 Name of column 6 in the input files.
+#' @param date_regex An optional regular expression for extracting dates from filenames.
+#' @param date_format An optional non-standard date format corresponding to the output of
+#' `date_regex` (see `?strptime`).
 #'
 #' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom rlang :=
@@ -15,14 +18,26 @@
 #' @examples
 #' path <- system.file("extdata", package = "fffprocessr")
 #' load_uv(path = path, UV254_1, UV254_2, LS90)
-load_uv <- function(path, nm1 = "X2", nm2 = "X4", nm3 = "X6") {
+load_uv <- function(
+  path, nm1 = "X2", nm2 = "X4", nm3 = "X6",
+  date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d"
+) {
   list.files(path = path, pattern = "*.txt", full.names = TRUE) %>%
     rlang::set_names() %>%
-    purrr::map_dfr(~ readr::read_table2(.x, col_names = FALSE), .id = "file") %>%
-    dplyr::rename(time = .data$X1, {{nm1}} := .data$X2, {{nm2}} := .data$X4, {{nm3}} := .data$X6) %>%
-    dplyr::select_at(dplyr::vars(-tidyselect::starts_with("X"))) %>%
-    dplyr::mutate(date = stringr::str_extract(file, "\\d{4}-\\d{2}-\\d{2}") %>% as.Date()) %>%
+    purrr::map_dfr(
+      ~ readr::read_table2(
+        .x, col_names = FALSE,
+        col_types = readr::cols(.default = readr::col_character())
+      ), .id = "file"
+    ) %>%
+    dplyr::rename(
+      time = .data$X1, {{nm1}} := .data$X2,
+      {{nm2}} := .data$X4, {{nm3}} := .data$X6
+    ) %>%
+    # deselect unnamed columns:
+    dplyr::select_at(dplyr::vars(-tidyselect::matches("^X\\d$"))) %>%
+    dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format)) %>%
     tidyr::pivot_longer(-c(file, date, .data$time), names_to = "param", values_to = "conc") %>%
-    dplyr::filter(!stringr::str_detect(.data$param, "^X\\d$")) %>%  # remove unnamed parameters
+    dplyr::mutate(time = as.numeric(.data$time), conc = as.numeric(.data$conc)) %>%
     dplyr::select(file, date, .data$param, .data$time, .data$conc)
 }
