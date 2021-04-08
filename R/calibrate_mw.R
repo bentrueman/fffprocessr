@@ -46,7 +46,11 @@ calibrate_mw <- function(
         suppressWarnings(tibble::tibble(mw = newdata) %>%
                            dplyr::group_by(mw) %>%
                            dplyr::mutate(
-                             time = c(stats::coef(model)[1] - log10(mw), stats::coef(model)[2], stats::coef(model)[3]) %>%
+                             time = c(
+                               stats::coef(model)[1] - log10(mw),
+                               stats::coef(model)[2],
+                               stats::coef(model)[3]
+                             ) %>%
                                polyroot() %>%
                                as.numeric() %>%
                                max()
@@ -55,7 +59,7 @@ calibrate_mw <- function(
       } else
         if(output == "time" & type == "linear") {
           tibble::tibble(mw = newdata) %>%
-            dplyr::mutate(time = (mw - stats::coef(model)[1]) / stats::coef(model)[2]
+            dplyr::mutate(time = (log10(mw) - stats::coef(model)[1]) / stats::coef(model)[2]
             ) %>%
             dplyr::pull(time)
         } else "Select a valid curve (quadratic or linear) and output (time or mw) type."
