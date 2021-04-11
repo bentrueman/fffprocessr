@@ -194,8 +194,8 @@ where *y* denotes the instantaneous concentration, *x* the retention
 volume, *h* the peak height, *mu* the mean, *sigma* the standard
 deviation, *gamma* the shape parameter, and *erf* the error function.
 
-Alternatively, fractograms can be fitted as sums of exponentially
-modified Gaussians:
+Alternatively, fractograms can be fitted as sums of ordinary Gaussians,
+or exponentially modified Gaussians of the form
 
 <!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
 
