@@ -13,6 +13,7 @@
 #' `date_regex` (see `?strptime`).
 #' @param calib_path Optional. Use if the relative path to the ICP-MS calibration files differs
 #' from the relative path to the data files.
+#' @param metadata Remove n rows of metadata after the column names but before the data
 #'
 #' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
@@ -26,7 +27,8 @@ load_icp <- function(
   path, calibrate = TRUE,
   date_regex = "\\d{4}-\\d{2}-\\d{2}",
   date_format = "%Y-%m-%d",
-  calib_path = NULL
+  calib_path = NULL,
+  metadata = 1
 ) {
 
   if(is.null(calib_path)) calib_path <- path
@@ -45,7 +47,9 @@ load_icp <- function(
   data <- list.files(path = path, pattern = "*.csv", full.names = TRUE) %>%
     rlang::set_names() %>%
     purrr::map_dfr(
-      ~ readr::read_csv(.x, col_types = readr::cols(.default = readr::col_character()))[-1, ],
+      ~ readr::read_csv(.x, col_types = readr::cols(.default = readr::col_character())) %>%
+        # remove metadata after column names but before data:
+        dplyr::filter(!dplyr::row_number() %in% seq_len(metadata)),
       .id = "file"
     ) %>%
     dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%

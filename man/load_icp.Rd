@@ -9,7 +9,8 @@ load_icp(
   calibrate = TRUE,
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
   date_format = "\%Y-\%m-\%d",
-  calib_path = NULL
+  calib_path = NULL,
+  metadata = 1
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ concentration}
 
 \item{calib_path}{Optional. Use if the relative path to the ICP-MS calibration files differs
 from the relative path to the data files.}
+
+\item{metadata}{Remove n rows of metadata after the column names but before the data}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.

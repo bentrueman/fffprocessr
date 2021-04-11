@@ -10,7 +10,7 @@ deconvolve_fff(
   h,
   mu,
   s,
-  g,
+  g = NULL,
   fn = "skew_gaussian",
   algorithm = "port",
   iter = 300,
@@ -28,9 +28,11 @@ deconvolve_fff(
 
 \item{s}{A vector of guesses for peak standard deviations, with length equal to the desired number of peaks.}
 
-\item{g}{A vector of guesses for peak shape parameters, with length equal to the desired number of peaks.}
+\item{g}{A vector of guesses for peak shape parameters, with length equal to the desired number of peaks. Silently
+ignored if \verb{fn == "normal}.}
 
-\item{fn}{Function for peak fitting: skew Gaussian or exponentially modified Gaussian ("skew_gaussian" or "emg").}
+\item{fn}{Function for peak fitting: Gaussian, skew Gaussian or exponentially modified Gaussian ("normal",
+"skew_gaussian" or "emg").}
 
 \item{algorithm}{Refer to nls() in the 'stats' package.}
 
@@ -50,5 +52,5 @@ set.seed(0)
 x <- seq(0, 10, length.out = 100)
 # two gaussian peaks:
 y <- exp(-(x - 3) ^ 2 / 2) + exp(-(x - 7) ^ 2 / 2) + rnorm(100, 0, .1)
-deconvolve_fff(x, y, h = c(1, 1), mu = c(3, 7), s = c(1, 1), g = c(1, 1))
+deconvolve_fff(x, y, h = c(1, 1), mu = c(3, 7), s = c(1, 1), fn = "normal")
 }
