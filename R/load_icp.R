@@ -77,6 +77,13 @@ load_icp <- function(
   }
 
   out %>%
-    dplyr::select(file, date, .data$param, .data$time, .data$conc)
+    dplyr::mutate(
+      # extract sample name:
+      sample = stringr::str_replace(file, "(.+)(\\d{4}-\\d{2}-\\d{2}_)(.+)(\\.[:alpha:]+)", "\\3"),
+      # rename samples with "blank" in the name:
+      sample = dplyr::if_else(stringr::str_detect(sample, "blank"), "blank", sample),
+      sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
+    ) %>%
+    dplyr::select(file, .data$sample, date, .data$param, .data$time, .data$conc)
 
 }

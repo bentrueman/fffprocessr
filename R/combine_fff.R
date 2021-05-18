@@ -19,13 +19,6 @@
 combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10) {
 
   combined <- dplyr::bind_rows(icp, uv) %>%
-    dplyr::mutate(
-      # extract sample name:
-      sample = stringr::str_replace(file, "(.+)(\\d{4}-\\d{2}-\\d{2}_)(.+)(\\.[:alpha:]+)", "\\3"),
-      # rename samples with "blank" in the name:
-      sample = dplyr::if_else(stringr::str_detect(sample, "blank"), "blank", sample),
-      sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
-    ) %>%
     # add 3 * sigma detection limit as a new column:
     dplyr::group_by(date, sample, .data$param) %>%
     dplyr::mutate(blank = dplyr::if_else(sample == "blank" & .data$time > focus, .data$conc, NA_real_)) %>%

@@ -58,19 +58,19 @@ calibration files are available, use `calibrate = TRUE`.
 icp_data <- system.file("extdata", package = "fffprocessr") %>% 
   load_icp(calibrate = TRUE) 
 icp_data
-#> # A tibble: 8,445 x 5
-#>    file                                         date       param   time     conc
-#>    <chr>                                        <date>     <chr>  <dbl>    <dbl>
-#>  1 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 27Al  0       4.98e+1
-#>  2 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 55Mn  0       4.86e-1
-#>  3 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 56Fe  0       2.99e+0
-#>  4 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 65Cu  0       3.99e-1
-#>  5 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 238U  0       1.22e-3
-#>  6 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 27Al  0.0674  4.91e+1
-#>  7 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 55Mn  0.0674  5.37e-1
-#>  8 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 56Fe  0.0674  2.92e+0
-#>  9 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 65Cu  0.0674  3.72e-1
-#> 10 /private/var/folders/fy/v4w9p72s7c996w8l8qf… 2021-03-16 238U  0.0674  3.06e-4
+#> # A tibble: 8,445 x 6
+#>    file                              sample      date       param   time    conc
+#>    <chr>                             <chr>       <date>     <chr>  <dbl>   <dbl>
+#>  1 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 27Al  0      4.98e+1
+#>  2 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 55Mn  0      4.86e-1
+#>  3 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 56Fe  0      2.99e+0
+#>  4 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 65Cu  0      3.99e-1
+#>  5 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 238U  0      1.22e-3
+#>  6 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 27Al  0.0674 4.91e+1
+#>  7 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 55Mn  0.0674 5.37e-1
+#>  8 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 56Fe  0.0674 2.92e+0
+#>  9 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 65Cu  0.0674 3.72e-1
+#> 10 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 238U  0.0674 3.06e-4
 #> # … with 8,435 more rows
 ```
 
@@ -85,19 +85,19 @@ output.
 uv_data <- system.file("extdata", package = "fffprocessr") %>% 
   load_uv(UV254_1, UV254_2, LS90) # name channels in order from left to right
 uv_data
-#> # A tibble: 9,363 x 5
-#>    file                                          date       param    time   conc
-#>    <chr>                                         <date>     <chr>   <dbl>  <dbl>
-#>  1 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0173 0.0964
-#>  2 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0173 0.0720
-#>  3 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 LS90   0.0173 0.196 
-#>  4 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0538 0.0963
-#>  5 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0538 0.0722
-#>  6 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 LS90   0.0538 0.196 
-#>  7 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0902 0.0964
-#>  8 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.0902 0.0722
-#>  9 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 LS90   0.0902 0.196 
-#> 10 /private/var/folders/fy/v4w9p72s7c996w8l8qft… 2021-03-16 UV254… 0.127  0.0964
+#> # A tibble: 9,363 x 6
+#>    file                               sample      date       param   time   conc
+#>    <chr>                              <chr>       <date>     <chr>  <dbl>  <dbl>
+#>  1 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0173 0.0964
+#>  2 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0173 0.0720
+#>  3 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 LS90  0.0173 0.196 
+#>  4 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0538 0.0963
+#>  5 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0538 0.0722
+#>  6 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 LS90  0.0538 0.196 
+#>  7 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0902 0.0964
+#>  8 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0902 0.0722
+#>  9 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 LS90  0.0902 0.196 
+#> 10 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.127  0.0964
 #> # … with 9,353 more rows
 ```
 
