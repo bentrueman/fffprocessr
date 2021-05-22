@@ -65,7 +65,7 @@ load_mals <- function(
     dplyr::mutate(
       date = stringr::str_extract(file, date_regex) %>% as.Date(date_format),
       sample = stringr::str_replace(
-        file, "(.+)(\\d{4}-\\d{2}-\\d{2}_)(.+)(_ls.+)(\\.[:alpha:]+)", "\\3"
+        file, "(.+)(\\d{4}-\\d{2}-\\d{2}[_-])(.+)(_ls.+)(\\.[:alpha:]+)", "\\3"
       ),
       time = as.numeric(.data$time),
       conc = as.numeric(.data$conc)
