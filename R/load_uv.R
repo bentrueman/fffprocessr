@@ -8,6 +8,8 @@
 #' @param date_regex An optional regular expression for extracting dates from filenames.
 #' @param date_format An optional non-standard date format corresponding to the output of
 #' `date_regex` (see `?strptime`).
+#' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
+#' which files to load. These can be regular expressions.
 #'
 #' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom rlang :=
@@ -20,9 +22,17 @@
 #' load_uv(path = path, UV254_1, UV254_2, LS90)
 load_uv <- function(
   path, nm1 = "X2", nm2 = "X4", nm3 = "X6",
-  date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d"
+  date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d",
+  keywords = NULL
 ) {
-  list.files(path = path, pattern = "*.txt", full.names = TRUE) %>%
+
+  file_list <- list.files(path = path, pattern = "*.txt", full.names = TRUE)
+
+  keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
+    stringr::str_detect(file_list, paste(keywords, collapse = "|"))
+  }
+
+  file_list[keep_files] %>%
     rlang::set_names() %>%
     purrr::map_dfr(
       ~ readr::read_table2(

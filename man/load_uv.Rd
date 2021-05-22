@@ -10,7 +10,8 @@ load_uv(
   nm2 = "X4",
   nm3 = "X6",
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
-  date_format = "\%Y-\%m-\%d"
+  date_format = "\%Y-\%m-\%d",
+  keywords = NULL
 )
 }
 \arguments{
@@ -26,6 +27,9 @@ load_uv(
 
 \item{date_format}{An optional non-standard date format corresponding to the output of
 \code{date_regex} (see \code{?strptime}).}
+
+\item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_uv()}
+which files to load. These can be regular expressions.}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.

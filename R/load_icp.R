@@ -13,7 +13,9 @@
 #' `date_regex` (see `?strptime`).
 #' @param calib_path Optional. Use if the relative path to the ICP-MS calibration files differs
 #' from the relative path to the data files.
-#' @param metadata Remove n rows of metadata after the column names but before the data
+#' @param metadata Remove n rows of metadata after the column names but before the data.
+#' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
+#' which files to load. These can be regular expressions.
 #'
 #' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
@@ -28,7 +30,8 @@ load_icp <- function(
   date_regex = "\\d{4}-\\d{2}-\\d{2}",
   date_format = "%Y-%m-%d",
   calib_path = NULL,
-  metadata = 1
+  metadata = 1,
+  keywords = NULL
 ) {
 
   if(is.null(calib_path)) calib_path <- path
@@ -44,7 +47,13 @@ load_icp <- function(
       dplyr::ungroup()
   } else NULL
 
-  data <- list.files(path = path, pattern = "*.csv", full.names = TRUE) %>%
+  file_list <- list.files(path = path, pattern = "*.csv", full.names = TRUE)
+
+  keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
+    stringr::str_detect(file_list, paste(keywords, collapse = "|"))
+  }
+
+  data <- file_list[keep_files] %>%
     rlang::set_names() %>%
     purrr::map_dfr(
       ~ readr::read_csv(.x, col_types = readr::cols(.default = readr::col_character())) %>%

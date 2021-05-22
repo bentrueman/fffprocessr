@@ -10,7 +10,8 @@ load_icp(
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
   date_format = "\%Y-\%m-\%d",
   calib_path = NULL,
-  metadata = 1
+  metadata = 1,
+  keywords = NULL
 )
 }
 \arguments{
@@ -31,7 +32,10 @@ concentration}
 \item{calib_path}{Optional. Use if the relative path to the ICP-MS calibration files differs
 from the relative path to the data files.}
 
-\item{metadata}{Remove n rows of metadata after the column names but before the data}
+\item{metadata}{Remove n rows of metadata after the column names but before the data.}
+
+\item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_uv()}
+which files to load. These can be regular expressions.}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.

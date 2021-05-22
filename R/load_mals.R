@@ -6,6 +6,8 @@
 #' @param date_regex An optional regular expression for extracting dates from filenames.
 #' @param date_format An optional non-standard date format corresponding to the output of
 #' `date_regex` (see `?strptime`).
+#' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
+#' which files to load. These can be regular expressions.
 #'
 #' @return A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
@@ -19,7 +21,8 @@ load_mals <- function(
   path,
   angles = c(7, 12, 20,  28, 36, 44, 52, 60, 68, 76, 84,
     90, 100, 108, 116, 124, 132, 140, 148, 156, 164),
-  date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d"
+  date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d",
+  keywords = NULL
 ) {
 
   angles <- suppressMessages(
@@ -27,7 +30,14 @@ load_mals <- function(
   ) %>%
     dplyr::rename_all(~ paste0("v", stringr::str_extract(.x, "\\d+")))
 
- tibble::tibble(file = list.files(path = path, pattern = ".+\\.txt", full.names = TRUE)) %>%
+  file_list <- list.files(path = path, pattern = ".+\\.txt", full.names = TRUE)
+
+  keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
+    stringr::str_detect(file_list, paste(keywords, collapse = "|"))
+  }
+
+ tibble::tibble(file = file_list) %>%
+   dplyr::filter(keep_files) %>%
     # extract first of three consecutive angles in each file:
     dplyr::mutate(
       v1 = stringr::str_replace(file, "(.+)(_ls)(\\d+)(.+)", "\\3") %>%

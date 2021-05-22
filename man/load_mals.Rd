@@ -9,7 +9,8 @@ load_mals(
   angles = c(7, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 90, 100, 108, 116, 124, 132,
     140, 148, 156, 164),
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
-  date_format = "\%Y-\%m-\%d"
+  date_format = "\%Y-\%m-\%d",
+  keywords = NULL
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ load_mals(
 
 \item{date_format}{An optional non-standard date format corresponding to the output of
 \code{date_regex} (see \code{?strptime}).}
+
+\item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_uv()}
+which files to load. These can be regular expressions.}
 }
 \value{
 A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.
