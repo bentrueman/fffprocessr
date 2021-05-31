@@ -6,7 +6,7 @@
 #' @param transition Transition time between focusing and elution, in minutes.
 #' @param w Channel thickness, in metres.
 #' @param Vc Cross-flow rate, in L/min.
-#' @param Vout Eetector flow rate, in L/min.
+#' @param Vout Detector flow rate, in L/min.
 #' @param Vin Injection flow rate, in L/min.
 #' @param temp Temperature, degrees Celsius.
 #' @param eta Dynamic viscosity, in N * s / m^2.
