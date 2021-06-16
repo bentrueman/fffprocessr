@@ -27,7 +27,7 @@ calculate_rh(
 
 \item{Vc}{Cross-flow rate, in L/min.}
 
-\item{Vout}{Eetector flow rate, in L/min.}
+\item{Vout}{Detector flow rate, in L/min.}
 
 \item{Vin}{Injection flow rate, in L/min.}
 

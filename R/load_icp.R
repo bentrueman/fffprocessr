@@ -36,8 +36,12 @@ load_icp <- function(
 
   if(is.null(calib_path)) calib_path <- path
 
+  calib_file_list <- list.files(path = calib_path, pattern = "*.xlsx", full.names = TRUE)
+
+  if(calibrate & length(calib_file_list) == 0) stop("No calibration files found.")
+
   calib <- if(calibrate) {
-    list.files(path = calib_path, pattern = "*.xlsx", full.names = TRUE) %>%
+    calib_file_list %>%
       rlang::set_names() %>%
       purrr::map_dfr(readxl::read_excel, .id = "file") %>%
       dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format)) %>%
