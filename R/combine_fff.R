@@ -40,7 +40,14 @@ combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10
       ) %>%
       dplyr::ungroup() %>%
       tidyr::pivot_longer(cols = tidyselect::starts_with("sample_"), names_to = "sample", values_to = "conc") %>%
-      dplyr::mutate(conc = .data$conc - .data$blank)
+      dplyr::mutate(conc = .data$conc - .data$blank) %>%
+      # filter samples that should be implicit NAs due to pivot_wider() / pivot_longer() combo:
+      dplyr::group_by(date, sample, .data$param) %>%
+      dplyr::mutate(test = mean(is.na(.data$conc))) %>%
+      dplyr::filter(.data$test < 1) %>%
+      dplyr::select(-.data$test) %>%
+      dplyr::ungroup()
+
   } else combined
 
   out %>%
