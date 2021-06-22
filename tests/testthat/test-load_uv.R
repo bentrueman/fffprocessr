@@ -10,6 +10,6 @@ test_that("load_icp() yields expected column means", {
       load_uv(path = path, UV254_1, UV254_2, LS90),
       is.numeric, ~ round(mean(.x), 1)
     ),
-    tibble(time = 19, conc = .1)
+    tibble::tibble(time = 19, conc = .1)
   )
 })

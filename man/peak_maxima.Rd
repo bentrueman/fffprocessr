@@ -4,7 +4,7 @@
 \alias{peak_maxima}
 \title{Detect peak maxima}
 \usage{
-peak_maxima(data, focus = 10, k = 35, peaks = 1)
+peak_maxima(data, focus = 10, k = 35, peaks = 1, n = 1)
 }
 \arguments{
 \item{data}{A tibble returned by \code{load_icp()}, \code{load_uv()}, \code{load_mals()}, or \code{combine_fff()}}
@@ -14,6 +14,9 @@ peak_maxima(data, focus = 10, k = 35, peaks = 1)
 \item{k}{The basis dimension of the generalized additive model used to detect peak minima.}
 
 \item{peaks}{Number of peaks.}
+
+\item{n}{Before detecting peak minima, compute an n-point moving average of the detector response using
+\code{stats::filter(x, filter = rep(1/n, n))}.}
 }
 \value{
 A tibble of peak retention times and the corresponding maxima in detector response.

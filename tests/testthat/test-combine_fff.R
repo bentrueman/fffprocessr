@@ -12,7 +12,7 @@ test_that("combine_fff() yields expected column means", {
       combine_fff(load_icp(path), load_uv(path, UV254_1, UV254_2, LS90)),
       is.numeric, ~ round(mean(.x), 1)
     ),
-    tibble(time = 19, conc = .6, three_sigma = .2)
+    tibble::tibble(time = 19, conc = .6, three_sigma = .2)
   )
 })
 
