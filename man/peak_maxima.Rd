@@ -4,7 +4,15 @@
 \alias{peak_maxima}
 \title{Detect peak maxima}
 \usage{
-peak_maxima(data, focus = 10, k = 35, peaks = 1, n = 1)
+peak_maxima(
+  data,
+  focus = 10,
+  k = 35,
+  peaks = 1,
+  n = 1,
+  method = "gam",
+  max_iter = 20
+)
 }
 \arguments{
 \item{data}{A tibble returned by \code{load_icp()}, \code{load_uv()}, \code{load_mals()}, or \code{combine_fff()}}
@@ -17,6 +25,11 @@ peak_maxima(data, focus = 10, k = 35, peaks = 1, n = 1)
 
 \item{n}{Before detecting peak minima, compute an n-point moving average of the detector response using
 \code{stats::filter(x, filter = rep(1/n, n))}.}
+
+\item{method}{Algorithm for peak detection. Either "gam", which separates peaks by the minima between them, or "sigma" which recursively
+calculates the standard deviation by eliminating values greater than three standard deviations.}
+
+\item{max_iter}{Maximum iterations for method = "sigma".}
 }
 \value{
 A tibble of peak retention times and the corresponding maxima in detector response.
