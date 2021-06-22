@@ -65,6 +65,7 @@ peak_id_gam <- function(data, focus, k, peaks) {
 
 peak_id_sigma <- function(data, focus, peaks, max_iter) {
 
+  peak_tbl <- tibble::tibble()
   peak_list <- list()
   peak_region <- rep(FALSE, nrow(data))
   iter <- 0
@@ -95,6 +96,7 @@ peak_id_sigma <- function(data, focus, peaks, max_iter) {
     )
 
     peak_tbl <- dplyr::bind_rows(peak_list) %>%
+      dplyr::bind_rows(peak_tbl) %>%
       dplyr::select(-.data$g) %>%
       dplyr::distinct() %>%
       dplyr::arrange(.data$tr) %>%
