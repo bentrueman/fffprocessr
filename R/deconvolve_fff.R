@@ -43,52 +43,7 @@ deconvolve_fff <- function(
     "specify a valid function (emg or skew_gaussian)."
   )
 
-  # error function, used in skew_gaussian:
-  error_fun <- function(x) {
-    2 * stats::pnorm(x * sqrt(2)) - 1
-  }
-
-  # complementary error function:
-  erfc <- function(x) {
-    1 - error_fun(x)
-  }
-
-  # for nls formula:
-  normal <- function(x, h, mu, s) {
-    h * exp(-(x - mu) ^ 2 / (2 * s ^ 2))
-  }
-
-  skew_gaussian <- function(x, h, mu, s, g) {
-    h * exp(-(x - mu) ^ 2 / (2 * s ^ 2)) * (1 + error_fun(g * (x - mu) / (sqrt(2) * s)))
-  }
-
-  emg <- function(x, h, mu, s, g) {
-    (h * s / g) * sqrt(pi / 2) * exp(.5 * (s / g) ^ 2 - (x - mu) / g) *
-      erfc((1/ sqrt(2)) * (s / g - (x - mu) / s))
-  }
-
-  # for component peaks in output:
-  component_peaks <- function(x, coefs, peak = 1) {
-
-    coefs <- as.list(coefs[stringr::str_detect(names(coefs), as.character(peak))])
-
-    if(fn == "skew_gaussian") {
-      skew_gaussian(x, coefs$h, coefs$mu, coefs$s, coefs$g)
-    } else if(fn == "emg") {
-      emg(x, coefs$h, coefs$mu, coefs$s, coefs$g)
-    } else if(fn == "normal") {
-      normal(x, coefs$h, coefs$mu, coefs$s)
-    }
-  }
-
   inputs <- if(fn == "normal") c("h", "mu", "s") else c("h", "mu", "s", "g")
-
-  c_inputs <- function(input, number) paste(c("x", paste0(input, number)), collapse = ", ")
-
-  rename_inputs <- function(x) {
-    names(x) <- paste0(deparse(substitute(x)), seq_len(length(x)))
-    x
-  }
 
   start_vals <- if(fn == "normal") {
     as.list(c(rename_inputs(h), rename_inputs(mu), rename_inputs(s)))
@@ -113,10 +68,56 @@ deconvolve_fff <- function(
 
   coefs <- stats::coef(model)
 
-  peaks <- purrr::map(seq_len(peaks), ~ component_peaks(x, coefs, peak = .x))
+  peaks <- purrr::map(seq_len(peaks), ~ component_peaks(x, coefs, peak = .x, fn))
   peaks <- rlang::set_names(peaks, nm = paste0("peak", seq_len(length(peaks)))) %>%
     dplyr::bind_cols()
 
   list("model" = model, "fitted" = stats::predict(model), "peaks" = peaks)
 
+}
+
+# error function, used in skew_gaussian:
+error_fun <- function(x) {
+  2 * stats::pnorm(x * sqrt(2)) - 1
+}
+
+# complementary error function:
+erfc <- function(x) {
+  1 - error_fun(x)
+}
+
+# for nls formula:
+normal <- function(x, h, mu, s) {
+  h * exp(-(x - mu) ^ 2 / (2 * s ^ 2))
+}
+
+skew_gaussian <- function(x, h, mu, s, g) {
+  h * exp(-(x - mu) ^ 2 / (2 * s ^ 2)) * (1 + error_fun(g * (x - mu) / (sqrt(2) * s)))
+}
+
+emg <- function(x, h, mu, s, g) {
+  (h * s / g) * sqrt(pi / 2) * exp(.5 * (s / g) ^ 2 - (x - mu) / g) *
+    erfc((1/ sqrt(2)) * (s / g - (x - mu) / s))
+}
+
+# for component peaks in output:
+component_peaks <- function(x, coefs, peak = 1, fn) {
+
+  coefs <- as.list(coefs[stringr::str_detect(names(coefs), as.character(peak))])
+
+  if(fn == "skew_gaussian") {
+    skew_gaussian(x, coefs$h, coefs$mu, coefs$s, coefs$g)
+  } else if(fn == "emg") {
+    emg(x, coefs$h, coefs$mu, coefs$s, coefs$g)
+  } else if(fn == "normal") {
+    normal(x, coefs$h, coefs$mu, coefs$s)
+  }
+}
+
+# create a single input string:
+c_inputs <- function(input, number) paste(c("x", paste0(input, number)), collapse = ", ")
+
+rename_inputs <- function(x) {
+  names(x) <- paste0(deparse(substitute(x)), seq_len(length(x)))
+  x
 }
