@@ -11,7 +11,8 @@ peak_maxima(
   peaks = 1,
   n = 1,
   method = "gam",
-  max_iter = 20
+  max_iter = 20,
+  group_vars = c("date", "sample", "param")
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ peak_maxima(
 calculates the standard deviation by eliminating values greater than three standard deviations.}
 
 \item{max_iter}{Maximum iterations for method = "sigma".}
+
+\item{group_vars}{Grouping variables for input to \code{dplyr::group_by()}.}
 }
 \value{
 A tibble of peak retention times and the corresponding maxima in detector response.

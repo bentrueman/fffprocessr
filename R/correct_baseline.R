@@ -5,6 +5,7 @@
 #' @param left The left endpoint.
 #' @param right The right endpoint.
 #' @param window The fitting window at each endpoint.
+#' @param group_vars Grouping variables for input to `dplyr::group_by()`.
 #'
 #' @return A tibble of the type returned by `load_icp()`, with the column 'conc' modified
 #' by a linear baseline correction.
@@ -22,9 +23,15 @@
 #' )
 #' data$conc <- data$conc + data$time
 #' correct_baseline(data, left = .2, right = 29.8)
-correct_baseline <- function(x, left = 10, right = 35, window = .2) {
+correct_baseline <- function(
+  x,
+  left = 10,
+  right = 35,
+  window = .2,
+  group_vars = c("date", "sample", "param")
+) {
   x %>%
-    dplyr::group_by(date, sample, .data$param) %>%
+    dplyr::group_by(!!!rlang::syms(group_vars)) %>%
     tidyr::nest() %>%
     dplyr::ungroup() %>%
     dplyr::mutate(

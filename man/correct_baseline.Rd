@@ -4,7 +4,13 @@
 \alias{correct_baseline}
 \title{Linear baseline correction with left and right endpoints}
 \usage{
-correct_baseline(x, left = 10, right = 35, window = 0.2)
+correct_baseline(
+  x,
+  left = 10,
+  right = 35,
+  window = 0.2,
+  group_vars = c("date", "sample", "param")
+)
 }
 \arguments{
 \item{x}{A tibble of the type returned by \code{load_icp()}.}
@@ -14,6 +20,8 @@ correct_baseline(x, left = 10, right = 35, window = 0.2)
 \item{right}{The right endpoint.}
 
 \item{window}{The fitting window at each endpoint.}
+
+\item{group_vars}{Grouping variables for input to \code{dplyr::group_by()}.}
 }
 \value{
 A tibble of the type returned by \code{load_icp()}, with the column 'conc' modified
