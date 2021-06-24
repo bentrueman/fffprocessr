@@ -7,8 +7,9 @@
 #' @param peaks Number of peaks.
 #' @param n Before detecting peak minima, compute an n-point moving average of the detector response using
 #' `stats::filter(x, filter = rep(1/n, n))`.
-#' @param method Algorithm for peak detection. Either "gam", which separates peaks by the minima between them, or "sigma" which recursively
-#' calculates the standard deviation by eliminating values greater than three standard deviations.
+#' @param method Algorithm for peak detection. Either "gam", which separates peaks by the minima between
+#' them, or "sigma" which recursively calculates the standard deviation by eliminating values greater
+#' than three standard deviations.
 #' @param max_iter Maximum iterations for method = "sigma".
 #' @param group_vars Grouping variables for input to `dplyr::group_by()`.
 #'
@@ -34,22 +35,31 @@ peak_maxima <- function(
 ) {
 
   data <- data %>%
-    dplyr::group_by(!!!rlang::syms(group_vars)) %>%
+    dplyr::group_by(!!!rlang::syms(group_vars))
+
+  data_smooth <- data %>%
     dplyr::mutate(
       conc = stats::filter(.data$conc, rep(1/n, n)) %>%
         as.numeric() %>%
         imputeTS::na_interpolation()
     )
 
-  if(method == "gam") peak_id_gam(data, focus, k, peaks, group_vars) else
+  peak_pos <- if(method == "gam") peak_id_gam(data_smooth, focus, k, peaks, group_vars) else
     if(method == "sigma") {
-      data %>%
+      data_smooth %>%
         tidyr::nest() %>%
         dplyr::ungroup() %>%
         dplyr::mutate(peaks = purrr::map(.data$data, ~ peak_id_sigma(.x, focus, peaks, max_iter))) %>%
         tidyr::unnest(.data$peaks) %>%
         dplyr::select(-.data$data)
-    } else stop("choose a valid method: 'gam' or 'sdev'")
+    } else stop("choose a valid method: 'gam' or 'sigma'")
+
+  # replace smoothed peak heights with unsmoothed peak heights:
+
+  peak_pos %>%
+    dplyr::left_join(data, by = c(group_vars, "time"), suffix = c("_smooth", "")) %>%
+    dplyr::select(c(group_vars, "peak", "time", "conc"))
+
 }
 
 peak_id_gam <- function(data, focus, k, peaks, group_vars) {
@@ -116,7 +126,8 @@ peak_id_sigma <- function(data, focus, peaks, max_iter) {
   }
 
   peak_tbl %>%
-    dplyr::slice(1:peaks)
+    dplyr::slice(1:peaks) %>%
+    tibble::rowid_to_column(var = "peak")
 
 }
 

@@ -27,8 +27,9 @@ peak_maxima(
 \item{n}{Before detecting peak minima, compute an n-point moving average of the detector response using
 \code{stats::filter(x, filter = rep(1/n, n))}.}
 
-\item{method}{Algorithm for peak detection. Either "gam", which separates peaks by the minima between them, or "sigma" which recursively
-calculates the standard deviation by eliminating values greater than three standard deviations.}
+\item{method}{Algorithm for peak detection. Either "gam", which separates peaks by the minima between
+them, or "sigma" which recursively calculates the standard deviation by eliminating values greater
+than three standard deviations.}
 
 \item{max_iter}{Maximum iterations for method = "sigma".}
 
