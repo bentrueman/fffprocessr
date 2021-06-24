@@ -21,7 +21,7 @@ correct_baseline(
 
 \item{window}{The fitting window at each endpoint.}
 
-\item{group_vars}{Grouping variables for input to \code{dplyr::group_by()}.}
+\item{group_vars}{Grouping variables for input to \code{dplyr::group_by()}. Set to NULL when there are no grouping variables.}
 }
 \value{
 A tibble of the type returned by \code{load_icp()}, with the column 'conc' modified

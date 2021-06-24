@@ -15,13 +15,14 @@ test_that("peak_maxima() methods equivalent for example data", {
   )
 })
 
-tesdat <- tibble::tibble(
-  g = "a",
-  x = 1:100,
-  y = withr::with_seed(101, {stats::rlnorm(length(x), sdlog = 3)})
-)
-
 test_that("peak_maxima() accepts alternate variable names", {
+
+  tesdat <- tibble::tibble(
+    g = "a",
+    x = 1:100,
+    y = withr::with_seed(101, {stats::rlnorm(length(x), sdlog = 3)})
+  )
+
   expect_equal(
     ncol(peak_maxima(tesdat, group_vars = "g", x_var = "x", y_var = "y", method = "sigma")),
     4
