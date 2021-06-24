@@ -12,10 +12,13 @@
 #' than three standard deviations.
 #' @param max_iter Maximum iterations for method = "sigma".
 #' @param group_vars Grouping variables for input to `dplyr::group_by()`.
+#' @param x_var Name of x variable.
+#' @param y_var Name of y variable.
 #'
 #' @return A tibble of peak retention times and the corresponding maxima in detector response.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
+#' @importFrom rlang :=
 #' @export
 #'
 #' @examples
@@ -31,7 +34,9 @@ peak_maxima <- function(
   n = 1,
   method = "gam",
   max_iter = 20,
-  group_vars = c("date", "sample", "param")
+  group_vars = c("date", "sample", "param"),
+  x_var = "time",
+  y_var = "conc"
 ) {
 
   data <- data %>%
@@ -39,17 +44,21 @@ peak_maxima <- function(
 
   data_smooth <- data %>%
     dplyr::mutate(
-      conc = stats::filter(.data$conc, rep(1/n, n)) %>%
+      conc = stats::filter(.data[[y_var]], rep(1/n, n)) %>%
         as.numeric() %>%
         imputeTS::na_interpolation()
     )
 
-  peak_pos <- if(method == "gam") peak_id_gam(data_smooth, focus, k, peaks, group_vars) else
+  peak_pos <- if(method == "gam") {
+    peak_id_gam(data_smooth, focus, k, peaks, group_vars, x_var, y_var)
+  } else
     if(method == "sigma") {
       data_smooth %>%
         tidyr::nest() %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(peaks = purrr::map(.data$data, ~ peak_id_sigma(.x, focus, peaks, max_iter))) %>%
+        dplyr::mutate(
+          peaks = purrr::map(.data$data, ~ peak_id_sigma(.x, focus, peaks, max_iter, x_var, y_var))
+        ) %>%
         tidyr::unnest(.data$peaks) %>%
         dplyr::select(-.data$data)
     } else stop("choose a valid method: 'gam' or 'sigma'")
@@ -57,16 +66,21 @@ peak_maxima <- function(
   # replace smoothed peak heights with unsmoothed peak heights:
 
   peak_pos %>%
-    dplyr::left_join(data, by = c(group_vars, "time"), suffix = c("_smooth", "")) %>%
-    dplyr::select(c(group_vars, "peak", "time", "conc"))
+    dplyr::left_join(
+      data, by = tidyselect::all_of(c(group_vars, x_var)),
+      suffix = c("_smooth", "")
+    ) %>%
+    dplyr::select(tidyselect::all_of(c(group_vars, "peak", x_var, y_var)))
 
 }
 
-peak_id_gam <- function(data, focus, k, peaks, group_vars) {
+peak_id_gam <- function(data, focus, k, peaks, group_vars, x_var, y_var) {
   data %>%
-    dplyr::filter(.data$time > focus) %>%
+    dplyr::filter(.data[[x_var]] > focus) %>%
     dplyr::mutate(
-      fitted = mgcv::gam(.data$conc ~ s(.data$time, bs = "cs", k = k)) %>%
+      x = .data[[x_var]],
+      y = .data[[y_var]],
+      fitted = mgcv::gam(y ~ s(x, bs = "cs", k = k)) %>%
         mgcv::predict.gam(),
       diff = dplyr::lead(.data$fitted) - .data$fitted, # slope
       sign = sign(.data$diff), # sign of slope
@@ -74,16 +88,17 @@ peak_id_gam <- function(data, focus, k, peaks, group_vars) {
       peak = cumsum(.data$diff_sign > 0)
     ) %>%
     dplyr::ungroup() %>%
+    dplyr::select(-c(.data$x, .data$y)) %>%
     dplyr::filter(.data$peak %in% seq_len(peaks)) %>%
     dplyr::group_by(!!!rlang::syms(c(group_vars, "peak"))) %>%
     dplyr::summarize(
-      time = .data$time[which.max(.data$conc)],
-      conc = max(.data$conc),
+      !!x_var := (.data[[x_var]])[which.max(.data[[y_var]])],
+      !!y_var := max(.data[[y_var]]),
     ) %>%
     dplyr::ungroup()
 }
 
-peak_id_sigma <- function(data, focus, peaks, max_iter) {
+peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
 
   peak_tbl <- tibble::tibble()
   peak_list <- list()
@@ -95,11 +110,15 @@ peak_id_sigma <- function(data, focus, peaks, max_iter) {
 
     iter <- iter + 1
 
-    sdev <- tidyr::replace_na(stats::sd(data$conc[!peak_region]), 0)
+    sdev <- data %>%
+      dplyr::filter(!peak_region) %>%
+      dplyr::pull(.data[[y_var]]) %>%
+      stats::sd() %>%
+      tidyr::replace_na(0)
 
     data <- data %>%
       dplyr::mutate(
-        peak_region = .data$conc > 3 * sdev,
+        peak_region = .data[[y_var]] > 3 * sdev,
         g = group_peaks(peak_region)
       )
 
@@ -109,8 +128,8 @@ peak_id_sigma <- function(data, focus, peaks, max_iter) {
       data %>%
         dplyr::group_by(.data$g) %>%
         dplyr::summarize(
-          time = .data$time[which.max(.data$conc)],
-          conc = max(.data$conc),
+          !!x_var := (.data[[x_var]])[which.max(.data[[y_var]])],
+          !!y_var := max(.data[[y_var]]),
         ) %>%
         dplyr::filter(.data$g != 0)
     )
@@ -119,8 +138,8 @@ peak_id_sigma <- function(data, focus, peaks, max_iter) {
       dplyr::bind_rows(peak_tbl) %>%
       dplyr::select(-.data$g) %>%
       dplyr::distinct() %>%
-      dplyr::arrange(.data$time) %>%
-      dplyr::filter(.data$time > focus)
+      dplyr::arrange(.data[[x_var]]) %>%
+      dplyr::filter(.data[[x_var]] > focus)
 
     peak_id <- nrow(peak_tbl)
   }
