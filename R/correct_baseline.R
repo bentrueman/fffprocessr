@@ -6,11 +6,14 @@
 #' @param right The right endpoint.
 #' @param window The fitting window at each endpoint.
 #' @param group_vars Grouping variables for input to `dplyr::group_by()`. Set to NULL when there are no grouping variables.
+#' @param x_var Name of x variable.
+#' @param y_var Name of y variable.
 #'
 #' @return A tibble of the type returned by `load_icp()`, with the column 'conc' modified
 #' by a linear baseline correction.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
+#' @importFrom rlang :=
 #' @export
 #'
 #' @examples
@@ -28,7 +31,9 @@ correct_baseline <- function(
   left = 10,
   right = 35,
   window = .2,
-  group_vars = c("date", "sample", "param")
+  group_vars = c("date", "sample", "param"),
+  x_var = "time",
+  y_var = "conc"
 ) {
 
   input <- if(is.null(group_vars)) {
@@ -42,14 +47,21 @@ correct_baseline <- function(
 
   input %>%
     dplyr::mutate(
-      # next four lines apply a linear baseline correction to the data:
-      subset = purrr::map(.data$data, ~ dplyr::filter(.x, abs(time - left) < window | abs(time - right) < window)),
-      model = purrr::map(.data$subset, ~ stats::lm(conc ~ time, data = .x)),
+      # next lines apply a linear baseline correction to the data:
+      data = purrr::map(
+        .data$data,
+        ~ .x %>% dplyr::mutate(x = .data[[x_var]], y = .data[[y_var]])
+      ),
+      subset = purrr::map(
+        .data$data,
+        ~ .x %>% dplyr::filter(abs(x - left) < window | abs(x - right) < window)
+      ),
+      model = purrr::map(.data$subset, ~ stats::lm(y ~ x, data = .x)),
       baseline = purrr::map2(.data$model, .data$data, ~ stats::predict(.x, newdata = .y)),
-      corr = purrr::map2(.data$data, .data$baseline, ~.x$conc - .y)
+      corr = purrr::map2(.data$data, .data$baseline, ~ dplyr::pull(.x, .data[[y_var]]) - .y)
     ) %>%
     tidyr::unnest(c(.data$data, .data$corr)) %>%
     dplyr::select_if(~ !is.list(.x)) %>%
-    dplyr::select(-.data$conc) %>%
-    dplyr::rename(conc = .data$corr)
+    dplyr::select(-c(.data[[y_var]], .data$x, .data$y)) %>%
+    dplyr::rename(!!y_var := .data$corr)
 }

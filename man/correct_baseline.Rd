@@ -9,7 +9,9 @@ correct_baseline(
   left = 10,
   right = 35,
   window = 0.2,
-  group_vars = c("date", "sample", "param")
+  group_vars = c("date", "sample", "param"),
+  x_var = "time",
+  y_var = "conc"
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ correct_baseline(
 \item{window}{The fitting window at each endpoint.}
 
 \item{group_vars}{Grouping variables for input to \code{dplyr::group_by()}. Set to NULL when there are no grouping variables.}
+
+\item{x_var}{Name of x variable.}
+
+\item{y_var}{Name of y variable.}
 }
 \value{
 A tibble of the type returned by \code{load_icp()}, with the column 'conc' modified
