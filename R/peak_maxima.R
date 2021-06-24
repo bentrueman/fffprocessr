@@ -39,8 +39,10 @@ peak_maxima <- function(
   y_var = "conc"
 ) {
 
-  data <- data %>%
-    dplyr::group_by(!!!rlang::syms(group_vars))
+  data <- if(is.null(group_vars)) data else {
+    data %>%
+      dplyr::group_by(!!!rlang::syms(group_vars))
+  }
 
   data_smooth <- data %>%
     dplyr::mutate(
@@ -53,14 +55,26 @@ peak_maxima <- function(
     peak_id_gam(data_smooth, focus, k, peaks, group_vars, x_var, y_var)
   } else
     if(method == "sigma") {
-      data_smooth %>%
-        tidyr::nest() %>%
-        dplyr::ungroup() %>%
+
+      input <- if(is.null(group_vars)) {
+
+        data_smooth %>%
+          tidyr::nest(data = tidyselect::everything())
+
+      } else {
+
+        data_smooth %>%
+          tidyr::nest() %>%
+          dplyr::ungroup()
+      }
+
+      input %>%
         dplyr::mutate(
           peaks = purrr::map(.data$data, ~ peak_id_sigma(.x, focus, peaks, max_iter, x_var, y_var))
         ) %>%
         tidyr::unnest(.data$peaks) %>%
         dplyr::select(-.data$data)
+
     } else stop("choose a valid method: 'gam' or 'sigma'")
 
   # replace smoothed peak heights with unsmoothed peak heights:

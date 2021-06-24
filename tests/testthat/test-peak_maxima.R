@@ -15,7 +15,7 @@ test_that("peak_maxima() methods equivalent for example data", {
   )
 })
 
-test_that("peak_maxima() accepts alternate variable names", {
+test_that("peak_maxima() works with group_vars = NULL and alternate x and y variable names", {
 
   tesdat <- tibble::tibble(
     g = "a",
@@ -24,7 +24,7 @@ test_that("peak_maxima() accepts alternate variable names", {
   )
 
   expect_equal(
-    ncol(peak_maxima(tesdat, group_vars = "g", x_var = "x", y_var = "y", method = "sigma")),
-    4
+    ncol(peak_maxima(tesdat, group_vars = NULL, x_var = "x", y_var = "y", method = "sigma")),
+    3
   )
 })
