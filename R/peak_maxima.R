@@ -9,7 +9,7 @@
 #' `stats::filter(x, filter = rep(1/n, n))`.
 #' @param method Algorithm for peak detection. Either "gam", which separates peaks by the minima between
 #' them, or "sigma" which recursively calculates the standard deviation by eliminating values greater
-#' than three standard deviations.
+#' than three standard deviations. N.B., method = "sigma" silently removes NAs from x and y.
 #' @param max_iter Maximum iterations for method = "sigma".
 #' @param group_vars Grouping variables for input to `dplyr::group_by()`.
 #' @param x_var Name of x variable.
@@ -82,19 +82,20 @@ peak_maxima <- function(
   peak_pos %>%
     dplyr::left_join(
       data, by = tidyselect::all_of(c(group_vars, x_var)),
-      suffix = c("_smooth", "")
+      suffix = c("", "_smooth")
     ) %>%
     dplyr::select(tidyselect::all_of(c(group_vars, "peak", x_var, y_var)))
 
 }
 
 peak_id_gam <- function(data, focus, k, peaks, group_vars, x_var, y_var) {
+
+  formula_gam <- glue::glue("{y_var} ~ s({x_var}, bs = 'cs', k = {k})")
+
   data %>%
     dplyr::filter(.data[[x_var]] > focus) %>%
     dplyr::mutate(
-      x = .data[[x_var]],
-      y = .data[[y_var]],
-      fitted = mgcv::gam(y ~ s(x, bs = "cs", k = k)) %>%
+      fitted = mgcv::gam(stats::as.formula(formula_gam)) %>%
         mgcv::predict.gam(),
       diff = dplyr::lead(.data$fitted) - .data$fitted, # slope
       sign = sign(.data$diff), # sign of slope
@@ -102,17 +103,23 @@ peak_id_gam <- function(data, focus, k, peaks, group_vars, x_var, y_var) {
       peak = cumsum(.data$diff_sign > 0)
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-c(.data$x, .data$y)) %>%
-    dplyr::filter(.data$peak %in% seq_len(peaks)) %>%
     dplyr::group_by(!!!rlang::syms(c(group_vars, "peak"))) %>%
     dplyr::summarize(
       !!x_var := (.data[[x_var]])[which.max(.data[[y_var]])],
       !!y_var := max(.data[[y_var]]),
     ) %>%
+    dplyr::ungroup() %>%
+    # select number of peaks, starting with largest
+    dplyr::group_by(!!!rlang::syms(group_vars)) %>%
+    dplyr::arrange(dplyr::desc(.data[[y_var]])) %>%
+    dplyr::slice(seq_len(peaks)) %>%
     dplyr::ungroup()
+
 }
 
 peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
+
+  data <- data[!is.na(data[, x_var]) & !is.na(data[, y_var]), ] # remove NAs
 
   peak_tbl <- tibble::tibble()
   peak_list <- list()
@@ -152,7 +159,7 @@ peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
       dplyr::bind_rows(peak_tbl) %>%
       dplyr::select(-.data$g) %>%
       dplyr::distinct() %>%
-      dplyr::arrange(.data[[x_var]]) %>%
+      dplyr::arrange(dplyr::desc(.data[[y_var]])) %>%
       dplyr::filter(.data[[x_var]] > focus)
 
     peak_id <- nrow(peak_tbl)

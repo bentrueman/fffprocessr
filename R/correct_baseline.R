@@ -45,23 +45,22 @@ correct_baseline <- function(
       dplyr::ungroup()
   }
 
+  formula_lm <- glue::glue("{y_var} ~ {x_var}")
+
   input %>%
     dplyr::mutate(
       # next lines apply a linear baseline correction to the data:
-      data = purrr::map(
-        .data$data,
-        ~ .x %>% dplyr::mutate(x = .data[[x_var]], y = .data[[y_var]])
-      ),
       subset = purrr::map(
         .data$data,
-        ~ .x %>% dplyr::filter(abs(x - left) < window | abs(x - right) < window)
+        ~ .x %>%
+          dplyr::filter(abs(.data[[x_var]] - left) < window | abs(.data[[x_var]] - right) < window)
       ),
-      model = purrr::map(.data$subset, ~ stats::lm(y ~ x, data = .x)),
+      model = purrr::map(.data$subset, ~ stats::lm(stats::as.formula(formula_lm), data = .x)),
       baseline = purrr::map2(.data$model, .data$data, ~ stats::predict(.x, newdata = .y)),
       corr = purrr::map2(.data$data, .data$baseline, ~ dplyr::pull(.x, .data[[y_var]]) - .y)
     ) %>%
     tidyr::unnest(c(.data$data, .data$corr)) %>%
     dplyr::select_if(~ !is.list(.x)) %>%
-    dplyr::select(-c(.data[[y_var]], .data$x, .data$y)) %>%
+    dplyr::select(-.data[[y_var]]) %>%
     dplyr::rename(!!y_var := .data$corr)
 }

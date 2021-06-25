@@ -31,7 +31,7 @@ peak_maxima(
 
 \item{method}{Algorithm for peak detection. Either "gam", which separates peaks by the minima between
 them, or "sigma" which recursively calculates the standard deviation by eliminating values greater
-than three standard deviations.}
+than three standard deviations. N.B., method = "sigma" silently removes NAs from x and y.}
 
 \item{max_iter}{Maximum iterations for method = "sigma".}
 
