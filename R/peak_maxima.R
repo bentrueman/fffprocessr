@@ -152,6 +152,7 @@ peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
           !!x_var := (.data[[x_var]])[which.max(.data[[y_var]])],
           !!y_var := max(.data[[y_var]]),
         ) %>%
+        dplyr::ungroup() %>%
         dplyr::filter(.data$g != 0)
     )
 
