@@ -10,7 +10,7 @@ load_icp(
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
   date_format = "\%Y-\%m-\%d",
   calib_path = NULL,
-  metadata = 1,
+  metadata = 0,
   keywords = NULL,
   data_format = "x-series II"
 )

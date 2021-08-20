@@ -33,7 +33,7 @@ load_icp <- function(
   date_regex = "\\d{4}-\\d{2}-\\d{2}",
   date_format = "%Y-%m-%d",
   calib_path = NULL,
-  metadata = 1,
+  metadata = 0,
   keywords = NULL,
   data_format = "x-series II"
 ) {
@@ -69,12 +69,12 @@ load_icp <- function(
 
   read_fun <- function(x) {
     if(data_format == "x-series II") {
-      x %>%
-        readr::read_csv(col_types = readr::cols(.default = readr::col_character())) %>%
+      metadata <- 1
+      readr::read_csv(x, col_types = readr::cols(.default = readr::col_character())) %>%
         # remove metadata after column names but before data:
         dplyr::filter(!dplyr::row_number() %in% seq_len(metadata))
     } else if(data_format == "iCAP-RQ") {
-      readr::read_delim(delim = ";", skip = 1)
+      readr::read_delim(x, delim = ";", skip = 1)
     } else stop("Choose a valid data format ('x-series II' or 'iCAP-RQ')")
   }
 
