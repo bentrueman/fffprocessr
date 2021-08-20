@@ -66,10 +66,18 @@ load_icp <- function(
       .id = "file"
     ) %>%
     dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
-    tidyr::pivot_longer(
-      cols = tidyselect::matches("^\\d"),
-      names_to = "param", values_to = "cps"
+    dplyr::rename_at(dplyr::vars(tidyselect::matches("^\\d")), ~ paste("cps", .x, sep = " ")) %>%
+    dplyr::rename_at(
+      dplyr::vars(tidyselect::matches("^Time$")),
+      ~ paste(.x, "all_params", sep = " ")
     ) %>%
+    tidyr::pivot_longer(
+      tidyselect::matches("^Time|^cps"),
+      names_to = c(".value", "param"),
+      names_sep = " "
+    ) %>%
+    tidyr::fill(.data$Time) %>%
+    dplyr::filter(.data$param != "all_params") %>%
     dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format))
 
   out <- if(is.null(calib)) {
