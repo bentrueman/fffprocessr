@@ -70,9 +70,26 @@ load_icp <- function(
       metadata <- 1
       readr::read_csv(x, col_types = readr::cols(.default = readr::col_character())) %>%
         # remove metadata after column names but before data:
-        dplyr::filter(!dplyr::row_number() %in% seq_len(metadata))
+        dplyr::filter(!dplyr::row_number() %in% seq_len(metadata)) %>%
+        dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
+        tidyr::pivot_longer(
+          cols = tidyselect::matches("^\\d"),
+          names_to = "param", values_to = "cps"
+        ) %>%
+        dplyr::mutate(time = as.numeric(.data$Time) / 6e4) # time in minutes
     } else if(data_format == "iCAP-RQ") {
-      readr::read_delim(x, delim = ";", skip = 1)
+      readr::read_delim(x, delim = ";", skip = 1) %>%
+        dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
+        dplyr::rename_at(
+          dplyr::vars(tidyselect::matches("^\\d")),
+          ~ paste("cps", .x, sep = " ")
+        ) %>%
+        tidyr::pivot_longer(
+          tidyselect::matches("^Time|^cps"),
+          names_to = c(".value", "param"),
+          names_sep = " "
+        ) %>%
+        dplyr::mutate(time = as.numeric(.data$Time) / 60) # time in minutes
     } else stop("Choose a valid data format ('x-series II' or 'iCAP-RQ')")
   }
 
@@ -81,35 +98,19 @@ load_icp <- function(
   data <- file_list[keep_files] %>%
     rlang::set_names() %>%
     purrr::map_dfr(read_fun, .id = "file") %>%
-    dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
-    dplyr::rename_at(dplyr::vars(tidyselect::matches("^\\d")), ~ paste("cps", .x, sep = " ")) %>%
-    dplyr::rename_at(
-      dplyr::vars(tidyselect::matches("^Time$")),
-      ~ paste(.x, "all_params", sep = " ")
-    ) %>%
-    tidyr::pivot_longer(
-      tidyselect::matches("^Time|^cps"),
-      names_to = c(".value", "param"),
-      names_sep = " "
-    ) %>%
-    tidyr::fill(.data$Time) %>%
-    dplyr::filter(.data$param != "all_params") %>%
-    dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format))
+    dplyr::mutate(
+      date = stringr::str_extract(file, date_regex) %>%
+        as.Date(date_format)
+    )
 
   out <- if(is.null(calib)) {
     data %>%
-      dplyr::mutate(
-        conc = .data$cps,
-        time = as.numeric(.data$Time) / 6e4
-      ) %>%
+      dplyr::mutate(conc = .data$cps) %>%
       dplyr::filter(!is.na(.data$conc))
   } else {
     data %>%
       dplyr::left_join(calib, by = c("date", "param")) %>%
-      dplyr::mutate(
-        conc = .data$coef * .data$cps,
-        time = as.numeric(.data$Time) / 6e4
-      ) %>%
+      dplyr::mutate(conc = .data$coef * .data$cps) %>%
       dplyr::filter(!is.na(.data$conc))
   }
 
