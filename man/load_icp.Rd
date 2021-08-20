@@ -11,7 +11,8 @@ load_icp(
   date_format = "\%Y-\%m-\%d",
   calib_path = NULL,
   metadata = 1,
-  keywords = NULL
+  keywords = NULL,
+  data_format = "x-series II"
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ from the relative path to the data files.}
 
 \item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_uv()}
 which files to load. These can be regular expressions.}
+
+\item{data_format}{Selects an appropriate \code{readr} function based on the data format. Current
+options are "x-series II" and "iCAP-RQ".}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
