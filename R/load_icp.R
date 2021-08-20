@@ -44,7 +44,7 @@ load_icp <- function(
 
   if(calibrate & length(calib_file_list) == 0) stop("No calibration files found.")
 
-  calib <- if(calibrate) {
+  calib <- if(calibrate & data_format == "x-series II") {
     calib_file_list %>%
       rlang::set_names() %>%
       purrr::map_dfr(readxl::read_excel, .id = "file") %>%
@@ -52,6 +52,36 @@ load_icp <- function(
       dplyr::filter(!is.na(date)) %>%
       dplyr::group_by(date, param = .data$element) %>%
       dplyr::summarize(coef = stats::lm(defined ~ 0 + mean_cps) %>% stats::coef()) %>%
+      dplyr::ungroup()
+  } else if(calibrate & data_format == "iCAP-RQ") {
+    calib_file_list %>%
+      rlang::set_names() %>%
+      purrr::map_dfr(readxl::read_excel, .id = "file") %>%
+      dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format)) %>%
+      dplyr::filter(!is.na(date)) %>%
+      dplyr::mutate(run = stringr::str_extract(.data$Label, "^Wash|^Blank|^Standard.+|^QC.+")) %>%
+      tidyr::fill(.data$run) %>%
+      dplyr::filter(
+        .data$Label == "Mean:",
+        !stringr::str_detect(.data$run, "^QC|^Wash")
+      ) %>%
+      tidyr::pivot_longer(
+        cols = tidyselect::matches("^\\d"),
+        names_to = "param",
+        values_to = "mean_cps"
+      ) %>%
+      dplyr::mutate(
+        param = stringr::str_extract(.data$param, "\\d+[A-Z][a-z]?"),
+        defined = stringr::str_replace(.data$run, ".+\\s(\\d+)ppb", "\\1") %>%
+          stringr::str_replace("Blank", "0") %>%
+          as.numeric(),
+        mean_cps = stringr::str_remove_all(.data$mean_cps, ",") %>% as.numeric()
+      ) %>%
+      dplyr::group_by(date, .data$param) %>%
+      dplyr::summarize(
+        coef = stats::lm(defined ~ 0 + mean_cps) %>%
+          stats::coef()
+      ) %>%
       dplyr::ungroup()
   } else NULL
 
