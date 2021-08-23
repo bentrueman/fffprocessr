@@ -159,7 +159,7 @@ Alternatively, fractograms can be fitted as sums of ordinary Gaussians, or expon
 
 eqn1 <- "y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)"
 
-katex::katex_html(eqn1, preview = TRUE)
+katex::katex_mathml(eqn1)
 
 ```
 
