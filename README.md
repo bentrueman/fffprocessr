@@ -52,20 +52,6 @@ calibration files are available, use `calibrate = TRUE`.
     icp_data <- system.file("extdata", package = "fffprocessr") %>% 
       load_icp(calibrate = TRUE) 
     icp_data
-    #> # A tibble: 8,445 × 6
-    #>    file                                                   sample       date       param   time     conc
-    #>    <chr>                                                  <chr>        <date>     <chr>  <dbl>    <dbl>
-    #>  1 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 27Al  0       4.98e+1
-    #>  2 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 55Mn  0       4.86e-1
-    #>  3 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 56Fe  0       2.99e+0
-    #>  4 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 65Cu  0       3.99e-1
-    #>  5 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 238U  0       1.22e-3
-    #>  6 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 27Al  0.0674  4.91e+1
-    #>  7 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 55Mn  0.0674  5.37e-1
-    #>  8 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 56Fe  0.0674  2.92e+0
-    #>  9 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 65Cu  0.0674  3.72e-1
-    #> 10 /Library/Frameworks/R.framework/Versions/4.0/Resource… sample_benn… 2021-03-16 238U  0.0674  3.06e-4
-    #> # … with 8,435 more rows
 
 UV-MALS data files (e.g., UV detector output and 1–2 MALS detector
 outputs) are loaded using the `load_uv()` function. Only named detector
@@ -77,20 +63,6 @@ output.
     uv_data <- system.file("extdata", package = "fffprocessr") %>% 
       load_uv(UV254_1, UV254_2, LS90) # name channels in order from left to right
     uv_data
-    #> # A tibble: 9,363 × 6
-    #>    file                                                    sample       date       param    time   conc
-    #>    <chr>                                                   <chr>        <date>     <chr>   <dbl>  <dbl>
-    #>  1 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 UV254… 0.0173 0.0964
-    #>  2 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 UV254… 0.0173 0.0720
-    #>  3 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 LS90   0.0173 0.196 
-    #>  4 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 UV254… 0.0538 0.0963
-    #>  5 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 UV254… 0.0538 0.0722
-    #>  6 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 LS90   0.0538 0.196 
-    #>  7 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 UV254… 0.0902 0.0964
-    #>  8 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 UV254… 0.0902 0.0722
-    #>  9 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 LS90   0.0902 0.196 
-    #> 10 /Library/Frameworks/R.framework/Versions/4.0/Resources… sample_benn… 2021-03-16 UV254… 0.127  0.0964
-    #> # … with 9,353 more rows
 
 Combine the two cleaned data files using `combine_fff()`. Blank
 subtraction is optional, and it relies on linear interpolation when the
@@ -182,19 +154,6 @@ or exponentially modified Gaussians of the form
 
 <!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
 
-
-    eqn1 <- "y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)"
-
-    katex::katex_mathml(eqn1)
-
-<span
-class="\"katex\""><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>h</mi><mi>σ</mi></mrow><mi>τ</mi></mfrac><msqrt><mfrac><mi>π</mi><mn>2</mn></mfrac></msqrt><mi>e</mi><mi>x</mi><mi>p</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy=\"false\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><msup><mo stretchy=\"false\">)</mo><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>τ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mi>e</mi><mi>r</mi><mi>f</mi><mi>c</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><msqrt><mn>2</mn></msqrt></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>σ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mo fence=\"true\">)</mo></mrow></mrow><annotation encoding=\"application/x-tex\">y
-= \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}}
-exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 -
-\\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau}
--
-\\frac{x-\\mu}{\\sigma}\\right)\\right)</annotation></semantics></math></span>
-
 <img src="man/figures/CodeCogsEqn_3.png" width="60%" />
 
 where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the
@@ -268,16 +227,6 @@ flowrate (L/min) to get a concentration in the expected units.
       group_by(date, sample, param, peak) %>% 
       summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
     #> `summarise()` has grouped output by 'date', 'sample', 'param'. You can override using the `.groups` argument.
-    #> # A tibble: 6 × 5
-    #> # Groups:   date, sample, param [2]
-    #>   date       sample             param peak  conc_ppb
-    #>   <date>     <chr>              <chr> <chr>    <dbl>
-    #> 1 2021-03-16 sample_bennery_raw 65Cu  peak1    0.581
-    #> 2 2021-03-16 sample_bennery_raw 65Cu  peak2    5.45 
-    #> 3 2021-03-16 sample_bennery_raw 65Cu  peak3    3.78 
-    #> 4 2021-03-16 sample_jdk_raw     65Cu  peak1    0.615
-    #> 5 2021-03-16 sample_jdk_raw     65Cu  peak2    2.31 
-    #> 6 2021-03-16 sample_jdk_raw     65Cu  peak3    2.38
 
 ### Estimating the radius of gyration
 
@@ -360,12 +309,6 @@ perform better for this sample.
       filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
       distinct(timeslice, rg_zimm) %>% 
       mutate(d_geom = 2 * rg_zimm / sqrt(3/5))
-    #> # A tibble: 3 × 3
-    #>   timeslice rg_zimm d_geom
-    #>       <dbl>   <dbl>  <dbl>
-    #> 1      17.1    31.9   82.2
-    #> 2      24.1    63.2  163. 
-    #> 3      40      70.9  183.
 
 Here are the Zimm plots at time slices representing each peak. The
 linearity assumption breaks down completely for the largest particles
@@ -397,10 +340,6 @@ very good estimate of the true particle size.
       filter(timeslice == 40) %>% 
       distinct(rg_watt) %>% 
       mutate(d_geom = 2 * rg_watt / sqrt(3/5))
-    #> # A tibble: 1 × 2
-    #>   rg_watt d_geom
-    #>     <dbl>  <dbl>
-    #> 1    135.   349.
 
 ### Estimating the hydrodynamic radius
 
