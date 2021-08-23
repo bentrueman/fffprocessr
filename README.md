@@ -1,10 +1,9 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fffprocessr
+fffprocessr
+===========
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 `fffprocessr` is a package for processing field-flow fractionation data.
@@ -16,27 +15,25 @@ provide users who are new to R with a convenient platform for cleaning
 large field-flow fractionation datasets so that they can get to
 visualization and analysis more quickly.
 
-## Installation
+Installation
+------------
 
 You can install the development version from
 [GitHub](https://github.com/) with:
 
-``` r
-# install.packages("remotes")
-remotes::install_github("bentrueman/fffprocessr")
-```
+    # install.packages("remotes")
+    remotes::install_github("bentrueman/fffprocessr")
 
-## Example
+Example
+-------
 
 ### Loading and cleaning the data
 
 You will need the `tidyverse` package for this example, which can be
 installed using `install.packages("tidyverse")`.
 
-``` r
-library("fffprocessr")
-library("tidyverse")
-```
+    library("fffprocessr")
+    library("tidyverse")
 
 `fffprocessr` includes external data which we use here to demonstrate
 the loading functions. The external data folder should contain ICP-MS
@@ -47,32 +44,14 @@ filename (e.g., 2021-01-23\_pockwock.csv). Sample names that include the
 word “blank” will be treated as blanks. Determine the path to the
 external data as follows:
 
-``` r
-system.file("extdata", package = "fffprocessr")
-```
+    system.file("extdata", package = "fffprocessr")
 
 ICP-MS data files are loaded using the `load_icp()` function. If ICP-MS
 calibration files are available, use `calibrate = TRUE`.
 
-``` r
-icp_data <- system.file("extdata", package = "fffprocessr") %>% 
-  load_icp(calibrate = TRUE) 
-icp_data
-#> # A tibble: 8,445 x 6
-#>    file                              sample      date       param   time    conc
-#>    <chr>                             <chr>       <date>     <chr>  <dbl>   <dbl>
-#>  1 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 27Al  0      4.98e+1
-#>  2 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 55Mn  0      4.86e-1
-#>  3 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 56Fe  0      2.99e+0
-#>  4 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 65Cu  0      3.99e-1
-#>  5 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 238U  0      1.22e-3
-#>  6 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 27Al  0.0674 4.91e+1
-#>  7 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 55Mn  0.0674 5.37e-1
-#>  8 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 56Fe  0.0674 2.92e+0
-#>  9 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 65Cu  0.0674 3.72e-1
-#> 10 /private/var/folders/fy/v4w9p72s… sample_ben… 2021-03-16 238U  0.0674 3.06e-4
-#> # … with 8,435 more rows
-```
+    icp_data <- system.file("extdata", package = "fffprocessr") %>% 
+      load_icp(calibrate = TRUE) 
+    icp_data
 
 UV-MALS data files (e.g., UV detector output and 1–2 MALS detector
 outputs) are loaded using the `load_uv()` function. Only named detector
@@ -81,25 +60,9 @@ detector followed by wavelength or angle, as in UV254 or LS90. Don’t
 name columns “X” followed by a number, or they won’t show up in the
 output.
 
-``` r
-uv_data <- system.file("extdata", package = "fffprocessr") %>% 
-  load_uv(UV254_1, UV254_2, LS90) # name channels in order from left to right
-uv_data
-#> # A tibble: 9,363 x 6
-#>    file                               sample      date       param   time   conc
-#>    <chr>                              <chr>       <date>     <chr>  <dbl>  <dbl>
-#>  1 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0173 0.0964
-#>  2 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0173 0.0720
-#>  3 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 LS90  0.0173 0.196 
-#>  4 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0538 0.0963
-#>  5 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0538 0.0722
-#>  6 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 LS90  0.0538 0.196 
-#>  7 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0902 0.0964
-#>  8 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.0902 0.0722
-#>  9 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 LS90  0.0902 0.196 
-#> 10 /private/var/folders/fy/v4w9p72s7… sample_ben… 2021-03-16 UV25… 0.127  0.0964
-#> # … with 9,353 more rows
-```
+    uv_data <- system.file("extdata", package = "fffprocessr") %>% 
+      load_uv(UV254_1, UV254_2, LS90) # name channels in order from left to right
+    uv_data
 
 Combine the two cleaned data files using `combine_fff()`. Blank
 subtraction is optional, and it relies on linear interpolation when the
@@ -114,69 +77,61 @@ date; the user-specified focus step is excluded from this calculation.
 After combining the UV-MALS and ICP-MS data, use `correct_baseline()` to
 perform a linear baseline correction with left and right endpoints.
 
-``` r
-data <- combine_fff(
-  icp_data, 
-  uv_data,
-  subtract_blank = TRUE,
-  focus = 10
-) %>% 
-  correct_baseline(left = 10, right = 35)
-```
+    data <- combine_fff(
+      icp_data, 
+      uv_data,
+      subtract_blank = TRUE,
+      focus = 10
+    ) %>% 
+      correct_baseline(left = 10, right = 35)
 
 Load a molecular weight calibration data file and fit a curve using
 `calibrate_mw()`. The independent variable is retention time and the
 dependent variable is the base-10 logarithm of molecular weight. The
 options for curve type are “linear” and “quadratic”.
 
-``` r
-# load a calibration curve:
-mw_data <- system.file("extdata/mw_calibration", package = "fffprocessr") %>% 
-  list.files(full.names = TRUE) %>% 
-  read_csv()
+    # load a calibration curve:
+    mw_data <- system.file("extdata/mw_calibration", package = "fffprocessr") %>% 
+      list.files(full.names = TRUE) %>% 
+      read_csv()
 
-mw_data %>% 
-  with(calibrate_mw(peak_retention_time, mw_kda, type = "quadratic", predict = FALSE))
-#> 
-#> Call:
-#> stats::lm(formula = log10(mw) ~ time + I(time^2))
-#> 
-#> Coefficients:
-#> (Intercept)         time    I(time^2)  
-#>     7.20192     -1.23814      0.05242
-```
+    mw_data %>% 
+      with(calibrate_mw(peak_retention_time, mw_kda, type = "quadratic", predict = FALSE))
+    #> 
+    #> Call:
+    #> stats::lm(formula = log10(mw) ~ time + I(time^2))
+    #> 
+    #> Coefficients:
+    #> (Intercept)         time    I(time^2)  
+    #>     7.20192     -1.23814      0.05242
 
 Predict molecular weight using the `predict = TRUE` argument. Or do an
 “inverse” prediction of time (generally for plotting purposes). The
 options for output are “time” and “mw”.
 
-``` r
-mw_data %>% 
-  with(
-    calibrate_mw(
-      peak_retention_time, 
-      mw_kda, 
-      type = "quadratic", # or "linear"
-      newdata = c(1, 10, 100, 1000), # molecular weights (or time if output = "mw")
-      output = "time", # or "mw"
-      predict = TRUE
-    )
-  )
-#> [1] 13.25712 16.41176 18.15480 19.51300
-```
+    mw_data %>% 
+      with(
+        calibrate_mw(
+          peak_retention_time, 
+          mw_kda, 
+          type = "quadratic", # or "linear"
+          newdata = c(1, 10, 100, 1000), # molecular weights (or time if output = "mw")
+          output = "time", # or "mw"
+          predict = TRUE
+        )
+      )
+    #> [1] 13.25712 16.41176 18.15480 19.51300
 
 Now the data are ready to plot (n.b., `ggplot` code has been simplified
 slightly for this document, and so the plots it generates will not
 appear exactly as they do here).
 
-``` r
-data %>% 
-  filter(time > 5, time < 37.5) %>% 
-  ggplot(aes(time, conc, col = sample)) + 
-  facet_wrap(vars(param), scales = "free_y", ncol = 2) + 
-  geom_hline(yintercept = 0, col = "grey", linetype = 3) +
-  geom_line()
-```
+    data %>% 
+      filter(time > 5, time < 37.5) %>% 
+      ggplot(aes(time, conc, col = sample)) + 
+      facet_wrap(vars(param), scales = "free_y", ncol = 2) + 
+      geom_hline(yintercept = 0, col = "grey", linetype = 3) +
+      geom_line()
 
 <img src="man/figures/README-fff-data-1.png" width="100%" />
 
@@ -199,6 +154,14 @@ or exponentially modified Gaussians of the form
 
 <!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
 
+
+    eqn1 <- "y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)"
+
+    katex::math_to_rd(eqn1)
+    #> [1] "\\if{html}{\\out{\n<link rel=\"stylesheet\" type=\"text/css\" href=\"https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css\" data-external=\"1\">\n<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>h</mi><mi>σ</mi></mrow><mi>τ</mi></mfrac><msqrt><mfrac><mi>π</mi><mn>2</mn></mfrac></msqrt><mi>e</mi><mi>x</mi><mi>p</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy=\"false\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><msup><mo stretchy=\"false\">)</mo><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>τ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mi>e</mi><mi>r</mi><mi>f</mi><mi>c</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><msqrt><mn>2</mn></msqrt></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>σ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mo fence=\"true\">)</mo></mrow></mrow><annotation encoding=\"application/x-tex\">y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.625em;vertical-align:-0.19444em;\"></span><span class=\"mord mathnormal\" style=\"margin-right:0.03588em;\">y</span><span class=\"mspace\" style=\"margin-right:0.2777777777777778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2777777777777778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:2.494685em;vertical-align:-0.95003em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.37144em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.03588em;\">hσ</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mord sqrt\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.5446550000000001em;\"><span class=\"svg-align\" style=\"top:-4.4em;\"><span class=\"pstrut\" style=\"height:4.4em;\"></span><span class=\"mord\" style=\"padding-left:1em;\"><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.10756em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">2</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.03588em;\">π</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span></span></span><span style=\"top:-3.5046550000000005em;\"><span class=\"pstrut\" style=\"height:4.4em;\"></span><span class=\"hide-tail\" style=\"min-width:1.02em;height:2.48em;\"><svg width='400em' height='2.48em' viewBox='0 0 400000 2592' preserveAspectRatio='xMinYMin slice'><path d='M424,2478\nc-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514\nc0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20\ns-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121\ns209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081\nl0 -0c4,-6.7,10,-10,18,-10 H400000\nv40H1014.6\ns-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185\nc-2,6,-10,9,-24,9\nc-8,0,-12,-0.7,-12,-2z M1001 80\nh400000v40h-400000z'/></svg></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8953449999999998em;\"><span></span></span></span></span></span><span class=\"mord mathnormal\">e</span><span class=\"mord mathnormal\">x</span><span class=\"mord mathnormal\">p</span><span class=\"mspace\" style=\"margin-right:0.16666666666666666em;\"></span><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.32144em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">2</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">1</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mopen\">(</span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.10756em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.03588em;\">σ</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose\"><span class=\"mclose\">)</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641079999999999em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.2603300000000002em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mord mathnormal\">μ</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span><span class=\"mspace\" style=\"margin-right:0.16666666666666666em;\"></span><span class=\"mord mathnormal\" style=\"margin-right:0.02778em;\">er</span><span class=\"mord mathnormal\" style=\"margin-right:0.10764em;\">f</span><span class=\"mord mathnormal\">c</span><span class=\"mspace\" style=\"margin-right:0.16666666666666666em;\"></span><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.32144em;\"><span style=\"top:-2.2027799999999997em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord sqrt\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.90722em;\"><span class=\"svg-align\" style=\"top:-3em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\" style=\"padding-left:0.833em;\"><span class=\"mord\">2</span></span></span><span style=\"top:-2.86722em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"hide-tail\" style=\"min-width:0.853em;height:1.08em;\"><svg width='400em' height='1.08em' viewBox='0 0 400000 1080' preserveAspectRatio='xMinYMin slice'><path d='M95,702\nc-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14\nc0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54\nc44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10\ns173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429\nc69,-144,104.5,-217.7,106.5,-221\nl0 -0\nc5.3,-9.3,12,-14,20,-14\nH400000v40H845.2724\ns-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7\nc-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z\nM834 80h400000v40h-400000z'/></svg></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.13278em;\"><span></span></span></span></span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">1</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.93em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.16666666666666666em;\"></span><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.10756em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.1132em;\">τ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.03588em;\">σ</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.2603300000000002em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\" style=\"margin-right:0.03588em;\">σ</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222222222222222em;\"></span><span class=\"mord mathnormal\">μ</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span></span></span></span></span>\n}}\n\\if{latex,text}{\n\\deqn{\ny = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)\n}{\ny = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)\n}}"
+    #> attr(,"class")
+    #> [1] "Rdtext"
+
 <img src="man/figures/CodeCogsEqn_3.png" width="60%" />
 
 where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the
@@ -208,63 +171,57 @@ Users supply initial guesses for the peak height (`h`), mean (`mu`),
 standard deviation (`s`), and shape parameter (`g`)—see the example
 below for some reasonable guesses.
 
-``` r
-deconvolved <- data %>% 
-  filter(param == "65Cu", time > 10) %>% 
-  group_by(date, param, sample) %>% 
-  nest() %>% 
-  ungroup() %>% 
-  mutate(
-    model = map(
-      data, 
-      ~ deconvolve_fff(
-        .x$time, .x$conc, 
-        # these are the initial guesses for the model parameters
-        h = c(.8, .6, .2), mu = c(11, 14, 20), s = c(1, 1, 1), g = c(1, 2, 5),
-        fn = "skew_gaussian"
+    deconvolved <- data %>% 
+      filter(param == "65Cu", time > 10) %>% 
+      group_by(date, param, sample) %>% 
+      nest() %>% 
+      ungroup() %>% 
+      mutate(
+        model = map(
+          data, 
+          ~ deconvolve_fff(
+            .x$time, .x$conc, 
+            # these are the initial guesses for the model parameters
+            h = c(.8, .6, .2), mu = c(11, 14, 20), s = c(1, 1, 1), g = c(1, 2, 5),
+            fn = "skew_gaussian"
+          )
+        ),
+        fitted = map(model, "fitted"),
+        peaks = map(model, "peaks")
       )
-    ),
-    fitted = map(model, "fitted"),
-    peaks = map(model, "peaks")
-  )
-```
 
 Plot the data, the model, and the component peaks:
 
-``` r
-deconvolved %>% 
-  unnest(c(data, fitted, peaks)) %>% 
-  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
-  ggplot(aes(time, value, col = name)) + 
-  facet_grid(rows = vars(param), cols = vars(sample)) +
-  geom_line()
-```
+    deconvolved %>% 
+      unnest(c(data, fitted, peaks)) %>% 
+      pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
+      ggplot(aes(time, value, col = name)) + 
+      facet_grid(rows = vars(param), cols = vars(sample)) +
+      geom_line()
 
 <img src="man/figures/README-deconvolve-cu-1.png" width="100%" />
 
 The exponentially modified Gaussian (`fn = "emg"`) can sometimes do a
 better job:
 
-``` r
-deconvolved_emg <- data %>% 
-    filter(param == "56Fe", time > 10, sample == "sample_bennery_raw") %>% 
-    group_by(date, param, sample) %>% 
-    nest() %>% 
-    ungroup() %>% 
-    mutate(
-        model = map(
-            data, 
-            ~ deconvolve_fff(
-                .x$time, .x$conc, 
-                # these are the initial guesses for the model parameters
-                h = c(35, 50, 8), mu = c(14, 20, 28), s = c(1, 1, 1), g = c(1, 1, .5), 
-                fn = "emg"
-            )
-        ),
-        fitted = map(model, "fitted"),
-        peaks = map(model, "peaks")
-    )
-```
+    deconvolved_emg <- data %>% 
+        filter(param == "56Fe", time > 10, sample == "sample_bennery_raw") %>% 
+        group_by(date, param, sample) %>% 
+        nest() %>% 
+        ungroup() %>% 
+        mutate(
+            model = map(
+                data, 
+                ~ deconvolve_fff(
+                    .x$time, .x$conc, 
+                    # these are the initial guesses for the model parameters
+                    h = c(35, 50, 8), mu = c(14, 20, 28), s = c(1, 1, 1), g = c(1, 1, .5), 
+                    fn = "emg"
+                )
+            ),
+            fitted = map(model, "fitted"),
+            peaks = map(model, "peaks")
+        )
 
 <img src="man/figures/README-deconvolve-fe-1.png" width="100%" />
 
@@ -272,24 +229,12 @@ Use the `integrate_peak()` function to assign a concentration estimate
 to each peak. You’ll have to supply the injection volume (L) and the
 flowrate (L/min) to get a concentration in the expected units.
 
-``` r
-deconvolved %>% 
-  unnest(c(data, starts_with("peak"))) %>% 
-  pivot_longer(starts_with("peak"), names_to = "peak") %>% 
-  group_by(date, sample, param, peak) %>% 
-  summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
-#> `summarise()` has grouped output by 'date', 'sample', 'param'. You can override using the `.groups` argument.
-#> # A tibble: 6 x 5
-#> # Groups:   date, sample, param [2]
-#>   date       sample             param peak  conc_ppb
-#>   <date>     <chr>              <chr> <chr>    <dbl>
-#> 1 2021-03-16 sample_bennery_raw 65Cu  peak1    0.581
-#> 2 2021-03-16 sample_bennery_raw 65Cu  peak2    5.45 
-#> 3 2021-03-16 sample_bennery_raw 65Cu  peak3    3.78 
-#> 4 2021-03-16 sample_jdk_raw     65Cu  peak1    0.615
-#> 5 2021-03-16 sample_jdk_raw     65Cu  peak2    2.31 
-#> 6 2021-03-16 sample_jdk_raw     65Cu  peak3    2.38
-```
+    deconvolved %>% 
+      unnest(c(data, starts_with("peak"))) %>% 
+      pivot_longer(starts_with("peak"), names_to = "peak") %>% 
+      group_by(date, sample, param, peak) %>% 
+      summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
+    #> `summarise()` has grouped output by 'date', 'sample', 'param'. You can override using the `.groups` argument.
 
 ### Estimating the radius of gyration
 
@@ -302,21 +247,17 @@ should be stored in a separate folder, named as follows: ISO 8601 date
 loading a dataset representing a mixture of latex beads with nominal
 sizes of 60, 125, and 350 nm.
 
-``` r
-mals <- system.file("extdata/mals", package = "fffprocessr") %>% 
-  load_mals() %>% 
-  correct_baseline(4, 65)
-```
+    mals <- system.file("extdata/mals", package = "fffprocessr") %>% 
+      load_mals() %>% 
+      correct_baseline(4, 65)
 
 Plot the data:
 
-``` r
-mals %>% 
-  ggplot(aes(time, conc)) + 
-  facet_wrap(vars(param), scales = "free_y") + 
-  geom_hline(yintercept = 0, col = "grey", linetype = 3) +
-  geom_line()
-```
+    mals %>% 
+      ggplot(aes(time, conc)) + 
+      facet_wrap(vars(param), scales = "free_y") + 
+      geom_hline(yintercept = 0, col = "grey", linetype = 3) +
+      geom_line()
 
 <img src="man/figures/README-fff-mals-1.png" width="100%" />
 
@@ -346,26 +287,22 @@ slope of the linear regression. This is the Zimm model; see Kammer et
 al. (2005) (and references therein) for details (the PostNova AF2000
 software manual will also be helpful).
 
-``` r
-mals_rg <- mals %>% 
-  filter(
-    time > 10, 
-    param != "ls7"
-  ) %>% 
-  calculate_rg(window = .05, method = "zimm")
-```
+    mals_rg <- mals %>% 
+      filter(
+        time > 10, 
+        param != "ls7"
+      ) %>% 
+      calculate_rg(window = .05, method = "zimm")
 
 Plot the estimated *r<sub>g</sub>* and the 90° light scattering signal:
 
-``` r
-mals_rg %>% 
-  filter(param == "ls90") %>% 
-  pivot_longer(c(rg_zimm, conc)) %>% 
-  ggplot(aes(time, value)) + 
-  facet_wrap(vars(name), scales = "free_y") +
-  geom_point() +
-  geom_hline(yintercept = 0, col = "grey", linetype = 3)
-```
+    mals_rg %>% 
+      filter(param == "ls90") %>% 
+      pivot_longer(c(rg_zimm, conc)) %>% 
+      ggplot(aes(time, value)) + 
+      facet_wrap(vars(name), scales = "free_y") +
+      geom_point() +
+      geom_hline(yintercept = 0, col = "grey", linetype = 3)
 
 <img src="man/figures/README-rg-1.png" width="100%" />
 
@@ -376,57 +313,41 @@ and so while the Zimm model is recommended for environmental particles
 in this size range (Kammer et al., 2005), other models would likely
 perform better for this sample.
 
-``` r
-mals_rg %>% 
-  filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
-  distinct(timeslice, rg_zimm) %>% 
-  mutate(d_geom = 2 * rg_zimm / sqrt(3/5))
-#> # A tibble: 3 x 3
-#>   timeslice rg_zimm d_geom
-#>       <dbl>   <dbl>  <dbl>
-#> 1      17.1    31.9   82.2
-#> 2      24.1    63.2  163. 
-#> 3      40      70.9  183.
-```
+    mals_rg %>% 
+      filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
+      distinct(timeslice, rg_zimm) %>% 
+      mutate(d_geom = 2 * rg_zimm / sqrt(3/5))
 
 Here are the Zimm plots at time slices representing each peak. The
 linearity assumption breaks down completely for the largest particles
 (350 nm diameter, `timeslice == 40`).
 
-``` r
-mals_rg %>% 
-  filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
-  mutate(
-    x = sin(pi * theta / 360) ^ 2,
-    y = 1 / rayleigh_ratio
-  ) %>% 
-  ggplot(aes(x, y)) + 
-  facet_wrap(vars(timeslice), scales = "free_y") + 
-  geom_smooth(method = "lm") +
-  geom_point()
-```
+    mals_rg %>% 
+      filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
+      mutate(
+        x = sin(pi * theta / 360) ^ 2,
+        y = 1 / rayleigh_ratio
+      ) %>% 
+      ggplot(aes(x, y)) + 
+      facet_wrap(vars(timeslice), scales = "free_y") + 
+      geom_smooth(method = "lm") +
+      geom_point()
 
 <img src="man/figures/README-zimm-1.png" width="100%" />
 
 For the 350 nm particles, the approach outlined in Watt (2018) yields a
 very good estimate of the true particle size.
 
-``` r
 
-mals %>% 
-  filter(
-    time > 39, 
-    param != "ls7"
-  ) %>% 
-  calculate_rg(window = .05, method = "watt") %>% 
-  filter(timeslice == 40) %>% 
-  distinct(rg_watt) %>% 
-  mutate(d_geom = 2 * rg_watt / sqrt(3/5))
-#> # A tibble: 1 x 2
-#>   rg_watt d_geom
-#>     <dbl>  <dbl>
-#> 1    135.   349.
-```
+    mals %>% 
+      filter(
+        time > 39, 
+        param != "ls7"
+      ) %>% 
+      calculate_rg(window = .05, method = "watt") %>% 
+      filter(timeslice == 40) %>% 
+      distinct(rg_watt) %>% 
+      mutate(d_geom = 2 * rg_watt / sqrt(3/5))
 
 ### Estimating the hydrodynamic radius
 
@@ -438,42 +359,36 @@ dynamic viscosity of the carrier solution can all be changed, but for
 now, the channel dimensions are hard-coded. The function `peak_maxima()`
 may also be useful for determining peak retention times.
 
-``` r
-data %>% 
-  filter(param == "65Cu", time > 10.5, time < 16) %>% 
-  mutate(dh = 2 * 1e9 * calculate_rh(time) ) %>% 
-  ggplot(aes(dh, conc, col = sample)) + 
-  geom_line()
-```
+    data %>% 
+      filter(param == "65Cu", time > 10.5, time < 16) %>% 
+      mutate(dh = 2 * 1e9 * calculate_rh(time) ) %>% 
+      ggplot(aes(dh, conc, col = sample)) + 
+      geom_line()
 
 <img src="man/figures/README-rh-1.png" width="100%" />
 
-## References
+References
+----------
 
 Kammer, F. v. d., M. Baborowski, and K. Friese. 2005. “Field-Flow
 Fractionation Coupled to Multi-Angle Laser Light Scattering Detectors:
 Applicability and Analytical Benefits for the Analysis of Environmental
 Colloids.” Analytica Chimica Acta 552 (1-2): 166–74.
-<https://doi.org/10.1016/j.aca.2005.07.049>.
+<a href="https://doi.org/10.1016/j.aca.2005.07.049" class="uri">https://doi.org/10.1016/j.aca.2005.07.049</a>.
 
 Trueman, Benjamin F., Tim Anaviapik-Soucie, Vincent L’Hérault, and
 Graham A. Gagnon. 2019. “Characterizing Colloidal Metals in Drinking
 Water by Field Flow Fractionation.” Environmental Science: Water
 Research & Technology 5 (12): 2202–9.
-<https://doi.org/10.1039/C9EW00560A>.
+<a href="https://doi.org/10.1039/C9EW00560A" class="uri">https://doi.org/10.1039/C9EW00560A</a>.
 
 Wyatt, Philip J. 2018. “Measuring Nanoparticles in the Size Range to
 2000 nm.” Journal of Nanoparticle Research 20 (12): 322.
-<https://doi.org/10.1007/s11051-018-4397-x>.
+<a href="https://doi.org/10.1007/s11051-018-4397-x" class="uri">https://doi.org/10.1007/s11051-018-4397-x</a>.
 
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
-
 <!-- You can also embed plots, for example: -->
-
 <!-- ```{r pressure, echo = FALSE} -->
-
 <!-- plot(pressure) -->
-
 <!-- ``` -->
-
 <!-- In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN. -->

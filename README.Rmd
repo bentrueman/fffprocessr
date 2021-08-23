@@ -12,6 +12,8 @@ knitr::opts_chunk$set(
   out.width = "100%",
   dpi = 600
 )
+
+# rmarkdown::render("README.Rmd", "md_document")
 ```
 
 # fffprocessr
@@ -152,6 +154,15 @@ where *y* denotes the instantaneous concentration, *x* the retention volume, *h*
 Alternatively, fractograms can be fitted as sums of ordinary Gaussians, or exponentially modified Gaussians of the form 
 
 <!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
+
+```{r}
+
+eqn1 <- "y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)"
+
+katex::math_to_rd(eqn1)
+
+```
+
 ```{r, echo=FALSE, out.width = "60%"}
 knitr::include_graphics("man/figures/CodeCogsEqn_3.png", dpi = 500)
 ```
