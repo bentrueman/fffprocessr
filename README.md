@@ -186,7 +186,14 @@ or exponentially modified Gaussians of the form
     eqn1 <- "y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)"
 
     katex::katex_mathml(eqn1)
-    #> [1] "<span class=\"katex\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>h</mi><mi>σ</mi></mrow><mi>τ</mi></mfrac><msqrt><mfrac><mi>π</mi><mn>2</mn></mfrac></msqrt><mi>e</mi><mi>x</mi><mi>p</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy=\"false\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><msup><mo stretchy=\"false\">)</mo><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>τ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mi>e</mi><mi>r</mi><mi>f</mi><mi>c</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><msqrt><mn>2</mn></msqrt></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>σ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mo fence=\"true\">)</mo></mrow></mrow><annotation encoding=\"application/x-tex\">y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)</annotation></semantics></math></span>"
+
+<span
+class="\"katex\""><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>y</mi><mo>=</mo><mfrac><mrow><mi>h</mi><mi>σ</mi></mrow><mi>τ</mi></mfrac><msqrt><mfrac><mi>π</mi><mn>2</mn></mfrac></msqrt><mi>e</mi><mi>x</mi><mi>p</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy=\"false\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><msup><mo stretchy=\"false\">)</mo><mn>2</mn></msup><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>τ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mi>e</mi><mi>r</mi><mi>f</mi><mi>c</mi><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><msqrt><mn>2</mn></msqrt></mfrac><mrow><mo fence=\"true\">(</mo><mfrac><mi>σ</mi><mi>τ</mi></mfrac><mo>−</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>μ</mi></mrow><mi>σ</mi></mfrac><mo fence=\"true\">)</mo></mrow><mo fence=\"true\">)</mo></mrow></mrow><annotation encoding=\"application/x-tex\">y
+= \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}}
+exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 -
+\\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau}
+-
+\\frac{x-\\mu}{\\sigma}\\right)\\right)</annotation></semantics></math></span>
 
 <img src="man/figures/CodeCogsEqn_3.png" width="60%" />
 
