@@ -35,7 +35,7 @@ load_uv <- function(
   file_list[keep_files] %>%
     rlang::set_names() %>%
     purrr::map_dfr(
-      ~ readr::read_table2(
+      ~ readr::read_table(
         .x, col_names = FALSE,
         col_types = readr::cols(.default = readr::col_character())
       ), .id = "file"

@@ -1,8 +1,14 @@
 
 path <- system.file("extdata", package = "fffprocessr")
-test_that("combine_fff() yields number of rows", {
+test_that("combine_fff() yields same number of rows as load_...() fns", {
+  icp_data <- load_icp(path)
+  uv_data <- load_uv(path, UV254_1, UV254_2, LS90)
   expect_equal(
-    nrow(combine_fff(load_icp(path), load_uv(path, UV254_1))), 11872
+    nrow(combine_fff(icp_data, uv_data)),
+    sum(
+      nrow(dplyr::filter(icp_data, sample != "blank")),
+      nrow(dplyr::filter(uv_data, sample != "blank"))
+    )
   )
 })
 
@@ -12,7 +18,7 @@ test_that("combine_fff() yields expected column means", {
       combine_fff(load_icp(path), load_uv(path, UV254_1, UV254_2, LS90)),
       is.numeric, ~ round(mean(.x), 1)
     ),
-    tibble::tibble(time = 19, conc = .6, three_sigma = .2)
+    tibble::tibble(time = 19, conc = 1.1, three_sigma = .5)
   )
 })
 

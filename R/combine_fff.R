@@ -21,7 +21,9 @@ combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10
   combined <- dplyr::bind_rows(icp, uv) %>%
     # add 3 * sigma detection limit as a new column:
     dplyr::group_by(date, sample, .data$param) %>%
-    dplyr::mutate(blank = dplyr::if_else(sample == "blank" & .data$time > focus, .data$conc, NA_real_)) %>%
+    dplyr::mutate(
+      blank = dplyr::if_else(sample == "blank" & .data$time > focus, .data$conc, NA_real_)
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(date, .data$param) %>%
     dplyr::mutate(three_sigma = 3 * stats::sd(.data$blank, na.rm = TRUE)) %>%
@@ -30,24 +32,30 @@ combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10
 
   out <- if(subtract_blank) {
     combined  %>%
-      tidyr::pivot_wider(-file, names_from = sample, values_from = .data$conc, values_fn = mean) %>%
-      # linear interpolation here:
+      tidyr::pivot_wider(
+        -file, names_from = sample,
+        values_from = .data$conc, values_fn = mean
+      ) %>%
+      # linear interpolation of blank here
+      # (for subtraction when times don't exactly match):
       dplyr::arrange(date, .data$param, .data$time) %>%
       dplyr::group_by(date, .data$param) %>%
       dplyr::mutate_at(
-        dplyr::vars(tidyselect::starts_with("sample_"), tidyselect::matches("^blank$")),
+        dplyr::vars(tidyselect::matches("^blank$")),
         purrr::possibly(imputeTS::na_interpolation, otherwise = NA_real_)
       ) %>%
       dplyr::ungroup() %>%
-      tidyr::pivot_longer(cols = tidyselect::starts_with("sample_"), names_to = "sample", values_to = "conc") %>%
+      tidyr::pivot_longer(
+        cols = tidyselect::starts_with("sample_"),
+        names_to = "sample",
+        values_to = "conc",
+        # next arg makes explicit NAs due to pivot_wider() / pivot_longer() combo implicit:
+        values_drop_na = TRUE
+      ) %>%
       # only subtract blank if it is not NA
-      dplyr::mutate(conc = dplyr::if_else(is.na(.data$blank), .data$conc, .data$conc - .data$blank)) %>%
-      # filter samples that should be implicit NAs due to pivot_wider() / pivot_longer() combo:
-      dplyr::group_by(date, sample, .data$param) %>%
-      dplyr::mutate(test = mean(is.na(.data$conc))) %>%
-      dplyr::filter(.data$test < 1) %>%
-      dplyr::select(-.data$test) %>%
-      dplyr::ungroup()
+      dplyr::mutate(
+        conc = dplyr::if_else(is.na(.data$blank), .data$conc, .data$conc - .data$blank)
+      )
 
   } else combined
 

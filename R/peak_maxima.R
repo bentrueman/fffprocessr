@@ -119,7 +119,13 @@ peak_id_gam <- function(data, focus, k, peaks, group_vars, x_var, y_var) {
 
 peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
 
-  data <- data[!is.na(data[, x_var]) & !is.na(data[, y_var]), ] # remove NAs
+   # remove NAs:
+
+  data <- data %>%
+    dplyr::filter(dplyr::if_all(
+      .cols = tidyselect::matches(tidyselect::all_of(c(x_var, y_var))),
+      .fns = function(x) !is.na(x)
+    ))
 
   peak_tbl <- tibble::tibble()
   peak_list <- list()
