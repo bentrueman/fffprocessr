@@ -68,7 +68,10 @@ load_icp <- function(
       tidyr::pivot_longer(
         cols = tidyselect::matches("^\\d"),
         names_to = "param",
-        values_to = "mean_cps"
+        values_to = "mean_cps",
+        # some files may have different elements than others.
+        # convert these explicit NAs to implicit NAs:
+        values_drop_na = TRUE
       ) %>%
       dplyr::mutate(
         param = stringr::str_extract(.data$param, "\\d+[A-Z][a-z]?"),
