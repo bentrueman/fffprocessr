@@ -42,9 +42,62 @@ load_icp <- function(
 
   calib_file_list <- list.files(path = calib_path, pattern = "*.xlsx", full.names = TRUE)
 
-  if(calibrate & length(calib_file_list) == 0) stop("No calibration files found.")
+  if(calibrate & length(calib_file_list) == 0) stop ("No calibration files found.")
 
-  calib <- if(calibrate & data_format == "x-series II") {
+  calib <- load_calib(
+    calibrate, data_format, date_regex,
+    date_format, calib_file_list
+  )
+
+  # file list:
+
+  file_list <- list.files(path = path, pattern = "*.csv", full.names = TRUE)
+
+  keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
+    stringr::str_detect(file_list, paste(keywords, collapse = "|"))
+  }
+
+  # read data:
+
+  data <- file_list[keep_files] %>%
+    rlang::set_names() %>%
+    purrr::map_dfr(~ read_fun(.x, data_format), .id = "file") %>%
+    dplyr::mutate(
+      date = stringr::str_extract(file, date_regex) %>%
+        as.Date(date_format)
+    )
+
+  out <- if(is.null(calib)) {
+    data %>%
+      dplyr::mutate(conc = .data$cps) %>%
+      dplyr::filter(!is.na(.data$conc))
+  } else {
+    data %>%
+      dplyr::left_join(calib, by = c("date", "param")) %>%
+      dplyr::mutate(conc = .data$coef * .data$cps) %>%
+      dplyr::filter(!is.na(.data$conc))
+  }
+
+  out %>%
+    dplyr::mutate(
+      # extract sample name:
+      sample = stringr::str_replace(file, "(.+)(\\d{4}-\\d{2}-\\d{2}[_-])(.+)(\\.[:alpha:]+)", "\\3"),
+      # rename samples with "blank" in the name:
+      sample = dplyr::if_else(stringr::str_detect(sample, "[bB]lank"), "blank", sample),
+      sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
+    ) %>%
+    dplyr::select(file, .data$sample, date, .data$param, .data$time, .data$conc)
+
+}
+
+load_calib <- function(
+  calibrate,
+  data_format,
+  date_regex,
+  date_format,
+  calib_file_list
+) {
+  if(calibrate & data_format == "x-series II") {
     calib_file_list %>%
       rlang::set_names() %>%
       purrr::map_dfr(readxl::read_excel, .id = "file") %>%
@@ -87,74 +140,32 @@ load_icp <- function(
       ) %>%
       dplyr::ungroup()
   } else NULL
+}
 
-  # file list:
-
-  file_list <- list.files(path = path, pattern = "*.csv", full.names = TRUE)
-
-  keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
-    stringr::str_detect(file_list, paste(keywords, collapse = "|"))
-  }
-
-  # define read function
-
-  read_fun <- function(x) {
-    if(data_format == "x-series II") {
-      metadata <- 1
-      readr::read_csv(x, col_types = readr::cols(.default = readr::col_character())) %>%
-        # remove metadata after column names but before data:
-        dplyr::filter(!dplyr::row_number() %in% seq_len(metadata)) %>%
-        dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
-        tidyr::pivot_longer(
-          cols = tidyselect::matches("^\\d"),
-          names_to = "param", values_to = "cps"
-        ) %>%
-        dplyr::mutate(time = as.numeric(.data$Time) / 6e4) # time in minutes
-    } else if(data_format == "iCAP-RQ") {
-      readr::read_delim(x, delim = ";", skip = 1) %>%
-        dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
-        dplyr::rename_at(
-          dplyr::vars(tidyselect::matches("^\\d")),
-          ~ paste("cps", .x, sep = " ")
-        ) %>%
-        tidyr::pivot_longer(
-          tidyselect::matches("^Time|^cps"),
-          names_to = c(".value", "param"),
-          names_sep = " "
-        ) %>%
-        dplyr::mutate(time = as.numeric(.data$Time) / 60) # time in minutes
-    } else stop("Choose a valid data format ('x-series II' or 'iCAP-RQ')")
-  }
-
-  # read data:
-
-  data <- file_list[keep_files] %>%
-    rlang::set_names() %>%
-    purrr::map_dfr(read_fun, .id = "file") %>%
-    dplyr::mutate(
-      date = stringr::str_extract(file, date_regex) %>%
-        as.Date(date_format)
-    )
-
-  out <- if(is.null(calib)) {
-    data %>%
-      dplyr::mutate(conc = .data$cps) %>%
-      dplyr::filter(!is.na(.data$conc))
-  } else {
-    data %>%
-      dplyr::left_join(calib, by = c("date", "param")) %>%
-      dplyr::mutate(conc = .data$coef * .data$cps) %>%
-      dplyr::filter(!is.na(.data$conc))
-  }
-
-  out %>%
-    dplyr::mutate(
-      # extract sample name:
-      sample = stringr::str_replace(file, "(.+)(\\d{4}-\\d{2}-\\d{2}[_-])(.+)(\\.[:alpha:]+)", "\\3"),
-      # rename samples with "blank" in the name:
-      sample = dplyr::if_else(stringr::str_detect(sample, "[bB]lank"), "blank", sample),
-      sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
-    ) %>%
-    dplyr::select(file, .data$sample, date, .data$param, .data$time, .data$conc)
-
+read_fun <- function(x, data_format) {
+  if(data_format == "x-series II") {
+    metadata <- 1
+    readr::read_csv(x, col_types = readr::cols(.default = readr::col_character())) %>%
+      # remove metadata after column names but before data:
+      dplyr::filter(!dplyr::row_number() %in% seq_len(metadata)) %>%
+      dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
+      tidyr::pivot_longer(
+        cols = tidyselect::matches("^\\d"),
+        names_to = "param", values_to = "cps"
+      ) %>%
+      dplyr::mutate(time = as.numeric(.data$Time) / 6e4) # time in minutes
+  } else if(data_format == "iCAP-RQ") {
+    readr::read_delim(x, delim = ";", skip = 1) %>%
+      dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
+      dplyr::rename_at(
+        dplyr::vars(tidyselect::matches("^\\d")),
+        ~ paste("cps", .x, sep = " ")
+      ) %>%
+      tidyr::pivot_longer(
+        tidyselect::matches("^Time|^cps"),
+        names_to = c(".value", "param"),
+        names_sep = " "
+      ) %>%
+      dplyr::mutate(time = as.numeric(.data$Time) / 60) # time in minutes
+  } else stop("Choose a valid data format ('x-series II' or 'iCAP-RQ')")
 }
