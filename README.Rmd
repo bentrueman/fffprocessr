@@ -250,7 +250,7 @@ deconvolved_emg %>%
   labs(x = "Retention time (min.)", y = "[Fe] (µg/L)", col = NULL, size = NULL)
 ```
 
-Use the `integrate_peak()` function to assign a concentration estimate to each peak. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. 
+Use the `integrate_peak()` function to assign a concentration estimate to each peak. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. Compare integrated peak areas with directly-quantified concentrations (no FFF) using `load_direct_quant()`, which reads and cleans ICP-MS data files generated using the iCAP-RQ.
 
 ```{r}
 deconvolved %>% 

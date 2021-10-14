@@ -1,7 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-fffprocessr
-===========
+# fffprocessr
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -15,8 +14,7 @@ provide users who are new to R with a convenient platform for cleaning
 large field-flow fractionation datasets so that they can get to
 visualization and analysis more quickly.
 
-Installation
-------------
+## Installation
 
 You can install the development version from
 [GitHub](https://github.com/) with:
@@ -24,8 +22,7 @@ You can install the development version from
     # install.packages("remotes")
     remotes::install_github("bentrueman/fffprocessr")
 
-Example
--------
+## Example
 
 ### Loading and cleaning the data
 
@@ -219,7 +216,10 @@ better job:
 
 Use the `integrate_peak()` function to assign a concentration estimate
 to each peak. You’ll have to supply the injection volume (L) and the
-flowrate (L/min) to get a concentration in the expected units.
+flowrate (L/min) to get a concentration in the expected units. Compare
+integrated peak areas with directly-quantified concentrations (no FFF)
+using `load_direct_quant()`, which reads and cleans ICP-MS data files
+generated using the iCAP-RQ.
 
     deconvolved %>% 
       unnest(c(data, starts_with("peak"))) %>% 
@@ -330,7 +330,6 @@ linearity assumption breaks down completely for the largest particles
 For the 350 nm particles, the approach outlined in Watt (2018) yields a
 very good estimate of the true particle size.
 
-
     mals %>% 
       filter(
         time > 39, 
@@ -359,24 +358,23 @@ may also be useful for determining peak retention times.
 
 <img src="man/figures/README-rh-1.png" width="100%" />
 
-References
-----------
+## References
 
 Kammer, F. v. d., M. Baborowski, and K. Friese. 2005. “Field-Flow
 Fractionation Coupled to Multi-Angle Laser Light Scattering Detectors:
 Applicability and Analytical Benefits for the Analysis of Environmental
 Colloids.” Analytica Chimica Acta 552 (1-2): 166–74.
-<a href="https://doi.org/10.1016/j.aca.2005.07.049" class="uri">https://doi.org/10.1016/j.aca.2005.07.049</a>.
+<https://doi.org/10.1016/j.aca.2005.07.049>.
 
 Trueman, Benjamin F., Tim Anaviapik-Soucie, Vincent L’Hérault, and
 Graham A. Gagnon. 2019. “Characterizing Colloidal Metals in Drinking
 Water by Field Flow Fractionation.” Environmental Science: Water
 Research & Technology 5 (12): 2202–9.
-<a href="https://doi.org/10.1039/C9EW00560A" class="uri">https://doi.org/10.1039/C9EW00560A</a>.
+<https://doi.org/10.1039/C9EW00560A>.
 
 Wyatt, Philip J. 2018. “Measuring Nanoparticles in the Size Range to
 2000 nm.” Journal of Nanoparticle Research 20 (12): 322.
-<a href="https://doi.org/10.1007/s11051-018-4397-x" class="uri">https://doi.org/10.1007/s11051-018-4397-x</a>.
+<https://doi.org/10.1007/s11051-018-4397-x>.
 
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
 <!-- You can also embed plots, for example: -->
