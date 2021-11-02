@@ -11,6 +11,7 @@ load_mals(
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
   date_format = "\%Y-\%m-\%d",
   keywords = NULL,
+  angle_names = "ls\\\\d+-\\\\d+",
   ...
 )
 }
@@ -26,6 +27,9 @@ load_mals(
 
 \item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_uv()}
 which files to load. These can be regular expressions.}
+
+\item{angle_names}{A regular expression specifying the naming convention for MALS data files. The default is \verb{ls\\\\d+-\\\\d+},
+or "ls" followed by the range of angles the file contains (e.g., "ls7-20").}
 
 \item{...}{Other arguments passed on to \code{read_table2()}}
 }

@@ -30,6 +30,12 @@ load_uv <- function(
 
   file_list <- list.files(path = path, pattern = "*.txt", full.names = TRUE)
 
+  mals_files <- file_list[stringr::str_detect(file_list, "ls\\d+-\\d+")]
+
+  if(length(mals_files) > 0) warning(
+    "Some filenames include the default naming convention for MALS data (e.g., 'ls7-20')."
+  )
+
   keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
     stringr::str_detect(file_list, paste(keywords, collapse = "|"))
   }

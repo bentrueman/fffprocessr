@@ -9,6 +9,8 @@
 #' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
 #' which files to load. These can be regular expressions.
 #' @param ... Other arguments passed on to `read_table2()`
+#' @param angle_names A regular expression specifying the naming convention for MALS data files. The default is `ls\\d+-\\d+`,
+#' or "ls" followed by the range of angles the file contains (e.g., "ls7-20").
 #'
 #' @return A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
@@ -24,6 +26,7 @@ load_mals <- function(
     90, 100, 108, 116, 124, 132, 140, 148, 156, 164),
   date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d",
   keywords = NULL,
+  angle_names = "ls\\d+-\\d+",
   ...
 ) {
 
@@ -33,6 +36,13 @@ load_mals <- function(
     dplyr::rename_all(~ paste0("v", stringr::str_extract(.x, "\\d+")))
 
   file_list <- list.files(path = path, pattern = ".+\\.txt", full.names = TRUE)
+
+  file_list <- file_list[stringr::str_detect(file_list, angle_names)]
+
+  if(length(file_list) == 0) stop(
+    "No filenames match the naming convention for MALS data.
+    Use 'angle_names=?' to specify a non-default naming scheme."
+  )
 
   keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
     stringr::str_detect(file_list, paste(keywords, collapse = "|"))
