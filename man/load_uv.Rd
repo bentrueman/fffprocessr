@@ -11,7 +11,8 @@ load_uv(
   nm3 = "X6",
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
   date_format = "\%Y-\%m-\%d",
-  keywords = NULL
+  keywords = NULL,
+  ...
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ load_uv(
 
 \item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_uv()}
 which files to load. These can be regular expressions.}
+
+\item{...}{Other arguments passed on to \code{read_table()}}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.

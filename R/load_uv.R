@@ -10,6 +10,7 @@
 #' `date_regex` (see `?strptime`).
 #' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
 #' which files to load. These can be regular expressions.
+#' @param ... Other arguments passed on to `read_table()`
 #'
 #' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom rlang :=
@@ -23,7 +24,8 @@
 load_uv <- function(
   path, nm1 = "X2", nm2 = "X4", nm3 = "X6",
   date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d",
-  keywords = NULL
+  keywords = NULL,
+  ...
 ) {
 
   file_list <- list.files(path = path, pattern = "*.txt", full.names = TRUE)
@@ -32,13 +34,21 @@ load_uv <- function(
     stringr::str_detect(file_list, paste(keywords, collapse = "|"))
   }
 
+  args <- list(...)
+
   file_list[keep_files] %>%
     rlang::set_names() %>%
     purrr::map_dfr(
-      ~ readr::read_table(
-        .x, col_names = FALSE,
-        col_types = readr::cols(.default = readr::col_character())
-      ), .id = "file"
+      ~ do.call(readr::read_table,
+        c(args,
+          list(
+            .x,
+            col_names = FALSE,
+            col_types = readr::cols(.default = readr::col_character())
+          )
+        )
+      ),
+      .id = "file"
     ) %>%
     dplyr::rename(
       time = .data$X1, {{nm1}} := .data$X2,

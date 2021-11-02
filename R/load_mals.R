@@ -8,6 +8,7 @@
 #' `date_regex` (see `?strptime`).
 #' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
 #' which files to load. These can be regular expressions.
+#' @param ... Other arguments passed on to `read_table2()`
 #'
 #' @return A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
@@ -22,7 +23,8 @@ load_mals <- function(
   angles = c(7, 12, 20,  28, 36, 44, 52, 60, 68, 76, 84,
     90, 100, 108, 116, 124, 132, 140, 148, 156, 164),
   date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d",
-  keywords = NULL
+  keywords = NULL,
+  ...
 ) {
 
   angles <- suppressMessages(
@@ -36,6 +38,8 @@ load_mals <- function(
     stringr::str_detect(file_list, paste(keywords, collapse = "|"))
   }
 
+  args <- list(...)
+
  tibble::tibble(file = file_list) %>%
    dplyr::filter(keep_files) %>%
     # extract first of three consecutive angles in each file:
@@ -47,9 +51,15 @@ load_mals <- function(
     dplyr::mutate_at(dplyr::vars(tidyselect::starts_with("v")), ~ paste0("ls", .x)) %>%
     dplyr::mutate(
       data = purrr::map(file,
-        ~ readr::read_table2(
-          .x, col_names = FALSE,
-          col_types = readr::cols(.default = readr::col_character())
+        ~ do.call(
+          readr::read_table2,
+          c(args,
+            list(
+             .x,
+             col_names = FALSE,
+             col_types = readr::cols(.default = readr::col_character())
+            )
+          ),
         )
       ),
       renamed = purrr::pmap(
