@@ -8,6 +8,7 @@ calculate_rg(
   data,
   window = 0.1,
   method = "zimm",
+  order = 2,
   calibration = fffprocessr:::mals_calib
 )
 }
@@ -17,6 +18,8 @@ calculate_rg(
 \item{window}{The time interval on which to return calculated radii.}
 
 \item{method}{Use method "zimm" or "watt". Method "watt" is experimental.}
+
+\item{order}{Order of polynomial fit for method = "watt"}
 
 \item{calibration}{A data frame with three columns: number (angle number), theta (angle), and
 coefficient (MALS instrument calibration constant).}
