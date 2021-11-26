@@ -82,25 +82,7 @@ perform a linear baseline correction with left and right endpoints.
     ) %>% 
       correct_baseline(left = 10, right = 35)
 
-## Integrate the entire fractogram
-
-Integrate the entire fractogram for comparison with an external
-measurement using the function `integrate_peak()`. You’ll have to supply
-the injection volume (L) and the flowrate (L/min) to get a concentration
-in the expected units. Compare integrated peak areas with
-directly-quantified concentrations (no FFF) using `load_direct_quant()`,
-which reads and cleans ICP-MS data files generated using the iCAP-RQ.
-
-    data %>% 
-      filter(
-        time > 10, # exclude the focus period
-        param %in% c("55Mn", "56Fe") # select parameters of interest
-      ) %>% 
-      group_by(sample, param) %>% 
-      summarize(conc_ppb = integrate_peak(time, conc))
-    #> `summarise()` has grouped output by 'sample'. You can override using the `.groups` argument.
-
-## Plot the data
+### Plot the data
 
 Now the data are ready to plot (n.b., `ggplot` code has been simplified
 slightly for this document, and so the plots it generates will not
@@ -114,6 +96,23 @@ appear exactly as they do here).
       geom_line()
 
 <img src="man/figures/README-fff-data-1.png" width="100%" />
+
+### Fractogram integration
+
+Integrate the entire fractogram for comparison with an external
+measurement using the function `integrate_peak()`. You’ll have to supply
+the injection volume (L) and the flowrate (L/min) to get a concentration
+in the expected units. To compare integrated peak areas with
+directly-quantified concentrations (no FFF), use `load_direct_quant()`,
+which reads and cleans ICP-MS data files generated using the iCAP-RQ.
+
+    data %>% 
+      filter(
+        time > 10, # exclude the focus period
+        param %in% c("55Mn", "56Fe") # select parameters of interest
+      ) %>% 
+      group_by(sample, param) %>% 
+      summarize(conc_ppb = integrate_peak(time, conc))
 
 ## Estimating the radius of gyration
 
@@ -375,7 +374,6 @@ Use `integrate_peak()` to assign a concentration estimate to each peak:
       pivot_longer(starts_with("peak"), names_to = "peak") %>% 
       group_by(date, sample, param, peak) %>% 
       summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
-    #> `summarise()` has grouped output by 'date', 'sample', 'param'. You can override using the `.groups` argument.
 
 ## References
 

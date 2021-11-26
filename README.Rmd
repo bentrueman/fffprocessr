@@ -10,6 +10,8 @@ knitr::opts_chunk$set(
   dpi = 600
 )
 
+options(dplyr.summarise.inform = FALSE)
+
 # rmarkdown::render("README.Rmd", "md_document")
 ```
 
@@ -81,23 +83,7 @@ data <- combine_fff(
   correct_baseline(left = 10, right = 35)
 ```
 
-## Integrate the entire fractogram  
-
-Integrate the entire fractogram for comparison with an external measurement using the function `integrate_peak()`. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. Compare integrated peak areas with directly-quantified concentrations (no FFF) using `load_direct_quant()`, which reads and cleans ICP-MS data files generated using the iCAP-RQ.
-
-```{r}
-data %>% 
-  filter(
-    time > 10, # exclude the focus period
-    param %in% c("55Mn", "56Fe") # select parameters of interest
-  ) %>% 
-  group_by(sample, param) %>% 
-  summarize(conc_ppb = integrate_peak(time, conc))
-
-```
-
-
-## Plot the data
+### Plot the data
 
 Now the data are ready to plot (n.b., `ggplot` code has been simplified slightly for this document, and so the plots it generates will not appear exactly as they do here).
 
@@ -125,6 +111,21 @@ data %>%
   scale_colour_manual(values = c("firebrick", "grey")) +
   theme(legend.position = "bottom") + 
   labs(x = "Retention time (min.)", y = "Detector response", col = NULL)
+```
+
+### Fractogram integration  
+
+Integrate the entire fractogram for comparison with an external measurement using the function `integrate_peak()`. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. To compare integrated peak areas with directly-quantified concentrations (no FFF), use `load_direct_quant()`, which reads and cleans ICP-MS data files generated using the iCAP-RQ.
+
+```{r}
+data %>% 
+  filter(
+    time > 10, # exclude the focus period
+    param %in% c("55Mn", "56Fe") # select parameters of interest
+  ) %>% 
+  group_by(sample, param) %>% 
+  summarize(conc_ppb = integrate_peak(time, conc))
+
 ```
 
 ## Estimating the radius of gyration  
