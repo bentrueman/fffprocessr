@@ -102,9 +102,7 @@ appear exactly as they do here).
 Integrate the entire fractogram for comparison with an external
 measurement using the function `integrate_peak()`. You’ll have to supply
 the injection volume (L) and the flowrate (L/min) to get a concentration
-in the expected units. To compare integrated peak areas with
-directly-quantified concentrations (no FFF), use `load_direct_quant()`,
-which reads and cleans ICP-MS data files generated using the iCAP-RQ.
+in the expected units.
 
     data %>% 
       filter(
@@ -113,6 +111,10 @@ which reads and cleans ICP-MS data files generated using the iCAP-RQ.
       ) %>% 
       group_by(sample, param) %>% 
       summarize(conc_ppb = integrate_peak(time, conc))
+
+To compare integrated peak areas with directly-quantified concentrations
+(no FFF), use `load_direct_quant()`, which reads and cleans ICP-MS data
+files generated using the iCAP-RQ.
 
 ## Estimating the radius of gyration
 
@@ -287,9 +289,9 @@ options for output are “time” and “mw”.
 
 ### Peak fitting
 
-The function `deconvolve_fff()` will perform a deconvolution of
-incompletely resolved peaks. It approximates fractograms as the sum of
-skewed Gaussians, each of which takes the following form:
+The function `deconvolve_fff()` will fit component peaks to fractograms
+that are incompletely resolved. By default, it approximates fractograms
+as the sum of skewed Gaussians, each of which takes the following form:
 
 <!-- $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$ -->
 
