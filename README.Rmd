@@ -28,7 +28,7 @@ You can install the development version from [GitHub](https://github.com/) with:
 # install.packages("remotes")
 remotes::install_github("bentrueman/fffprocessr")
 ```
-## Example
+## A basic example
 
 ### Loading and cleaning the data  
 
@@ -81,33 +81,23 @@ data <- combine_fff(
   correct_baseline(left = 10, right = 35)
 ```
 
-Load a molecular weight calibration data file and fit a curve using `calibrate_mw()`. The independent variable is retention time and the dependent variable is the base-10 logarithm of molecular weight. The options for curve type are "linear" and "quadratic".
+## Integrate the entire fractogram  
 
-```{r, message=FALSE}
-# load a calibration curve:
-mw_data <- system.file("extdata/mw_calibration", package = "fffprocessr") %>% 
-  list.files(full.names = TRUE) %>% 
-  read_csv()
-
-mw_data %>% 
-  with(calibrate_mw(peak_retention_time, mw_kda, type = "quadratic", predict = FALSE))
-```
-
-Predict molecular weight using the `predict = TRUE` argument. Or do an "inverse" prediction of time (generally for plotting purposes). The options for output are "time" and "mw".
+Integrate the entire fractogram for comparison with an external measurement using the function `integrate_peak()`. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. Compare integrated peak areas with directly-quantified concentrations (no FFF) using `load_direct_quant()`, which reads and cleans ICP-MS data files generated using the iCAP-RQ.
 
 ```{r}
-mw_data %>% 
-  with(
-    calibrate_mw(
-      peak_retention_time, 
-      mw_kda, 
-      type = "quadratic", # or "linear"
-      newdata = c(1, 10, 100, 1000), # molecular weights (or time if output = "mw")
-      output = "time", # or "mw"
-      predict = TRUE
-    )
-  )
+data %>% 
+  filter(
+    time > 10, # exclude the focus period
+    param %in% c("55Mn", "56Fe") # select parameters of interest
+  ) %>% 
+  group_by(sample, param) %>% 
+  summarize(conc_ppb = integrate_peak(time, conc))
+
 ```
+
+
+## Plot the data
 
 Now the data are ready to plot (n.b., `ggplot` code has been simplified slightly for this document, and so the plots it generates will not appear exactly as they do here).
 
@@ -137,130 +127,7 @@ data %>%
   labs(x = "Retention time (min.)", y = "Detector response", col = NULL)
 ```
 
-### Deconvolution and peak integration  
-
-The function `deconvolve_fff()` will perform a deconvolution of incompletely resolved peaks. It approximates fractograms as the sum of skewed Gaussians, each of which takes the following form:
-
-<!-- $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$ -->
-```{r, echo=FALSE, out.width = "35%"}
-knitr::include_graphics("man/figures/CodeCogsEqn_1.png", dpi = 500)
-```
-
-where *y* denotes the instantaneous concentration, *x* the retention volume, *h* the peak height, *mu* the mean, *sigma* the standard deviation, *gamma* the shape parameter, and *erf* the error function.  
-
-Alternatively, fractograms can be fitted as sums of ordinary Gaussians, or exponentially modified Gaussians of the form 
-
-<!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
-
-```{r, echo=FALSE, out.width = "60%"}
-knitr::include_graphics("man/figures/CodeCogsEqn_3.png", dpi = 500)
-```
-
-where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the other parameters are as defined above.
-
-Users supply initial guesses for the peak height (`h`), mean (`mu`), standard deviation (`s`), and shape parameter (`g`)---see the example below for some reasonable guesses.
-
-```{r, message=FALSE}
-deconvolved <- data %>% 
-  filter(param == "65Cu", time > 10) %>% 
-  group_by(date, param, sample) %>% 
-  nest() %>% 
-  ungroup() %>% 
-  mutate(
-    model = map(
-      data, 
-      ~ deconvolve_fff(
-        .x$time, .x$conc, 
-        # these are the initial guesses for the model parameters
-        h = c(.8, .6, .2), mu = c(11, 14, 20), s = c(1, 1, 1), g = c(1, 2, 5),
-        fn = "skew_gaussian"
-      )
-    ),
-    fitted = map(model, "fitted"),
-    peaks = map(model, "peaks")
-  )
-```
-
-Plot the data, the model, and the component peaks:
-
-```{r, eval=FALSE}
-deconvolved %>% 
-  unnest(c(data, fitted, peaks)) %>% 
-  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
-  ggplot(aes(time, value, col = name)) + 
-  facet_grid(rows = vars(param), cols = vars(sample)) +
-  geom_line()
-```
-
-```{r deconvolve-cu, fig.height=2.5, echo=FALSE}
-deconvolved %>% 
-  unnest(c(data, fitted, peaks)) %>% 
-  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
-  ggplot(aes(time, value, col = name, size = name)) + 
-  facet_wrap(vars(sample)) +
-  scale_colour_manual(
-    values = c("black", "firebrick", "grey", "grey", "grey"), 
-    labels = function(breaks) str_replace(breaks, "conc", "data")
-  ) +
-  scale_size_manual(
-    values = c(1, 2, .5, .5, .5),
-    labels = function(breaks) str_replace(breaks, "conc", "data")
-  ) +
-  geom_line() + 
-  labs(x = "Retention time (min.)", y = "[Cu] (µg/L)", col = NULL, size = NULL)
-```
-
-The exponentially modified Gaussian (`fn = "emg"`) can sometimes do a better job:
-
-```{r message=FALSE}
-deconvolved_emg <- data %>% 
-    filter(param == "56Fe", time > 10, sample == "sample_bennery_raw") %>% 
-    group_by(date, param, sample) %>% 
-    nest() %>% 
-    ungroup() %>% 
-    mutate(
-        model = map(
-            data, 
-            ~ deconvolve_fff(
-                .x$time, .x$conc, 
-                # these are the initial guesses for the model parameters
-                h = c(35, 50, 8), mu = c(14, 20, 28), s = c(1, 1, 1), g = c(1, 1, .5), 
-                fn = "emg"
-            )
-        ),
-        fitted = map(model, "fitted"),
-        peaks = map(model, "peaks")
-    )
-```
-
-```{r deconvolve-fe, fig.height=2.5, echo=FALSE}
-deconvolved_emg %>% 
-  unnest(c(data, fitted, peaks)) %>% 
-  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
-  ggplot(aes(time, value, col = name, size = name)) + 
-  scale_colour_manual(
-    values = c("black", "firebrick", "grey", "grey", "grey"), 
-    labels = function(breaks) str_replace(breaks, "conc", "data")
-  ) +
-  scale_size_manual(
-    values = c(1, 1, .5, .5, .5),
-    labels = function(breaks) str_replace(breaks, "conc", "data")
-  ) +
-  geom_line() + 
-  labs(x = "Retention time (min.)", y = "[Fe] (µg/L)", col = NULL, size = NULL)
-```
-
-Use the `integrate_peak()` function to assign a concentration estimate to each peak. You'll have to supply the injection volume (L) and the flowrate (L/min) to get a concentration in the expected units. Compare integrated peak areas with directly-quantified concentrations (no FFF) using `load_direct_quant()`, which reads and cleans ICP-MS data files generated using the iCAP-RQ.
-
-```{r}
-deconvolved %>% 
-  unnest(c(data, starts_with("peak"))) %>% 
-  pivot_longer(starts_with("peak"), names_to = "peak") %>% 
-  group_by(date, sample, param, peak) %>% 
-  summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
-```
-
-### Estimating the radius of gyration  
+## Estimating the radius of gyration  
 
 To estimate the radius of gyration, *r~g~*, you'll need to load FFF-MALS files at all scattering angles using `load_mals()`. These files should be stored in a separate folder, named as follows: ISO 8601 date (YYYY-MM-DD), underscore, filename, underscore, ls*x*-*y*, where *x* and *y* are the range of three consecutive scattering angles (e.g., 2021-01-23_pockwock_ls7-20.txt for angles 7, 12, and 20). Here we are loading a dataset representing a mixture of latex beads with nominal sizes of 60, 125, and 350 nm.
 
@@ -398,7 +265,7 @@ mals %>%
 
 ```
 
-### Estimating the hydrodynamic radius  
+## Estimating the hydrodynamic radius  
 
 Provided that the cross-flow is constant, use `calculate_rh()` to calculate the hydrodynamic radius. The only input without a default is retention time; the run parameters (cross flow, tip flow, detector flow, focus period, transition time), channel thickness, temperature, and the dynamic viscosity of the carrier solution can all be changed, but for now, the channel dimensions are hard-coded. The function `peak_maxima()` may also be useful for determining peak retention times. 
 
@@ -418,6 +285,161 @@ data %>%
   geom_line() + 
   scale_colour_manual(values = c("firebrick", "grey")) +
   labs(x = "Calculated hydrodynamic diameter (nm)", y = "[Cu] (µg/L)", col = NULL)
+```
+
+## Extras
+
+### Molecular weight calibration 
+
+Load a molecular weight calibration data file and fit a curve using `calibrate_mw()`. The independent variable is retention time and the dependent variable is the base-10 logarithm of molecular weight. The options for curve type are "linear" and "quadratic".
+
+```{r, message=FALSE}
+# load a calibration curve:
+mw_data <- system.file("extdata/mw_calibration", package = "fffprocessr") %>% 
+  list.files(full.names = TRUE) %>% 
+  read_csv()
+
+mw_data %>% 
+  with(calibrate_mw(peak_retention_time, mw_kda, type = "quadratic", predict = FALSE))
+```
+
+Predict molecular weight using the `predict = TRUE` argument. Or do an "inverse" prediction of time (generally for plotting purposes). The options for output are "time" and "mw".
+
+```{r}
+mw_data %>% 
+  with(
+    calibrate_mw(
+      peak_retention_time, 
+      mw_kda, 
+      type = "quadratic", # or "linear"
+      newdata = c(1, 10, 100, 1000), # molecular weights (or time if output = "mw")
+      output = "time", # or "mw"
+      predict = TRUE
+    )
+  )
+```
+
+### Peak fitting 
+
+The function `deconvolve_fff()` will perform a deconvolution of incompletely resolved peaks. It approximates fractograms as the sum of skewed Gaussians, each of which takes the following form:
+
+<!-- $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$ -->
+```{r, echo=FALSE, out.width = "35%"}
+knitr::include_graphics("man/figures/CodeCogsEqn_1.png", dpi = 500)
+```
+
+where *y* denotes the instantaneous concentration, *x* the retention volume, *h* the peak height, *mu* the mean, *sigma* the standard deviation, *gamma* the shape parameter, and *erf* the error function.  
+
+Alternatively, fractograms can be fitted as sums of ordinary Gaussians, or exponentially modified Gaussians of the form 
+
+<!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
+
+```{r, echo=FALSE, out.width = "60%"}
+knitr::include_graphics("man/figures/CodeCogsEqn_3.png", dpi = 500)
+```
+
+where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the other parameters are as defined above.
+
+Users supply initial guesses for the peak height (`h`), mean (`mu`), standard deviation (`s`), and shape parameter (`g`)---see the example below for some reasonable guesses.
+
+```{r, message=FALSE}
+deconvolved <- data %>% 
+  filter(param == "65Cu", time > 10) %>% 
+  group_by(date, param, sample) %>% 
+  nest() %>% 
+  ungroup() %>% 
+  mutate(
+    model = map(
+      data, 
+      ~ deconvolve_fff(
+        .x$time, .x$conc, 
+        # these are the initial guesses for the model parameters
+        h = c(.8, .6, .2), mu = c(11, 14, 20), s = c(1, 1, 1), g = c(1, 2, 5),
+        fn = "skew_gaussian"
+      )
+    ),
+    fitted = map(model, "fitted"),
+    peaks = map(model, "peaks")
+  )
+```
+
+Plot the data, the model, and the component peaks:
+
+```{r, eval=FALSE}
+deconvolved %>% 
+  unnest(c(data, fitted, peaks)) %>% 
+  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
+  ggplot(aes(time, value, col = name)) + 
+  facet_grid(rows = vars(param), cols = vars(sample)) +
+  geom_line()
+```
+
+```{r deconvolve-cu, fig.height=2.5, echo=FALSE}
+deconvolved %>% 
+  unnest(c(data, fitted, peaks)) %>% 
+  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
+  ggplot(aes(time, value, col = name, size = name)) + 
+  facet_wrap(vars(sample)) +
+  scale_colour_manual(
+    values = c("black", "firebrick", "grey", "grey", "grey"), 
+    labels = function(breaks) str_replace(breaks, "conc", "data")
+  ) +
+  scale_size_manual(
+    values = c(1, 2, .5, .5, .5),
+    labels = function(breaks) str_replace(breaks, "conc", "data")
+  ) +
+  geom_line() + 
+  labs(x = "Retention time (min.)", y = "[Cu] (µg/L)", col = NULL, size = NULL)
+```
+
+The exponentially modified Gaussian (`fn = "emg"`) can sometimes do a better job:
+
+```{r message=FALSE}
+deconvolved_emg <- data %>% 
+    filter(param == "56Fe", time > 10, sample == "sample_bennery_raw") %>% 
+    group_by(date, param, sample) %>% 
+    nest() %>% 
+    ungroup() %>% 
+    mutate(
+        model = map(
+            data, 
+            ~ deconvolve_fff(
+                .x$time, .x$conc, 
+                # these are the initial guesses for the model parameters
+                h = c(35, 50, 8), mu = c(14, 20, 28), s = c(1, 1, 1), g = c(1, 1, .5), 
+                fn = "emg"
+            )
+        ),
+        fitted = map(model, "fitted"),
+        peaks = map(model, "peaks")
+    )
+```
+
+```{r deconvolve-fe, fig.height=2.5, echo=FALSE}
+deconvolved_emg %>% 
+  unnest(c(data, fitted, peaks)) %>% 
+  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
+  ggplot(aes(time, value, col = name, size = name)) + 
+  scale_colour_manual(
+    values = c("black", "firebrick", "grey", "grey", "grey"), 
+    labels = function(breaks) str_replace(breaks, "conc", "data")
+  ) +
+  scale_size_manual(
+    values = c(1, 1, .5, .5, .5),
+    labels = function(breaks) str_replace(breaks, "conc", "data")
+  ) +
+  geom_line() + 
+  labs(x = "Retention time (min.)", y = "[Fe] (µg/L)", col = NULL, size = NULL)
+```
+
+Use `integrate_peak()` to assign a concentration estimate to each peak:
+
+```{r}
+deconvolved %>% 
+  unnest(c(data, starts_with("peak"))) %>% 
+  pivot_longer(starts_with("peak"), names_to = "peak") %>% 
+  group_by(date, sample, param, peak) %>% 
+  summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
 ```
 
 ## References  
