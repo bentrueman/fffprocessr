@@ -64,7 +64,7 @@ load_mals <- function(
           readr::read_table,
           c(args,
             list(
-             .x,
+             here::here(.x),
              col_names = FALSE,
              col_types = readr::cols(.default = readr::col_character())
             )

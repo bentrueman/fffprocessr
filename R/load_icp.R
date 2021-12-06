@@ -61,7 +61,7 @@ load_icp <- function(
 
   data <- file_list[keep_files] %>%
     rlang::set_names() %>%
-    purrr::map_dfr(~ read_fun(.x, data_format), .id = "file") %>%
+    purrr::map_dfr(~ read_fun(here::here(.x), data_format), .id = "file") %>%
     dplyr::mutate(
       date = stringr::str_extract(file, date_regex) %>%
         as.Date(date_format)
@@ -100,7 +100,7 @@ load_calib <- function(
   if(calibrate & data_format == "x-series II") {
     calib_file_list %>%
       rlang::set_names() %>%
-      purrr::map_dfr(readxl::read_excel, .id = "file") %>%
+      purrr::map_dfr(~ readxl::read_excel(here::here(.x)), .id = "file") %>%
       dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format)) %>%
       dplyr::filter(!is.na(date)) %>%
       dplyr::group_by(date, param = .data$element) %>%
@@ -109,7 +109,7 @@ load_calib <- function(
   } else if(calibrate & data_format == "iCAP-RQ") {
     calib_file_list %>%
       rlang::set_names() %>%
-      purrr::map_dfr(readxl::read_excel, .id = "file") %>%
+      purrr::map_dfr(~ readxl::read_excel(here::here(.x)), .id = "file") %>%
       dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format)) %>%
       dplyr::filter(!is.na(date)) %>%
       dplyr::mutate(run = stringr::str_extract(.data$Label, "^Wash|^Blank|^Standard.+|^QC.+")) %>%
@@ -145,7 +145,7 @@ load_calib <- function(
 read_fun <- function(x, data_format) {
   if(data_format == "x-series II") {
     metadata <- 1
-    readr::read_csv(x, col_types = readr::cols(.default = readr::col_character())) %>%
+    readr::read_csv(here::here(x), col_types = readr::cols(.default = readr::col_character())) %>%
       # remove metadata after column names but before data:
       dplyr::filter(!dplyr::row_number() %in% seq_len(metadata)) %>%
       dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
@@ -155,7 +155,7 @@ read_fun <- function(x, data_format) {
       ) %>%
       dplyr::mutate(time = as.numeric(.data$Time) / 6e4) # time in minutes
   } else if(data_format == "iCAP-RQ") {
-    readr::read_delim(x, delim = ";", skip = 1) %>%
+    readr::read_delim(here::here(x), delim = ";", skip = 1) %>%
       dplyr::mutate_at(dplyr::vars(tidyselect::matches("^\\d")), as.numeric) %>%
       dplyr::rename_at(
         dplyr::vars(tidyselect::matches("^\\d")),

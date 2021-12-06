@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 
 options(dplyr.summarise.inform = FALSE)
 
-# rmarkdown::render("README.Rmd", "md_document")
+# rmarkdown::render("README.Rmd", "md_document") 
 ```
 
 # fffprocessr
