@@ -48,7 +48,7 @@ load_uv <- function(
       ~ do.call(readr::read_table,
         c(args,
           list(
-            here::here(.x),
+            .x,
             col_names = FALSE,
             col_types = readr::cols(.default = readr::col_character())
           )

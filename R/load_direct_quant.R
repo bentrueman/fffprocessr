@@ -11,7 +11,6 @@
 #' @importFrom dplyr filter transmute
 #' @importFrom stringr str_extract str_remove
 #' @importFrom purrr map_dfr
-#' @importFrom here here
 #' @export
 #'
 #' @examples
@@ -21,7 +20,7 @@ load_direct_quant <- function(path) {
   path %>%
     list.files(pattern = "\\.xlsx$", full.names = TRUE) %>%
     set_names() %>%
-    map_dfr(~ read_excel(here(.x)), .id = "file") %>%
+    map_dfr(read_excel, .id = "file") %>%
     filter(.data$`Sample Type` == "UNKNOWN") %>%
     pivot_longer(matches("^\\d"), names_to = "param") %>%
     transmute(
