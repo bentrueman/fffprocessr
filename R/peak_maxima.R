@@ -90,6 +90,8 @@ peak_maxima <- function(
 
 peak_id_gam <- function(data, focus, k, peaks, group_vars, x_var, y_var) {
 
+  peak_index <- seq_len(peaks)
+
   formula_gam <- glue::glue("{y_var} ~ s({x_var}, bs = 'cs', k = {k})")
 
   data %>%
@@ -112,12 +114,14 @@ peak_id_gam <- function(data, focus, k, peaks, group_vars, x_var, y_var) {
     # select number of peaks, starting with largest
     dplyr::group_by(!!!rlang::syms(group_vars)) %>%
     dplyr::arrange(dplyr::desc(.data[[y_var]])) %>%
-    dplyr::slice(seq_len(peaks)) %>%
+    dplyr::slice(peak_index) %>%
+    dplyr::mutate(peak = peak_index) %>%
     dplyr::ungroup()
-
 }
 
 peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
+
+  peak_index <- seq_len(peaks)
 
    # remove NAs:
 
@@ -173,7 +177,7 @@ peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
   }
 
   peak_tbl %>%
-    dplyr::slice(1:peaks) %>%
+    dplyr::slice(peak_index) %>%
     tibble::rowid_to_column(var = "peak")
 
 }
