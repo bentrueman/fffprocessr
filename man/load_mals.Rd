@@ -24,13 +24,13 @@ load_mals(
 \item{date_format}{An optional non-standard date format corresponding to the output of
 \code{date_regex} (see \code{?strptime}).}
 
-\item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_uv()}
+\item{keywords}{An optional vector of pattern matches to pass to \code{stringr::str_detect()} that tell \code{load_mals()}
 which files to load. These can be regular expressions.}
 
 \item{angle_names}{A regular expression specifying the naming convention for MALS data files. The default is \verb{ls\\\\d+-\\\\d+},
 or "ls" followed by the range of angles the file contains (e.g., "ls7-20").}
 
-\item{...}{Other arguments passed on to \code{read_table2()}}
+\item{...}{Other arguments passed on to \code{read_table()}}
 }
 \value{
 A tibble with the columns 'file', 'date', 'sample', 'param', 'time', and 'conc'.

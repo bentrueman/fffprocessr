@@ -13,7 +13,7 @@
 #' `date_regex` (see `?strptime`).
 #' @param calib_path Optional. Use if the relative path to the ICP-MS calibration files differs
 #' from the relative path to the data files.
-#' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
+#' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_icp()`
 #' which files to load. These can be regular expressions.
 #' @param data_format Selects an appropriate `readr` function based on the data format. Current
 #' options are "x-series II" and "iCAP-RQ".

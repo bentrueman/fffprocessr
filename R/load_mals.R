@@ -6,9 +6,9 @@
 #' @param date_regex An optional regular expression for extracting dates from filenames.
 #' @param date_format An optional non-standard date format corresponding to the output of
 #' `date_regex` (see `?strptime`).
-#' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_uv()`
+#' @param keywords An optional vector of pattern matches to pass to `stringr::str_detect()` that tell `load_mals()`
 #' which files to load. These can be regular expressions.
-#' @param ... Other arguments passed on to `read_table2()`
+#' @param ... Other arguments passed on to `read_table()`
 #' @param angle_names A regular expression specifying the naming convention for MALS data files. The default is `ls\\d+-\\d+`,
 #' or "ls" followed by the range of angles the file contains (e.g., "ls7-20").
 #'
