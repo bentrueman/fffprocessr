@@ -2,7 +2,7 @@
 #' Detect peak maxima
 #'
 #' @param data A tibble returned by `load_icp()`, `load_uv()`, `load_mals()`, or `combine_fff()`
-#' @param focus Focus period, in minutes.
+#' @param focus Peaks occurring at x values less than or equal to this value are not considered. For FFF data, this is the focus period.
 #' @param k The basis dimension of the generalized additive model used to detect peak minima.
 #' @param peaks Number of peaks.
 #' @param n Before detecting peak minima, compute an n-point moving average of the detector response using

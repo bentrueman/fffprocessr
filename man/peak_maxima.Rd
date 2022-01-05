@@ -20,7 +20,7 @@ peak_maxima(
 \arguments{
 \item{data}{A tibble returned by \code{load_icp()}, \code{load_uv()}, \code{load_mals()}, or \code{combine_fff()}}
 
-\item{focus}{Focus period, in minutes.}
+\item{focus}{Peaks occurring at x values less than or equal to this value are not considered. For FFF data, this is the focus period.}
 
 \item{k}{The basis dimension of the generalized additive model used to detect peak minima.}
 
