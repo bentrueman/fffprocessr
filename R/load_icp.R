@@ -42,7 +42,7 @@ load_icp <- function(
 
   calib_file_list <- list.files(path = calib_path, pattern = "*.xlsx", full.names = TRUE)
 
-  if(calibrate & length(calib_file_list) == 0) stop ("No calibration files found.")
+  if(calibrate & length(calib_file_list) == 0) stop("No calibration files found.")
 
   calib <- load_calib(
     calibrate, data_format, date_regex,
@@ -67,6 +67,12 @@ load_icp <- function(
         as.Date(date_format)
     )
 
+  if(
+    calibrate & mean(unique(calib$date) %in% unique(data$date)) == 0
+  ) stop(
+    "No calibration file dates match data file dates"
+  )
+
   out <- if(is.null(calib)) {
     data %>%
       dplyr::mutate(conc = .data$cps) %>%
@@ -78,7 +84,7 @@ load_icp <- function(
       dplyr::filter(!is.na(.data$conc))
   }
 
-  out %>%
+  out_clean <- out %>%
     dplyr::mutate(
       # extract sample name:
       sample = stringr::str_replace(file, "(.+)(\\d{4}-\\d{2}-\\d{2}[_-])(.+)(\\.[:alpha:]+)", "\\3"),
@@ -86,7 +92,12 @@ load_icp <- function(
       sample = dplyr::if_else(stringr::str_detect(sample, "[bB]lank"), "blank", sample),
       sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
     ) %>%
-    dplyr::select(file, .data$sample, date, .data$param, .data$time, .data$conc)
+    dplyr::select(
+      file, .data$sample, date, .data$param,
+      .data$time, .data$conc
+    )
+
+  out_clean
 
 }
 
