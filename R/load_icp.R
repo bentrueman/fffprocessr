@@ -28,7 +28,8 @@
 #' path <- system.file("extdata", package = "fffprocessr")
 #' load_icp(path = path)
 load_icp <- function(
-  path, calibrate = TRUE,
+  path,
+  calibrate = TRUE,
   date_regex = "\\d{4}-\\d{2}-\\d{2}",
   date_format = "%Y-%m-%d",
   calib_path = NULL,
@@ -57,6 +58,16 @@ load_icp <- function(
     stringr::str_detect(file_list, paste(keywords, collapse = "|"))
   }
 
+  file_dates <- file_list[keep_files] %>%
+    stringr::str_extract(date_regex) %>%
+    as.Date(date_format)
+
+  if(
+    calibrate & sum(unique(calib$date) %in% unique(file_dates)) == 0
+  ) stop(
+    "No calibration file dates match data file dates"
+  )
+
   # read data:
 
   data <- file_list[keep_files] %>%
@@ -66,12 +77,6 @@ load_icp <- function(
       date = stringr::str_extract(file, date_regex) %>%
         as.Date(date_format)
     )
-
-  if(
-    calibrate & mean(unique(calib$date) %in% unique(data$date)) == 0
-  ) stop(
-    "No calibration file dates match data file dates"
-  )
 
   out <- if(is.null(calib)) {
     data %>%
