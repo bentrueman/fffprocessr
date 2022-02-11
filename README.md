@@ -72,7 +72,8 @@ the standard deviation of the elution step of blanks collected on that
 date; the user-specified focus step is excluded from this calculation.
 
 After combining the UV-MALS and ICP-MS data, use `correct_baseline()` to
-perform a linear baseline correction with left and right endpoints.
+perform a linear baseline correction, choosing left and right endpoints
+to yield fractograms with zero baselines.
 
     data <- combine_fff(
       icp_data, 
@@ -241,7 +242,7 @@ may also be useful for determining peak retention times.
 
     data %>% 
       filter(param == "65Cu", time > 10.5, time < 16) %>% 
-      mutate(dh = 2 * 1e9 * calculate_rh(time) ) %>% 
+      mutate(dh = 2 * 1e9 * calculate_rh(time)) %>% 
       ggplot(aes(dh, conc, col = sample)) + 
       geom_line()
 

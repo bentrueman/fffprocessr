@@ -71,7 +71,7 @@ Combine the two cleaned data files using `combine_fff()`. Blank subtraction is o
 
 The function also returns a detection limit for each analysis day and parameter (the `three_sigma` column). This is calculated as three times the standard deviation of the elution step of blanks collected on that date; the user-specified focus step is excluded from this calculation. 
 
-After combining the UV-MALS and ICP-MS data, use `correct_baseline()` to perform a linear baseline correction with left and right endpoints.
+After combining the UV-MALS and ICP-MS data, use `correct_baseline()` to perform a linear baseline correction, choosing left and right endpoints to yield fractograms with zero baselines.
 
 ```{r, message=FALSE}
 data <- combine_fff(
@@ -275,7 +275,7 @@ Provided that the cross-flow is constant, use `calculate_rh()` to calculate the 
 ```{r, eval=FALSE}
 data %>% 
   filter(param == "65Cu", time > 10.5, time < 16) %>% 
-  mutate(dh = 2 * 1e9 * calculate_rh(time) ) %>% 
+  mutate(dh = 2 * 1e9 * calculate_rh(time)) %>% 
   ggplot(aes(dh, conc, col = sample)) + 
   geom_line()
 ```
