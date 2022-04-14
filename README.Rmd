@@ -18,6 +18,8 @@ options(dplyr.summarise.inform = FALSE)
 # fffprocessr
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/bentrueman/fffprocessr/workflows/R-CMD-check/badge.svg)](https://github.com/bentrueman/fffprocessr/actions)
+[![Codecov test coverage](https://codecov.io/gh/bentrueman/fffprocessr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bentrueman/fffprocessr?branch=main)
 <!-- badges: end -->
 
 `fffprocessr` is a package for processing field-flow fractionation data. At the Centre for Water Resources Studies (Dalhousie University, CAN) where this package was developed, data are generated using a PostNova AF4 Multiflow 2000 system with UV/Vis, MALS, and ICP-MS detection (see Trueman et al. (2019) for details). The goal of `fffprocessr` is to provide users who are new to R with a convenient platform for cleaning large field-flow fractionation datasets so that they can get to visualization and analysis more quickly.   
