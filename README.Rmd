@@ -170,16 +170,10 @@ mals %>%
 Calculate *r~g~* using `calculate_rg()`, removing data collected at the smallest scattering angle (7&deg;). This function solves the following equation for *r~g~^2^*, the mean squared radius of gyration:
 
 $$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$
-```{r, echo=FALSE, out.width = "35%", eval=FALSE}
-knitr::include_graphics("man/figures/CodeCogsEqn.png", dpi = 500)
-```
 
 where *K* is a constant, *c* and *M* are the concentration and molar mass of the analyte, respectively, *lambda* is the wavelength of the incident light, *theta* is the scattering angle, and *R* is the Rayleigh ratio (the scattering intensity above the baseline). For environmental colloids, *K*, *c*, and *M* are usually unknown. But *r~g~^2^* can be estimated by a linear regression of *1/R* on *sin^2^(theta/2)*. That is,
 
 $$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$
-```{r, echo=FALSE, out.width = "15%", eval=FALSE}
-knitr::include_graphics("man/figures/CodeCogsEqn_2.png", dpi = 500)
-```
 
 where *beta~0~* and *beta~1~* are the intercept and slope of the linear regression. This is the Zimm model; see Kammer et al. (2005) (and references therein) for details (the PostNova AF2000 software manual will also be helpful).  
 
@@ -274,7 +268,7 @@ mals %>%
 
 ## Estimating the hydrodynamic radius  
 
-Provided that the cross-flow is constant, use `calculate_rh()` to calculate the hydrodynamic radius. The only input without a default is retention time; the run parameters (cross flow, tip flow, detector flow, focus period, transition time), channel thickness, temperature, and the dynamic viscosity of the carrier solution can all be changed, but for now, the channel dimensions are hard-coded. The function `peak_maxima()` may also be useful for determining peak retention times. 
+Provided that the cross-flow is constant, use `calculate_rh()` to calculate the hydrodynamic radius. The only input without a default is retention time; the run parameters (cross flow, tip flow, detector flow, focus period, transition time), channel thickness (estimate this using `calculate_w()`), temperature, and the dynamic viscosity of the carrier solution can all be changed, but for now, the channel dimensions are hard-coded. The function `peak_maxima()` may also be useful for determining peak retention times. 
 
 ```{r, eval=FALSE}
 data %>% 
@@ -331,19 +325,11 @@ mw_data %>%
 The function `deconvolve_fff()` will fit component peaks to fractograms that are incompletely resolved. By default, it approximates fractograms as the sum of skewed Gaussians, each of which takes the following form:
 
 $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$
-```{r, echo=FALSE, out.width = "35%", eval=FALSE}
-knitr::include_graphics("man/figures/CodeCogsEqn_1.png", dpi = 500)
-```
-
 where *y* denotes the instantaneous concentration, *x* the retention volume, *h* the peak height, *mu* the mean, *sigma* the standard deviation, *gamma* the shape parameter, and *erf* the error function.  
 
 Alternatively, fractograms can be fitted as sums of ordinary Gaussians, or exponentially modified Gaussians of the form 
 
 $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$
-
-```{r, echo=FALSE, out.width = "60%", eval=FALSE}
-knitr::include_graphics("man/figures/CodeCogsEqn_3.png", dpi = 500)
-```
 
 where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the other parameters are as defined above.
 

@@ -311,10 +311,11 @@ mals %>%
 Provided that the cross-flow is constant, use `calculate_rh()` to
 calculate the hydrodynamic radius. The only input without a default is
 retention time; the run parameters (cross flow, tip flow, detector flow,
-focus period, transition time), channel thickness, temperature, and the
-dynamic viscosity of the carrier solution can all be changed, but for
-now, the channel dimensions are hard-coded. The function `peak_maxima()`
-may also be useful for determining peak retention times.
+focus period, transition time), channel thickness (estimate this using
+`calculate_w()`), temperature, and the dynamic viscosity of the carrier
+solution can all be changed, but for now, the channel dimensions are
+hard-coded. The function `peak_maxima()` may also be useful for
+determining peak retention times.
 
 ``` r
 data %>% 
