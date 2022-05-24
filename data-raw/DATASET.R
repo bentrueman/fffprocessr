@@ -27,3 +27,13 @@ mals_calib <- tibble::tribble(
   20,   156,  0.00158798,
   21,   164,  0.00202189
 )
+
+chamber_dims <- list(
+  L = 27.75, # channel length (cm) (measured)
+  # next three params defined in https://doi.org/10.1016/j.chroma.2018.04.056
+  b1 = 2, # cm (measured)
+  b2 = .5, # cm (measured)
+  z1 = 3.4 # cm (measured)
+)
+
+usethis::use_data(mals_calib, chamber_dims, internal = TRUE, overwrite = TRUE)

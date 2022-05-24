@@ -1,3 +1,4 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # fffprocessr
@@ -23,8 +24,10 @@ visualization and analysis more quickly.
 You can install the development version from
 [GitHub](https://github.com/) with:
 
-    # install.packages("remotes")
-    remotes::install_github("bentrueman/fffprocessr")
+``` r
+# install.packages("remotes")
+remotes::install_github("bentrueman/fffprocessr")
+```
 
 ## A basic example
 
@@ -33,8 +36,10 @@ You can install the development version from
 You will need the `tidyverse` package for this example, which can be
 installed using `install.packages("tidyverse")`.
 
-    library("fffprocessr")
-    library("tidyverse")
+``` r
+library("fffprocessr")
+library("tidyverse")
+```
 
 `fffprocessr` includes external data which we use here to demonstrate
 the loading functions. The external data folder should contain ICP-MS
@@ -45,14 +50,32 @@ filename (e.g., 2021-01-23\_pockwock.csv). Sample names that include the
 word “blank” will be treated as blanks. Determine the path to the
 external data as follows:
 
-    system.file("extdata", package = "fffprocessr")
+``` r
+system.file("extdata", package = "fffprocessr")
+```
 
 ICP-MS data files are loaded using the `load_icp()` function. If ICP-MS
 calibration files are available, use `calibrate = TRUE`.
 
-    icp_data <- system.file("extdata", package = "fffprocessr") %>% 
-      load_icp(calibrate = TRUE) 
-    icp_data
+``` r
+icp_data <- system.file("extdata", package = "fffprocessr") %>% 
+  load_icp(calibrate = TRUE) 
+icp_data
+#> # A tibble: 8,445 × 6
+#>    file                                   sample date       param   time    conc
+#>    <chr>                                  <chr>  <date>     <chr>  <dbl>   <dbl>
+#>  1 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 27Al  0      4.98e+1
+#>  2 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 55Mn  0      4.86e-1
+#>  3 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 56Fe  0      2.99e+0
+#>  4 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 65Cu  0      3.99e-1
+#>  5 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 238U  0      1.22e-3
+#>  6 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 27Al  0.0674 4.91e+1
+#>  7 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 55Mn  0.0674 5.37e-1
+#>  8 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 56Fe  0.0674 2.92e+0
+#>  9 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 65Cu  0.0674 3.72e-1
+#> 10 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 238U  0.0674 3.06e-4
+#> # … with 8,435 more rows
+```
 
 UV-MALS data files (e.g., UV detector output and 1–2 MALS detector
 outputs) are loaded using the `load_uv()` function. Only named detector
@@ -61,9 +84,25 @@ detector followed by wavelength or angle, as in UV254 or LS90. Don’t
 name columns “X” followed by a number, or they won’t show up in the
 output.
 
-    uv_data <- system.file("extdata", package = "fffprocessr") %>% 
-      load_uv(UV254_1, UV254_2, LS90) # name channels in order from left to right
-    uv_data
+``` r
+uv_data <- system.file("extdata", package = "fffprocessr") %>% 
+  load_uv(UV254_1, UV254_2, LS90) # name channels in order from left to right
+uv_data
+#> # A tibble: 9,363 × 6
+#>    file                                    sample date       param   time   conc
+#>    <chr>                                   <chr>  <date>     <chr>  <dbl>  <dbl>
+#>  1 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0173 0.0964
+#>  2 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0173 0.0720
+#>  3 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 LS90  0.0173 0.196 
+#>  4 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0538 0.0963
+#>  5 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0538 0.0722
+#>  6 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 LS90  0.0538 0.196 
+#>  7 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0902 0.0964
+#>  8 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0902 0.0722
+#>  9 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 LS90  0.0902 0.196 
+#> 10 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.127  0.0964
+#> # … with 9,353 more rows
+```
 
 Combine the two cleaned data files using `combine_fff()`. Blank
 subtraction is optional, and it relies on linear interpolation when the
@@ -79,13 +118,15 @@ After combining the UV-MALS and ICP-MS data, use `correct_baseline()` to
 perform a linear baseline correction, choosing left and right endpoints
 to yield fractograms with zero baselines.
 
-    data <- combine_fff(
-      icp_data, 
-      uv_data,
-      subtract_blank = TRUE,
-      focus = 10
-    ) %>% 
-      correct_baseline(left = 10, right = 35)
+``` r
+data <- combine_fff(
+  icp_data, 
+  uv_data,
+  subtract_blank = TRUE,
+  focus = 10
+) %>% 
+  correct_baseline(left = 10, right = 35)
+```
 
 ### Plot the data
 
@@ -93,12 +134,14 @@ Now the data are ready to plot (n.b., `ggplot` code has been simplified
 slightly for this document, and so the plots it generates will not
 appear exactly as they do here).
 
-    data %>% 
-      filter(time > 5, time < 37.5) %>% 
-      ggplot(aes(time, conc, col = sample)) + 
-      facet_wrap(vars(param), scales = "free_y", ncol = 2) + 
-      geom_hline(yintercept = 0, col = "grey", linetype = 3) +
-      geom_line()
+``` r
+data %>% 
+  filter(time > 5, time < 37.5) %>% 
+  ggplot(aes(time, conc, col = sample)) + 
+  facet_wrap(vars(param), scales = "free_y", ncol = 2) + 
+  geom_hline(yintercept = 0, col = "grey", linetype = 3) +
+  geom_line()
+```
 
 <img src="man/figures/README-fff-data-1.png" width="100%" />
 
@@ -109,13 +152,23 @@ measurement using the function `integrate_peak()`. You’ll have to supply
 the injection volume (L) and the flowrate (L/min) to get a concentration
 in the expected units.
 
-    data %>% 
-      filter(
-        time > 10, # exclude the focus period
-        param %in% c("55Mn", "56Fe") # select parameters of interest
-      ) %>% 
-      group_by(sample, param) %>% 
-      summarize(conc_ppb = integrate_peak(time, conc))
+``` r
+data %>% 
+  filter(
+    time > 10, # exclude the focus period
+    param %in% c("55Mn", "56Fe") # select parameters of interest
+  ) %>% 
+  group_by(sample, param) %>% 
+  summarize(conc_ppb = integrate_peak(time, conc))
+#> # A tibble: 4 × 3
+#> # Groups:   sample [2]
+#>   sample             param conc_ppb
+#>   <chr>              <chr>    <dbl>
+#> 1 sample_bennery_raw 55Mn     7.78 
+#> 2 sample_bennery_raw 56Fe   342.   
+#> 3 sample_jdk_raw     55Mn     0.847
+#> 4 sample_jdk_raw     56Fe    71.1
+```
 
 To compare integrated peak areas with directly-quantified concentrations
 (no FFF), use `load_direct_quant()`, which reads and cleans ICP-MS data
@@ -132,17 +185,21 @@ should be stored in a separate folder, named as follows: ISO 8601 date
 loading a dataset representing a mixture of latex beads with nominal
 sizes of 60, 125, and 350 nm.
 
-    mals <- system.file("extdata/mals", package = "fffprocessr") %>% 
-      load_mals() %>% 
-      correct_baseline(4, 65)
+``` r
+mals <- system.file("extdata/mals", package = "fffprocessr") %>% 
+  load_mals() %>% 
+  correct_baseline(4, 65)
+```
 
 Plot the data:
 
-    mals %>% 
-      ggplot(aes(time, conc)) + 
-      facet_wrap(vars(param), scales = "free_y") + 
-      geom_hline(yintercept = 0, col = "grey", linetype = 3) +
-      geom_line()
+``` r
+mals %>% 
+  ggplot(aes(time, conc)) + 
+  facet_wrap(vars(param), scales = "free_y") + 
+  geom_hline(yintercept = 0, col = "grey", linetype = 3) +
+  geom_line()
+```
 
 <img src="man/figures/README-fff-mals-1.png" width="100%" />
 
@@ -151,9 +208,7 @@ collected at the smallest scattering angle (7°). This function solves
 the following equation for *r<sub>g</sub><sup>2</sup>*, the mean squared
 radius of gyration:
 
-<!-- $$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$ -->
-
-<img src="man/figures/CodeCogsEqn.png" width="35%" />
+![\\frac{Kc}{R(\\theta)} = \\frac{1}{M} + \\frac{\\langle{r^2\_g}\\rangle}{3M}\\left\[\\frac{4\\pi}{\\lambda}sin(\\frac{\\theta}{2})\\right\]^2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cfrac%7BKc%7D%7BR%28%5Ctheta%29%7D%20%3D%20%5Cfrac%7B1%7D%7BM%7D%20%2B%20%5Cfrac%7B%5Clangle%7Br%5E2_g%7D%5Crangle%7D%7B3M%7D%5Cleft%5B%5Cfrac%7B4%5Cpi%7D%7B%5Clambda%7Dsin%28%5Cfrac%7B%5Ctheta%7D%7B2%7D%29%5Cright%5D%5E2 "\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2")
 
 where *K* is a constant, *c* and *M* are the concentration and molar
 mass of the analyte, respectively, *lambda* is the wavelength of the
@@ -163,31 +218,33 @@ colloids, *K*, *c*, and *M* are usually unknown. But
 *r<sub>g</sub><sup>2</sup>* can be estimated by a linear regression of
 *1/R* on *sin<sup>2</sup>(theta/2)*. That is,
 
-<!-- $$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$-->
-
-<img src="man/figures/CodeCogsEqn_2.png" width="15%" />
+![\\langle{r^2\_g}\\rangle = \\frac{3\\beta\_1\\lambda^2}{16\\beta\_0\\pi^2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clangle%7Br%5E2_g%7D%5Crangle%20%3D%20%5Cfrac%7B3%5Cbeta_1%5Clambda%5E2%7D%7B16%5Cbeta_0%5Cpi%5E2%7D "\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}")
 
 where *beta<sub>0</sub>* and *beta<sub>1</sub>* are the intercept and
 slope of the linear regression. This is the Zimm model; see Kammer et
 al. (2005) (and references therein) for details (the PostNova AF2000
 software manual will also be helpful).
 
-    mals_rg <- mals %>% 
-      filter(
-        time > 10, 
-        param != "ls7"
-      ) %>% 
-      calculate_rg(window = .05, method = "zimm")
+``` r
+mals_rg <- mals %>% 
+  filter(
+    time > 10, 
+    param != "ls7"
+  ) %>% 
+  calculate_rg(window = .05, method = "zimm")
+```
 
 Plot the estimated *r<sub>g</sub>* and the 90° light scattering signal:
 
-    mals_rg %>% 
-      filter(param == "ls90") %>% 
-      pivot_longer(c(rg_zimm, conc)) %>% 
-      ggplot(aes(time, value)) + 
-      facet_wrap(vars(name), scales = "free_y") +
-      geom_point() +
-      geom_hline(yintercept = 0, col = "grey", linetype = 3)
+``` r
+mals_rg %>% 
+  filter(param == "ls90") %>% 
+  pivot_longer(c(rg_zimm, conc)) %>% 
+  ggplot(aes(time, value)) + 
+  facet_wrap(vars(name), scales = "free_y") +
+  geom_point() +
+  geom_hline(yintercept = 0, col = "grey", linetype = 3)
+```
 
 <img src="man/figures/README-rg-1.png" width="100%" />
 
@@ -198,41 +255,56 @@ and so while the Zimm model is recommended for environmental particles
 in this size range (Kammer et al., 2005), other models would likely
 perform better for this sample.
 
-    mals_rg %>% 
-      filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
-      distinct(timeslice, rg_zimm) %>% 
-      mutate(d_geom = 2 * rg_zimm / sqrt(3/5))
+``` r
+mals_rg %>% 
+  filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
+  distinct(timeslice, rg_zimm) %>% 
+  mutate(d_geom = 2 * rg_zimm / sqrt(3/5))
+#> # A tibble: 3 × 3
+#>   timeslice rg_zimm d_geom
+#>       <dbl>   <dbl>  <dbl>
+#> 1      17.1    31.9   82.2
+#> 2      24.1    63.2  163. 
+#> 3      40      70.9  183.
+```
 
 Here are the Zimm plots at time slices representing each peak. The
 linearity assumption breaks down completely for the largest particles
 (350 nm diameter, `timeslice == 40`).
 
-    mals_rg %>% 
-      filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
-      mutate(
-        x = sin(pi * theta / 360) ^ 2,
-        y = 1 / rayleigh_ratio
-      ) %>% 
-      ggplot(aes(x, y)) + 
-      facet_wrap(vars(timeslice), scales = "free_y") + 
-      geom_smooth(method = "lm") +
-      geom_point()
+``` r
+mals_rg %>% 
+  filter(timeslice %in% c(17.1, 24.1, 40)) %>% 
+  mutate(
+    x = sin(pi * theta / 360) ^ 2,
+    y = 1 / rayleigh_ratio
+  ) %>% 
+  ggplot(aes(x, y)) + 
+  facet_wrap(vars(timeslice), scales = "free_y") + 
+  geom_smooth(method = "lm") +
+  geom_point()
+```
 
 <img src="man/figures/README-zimm-1.png" width="100%" />
 
 For the 350 nm particles, the approach outlined in Watt (2018) yields a
 very good estimate of the true particle size.
 
-
-    mals %>% 
-      filter(
-        time > 39, 
-        param != "ls7"
-      ) %>% 
-      calculate_rg(window = .05, method = "watt") %>% 
-      filter(timeslice == 40) %>% 
-      distinct(rg_watt) %>% 
-      mutate(d_geom = 2 * rg_watt / sqrt(3/5))
+``` r
+mals %>% 
+  filter(
+    time > 39, 
+    param != "ls7"
+  ) %>% 
+  calculate_rg(window = .05, method = "watt") %>% 
+  filter(timeslice == 40) %>% 
+  distinct(rg_watt) %>% 
+  mutate(d_geom = 2 * rg_watt / sqrt(3/5))
+#> # A tibble: 1 × 2
+#>   rg_watt d_geom
+#>     <dbl>  <dbl>
+#> 1    135.   349.
+```
 
 ## Estimating the hydrodynamic radius
 
@@ -244,11 +316,13 @@ dynamic viscosity of the carrier solution can all be changed, but for
 now, the channel dimensions are hard-coded. The function `peak_maxima()`
 may also be useful for determining peak retention times.
 
-    data %>% 
-      filter(param == "65Cu", time > 10.5, time < 16) %>% 
-      mutate(dh = 2 * 1e9 * calculate_rh(time)) %>% 
-      ggplot(aes(dh, conc, col = sample)) + 
-      geom_line()
+``` r
+data %>% 
+  filter(param == "65Cu", time > 10.5, time < 16) %>% 
+  mutate(dh = 2 * 1e9 * calculate_rh(time)) %>% 
+  ggplot(aes(dh, conc, col = sample)) + 
+  geom_line()
+```
 
 <img src="man/figures/README-rh-1.png" width="100%" />
 
@@ -261,37 +335,41 @@ Load a molecular weight calibration data file and fit a curve using
 dependent variable is the base-10 logarithm of molecular weight. The
 options for curve type are “linear” and “quadratic”.
 
-    # load a calibration curve:
-    mw_data <- system.file("extdata/mw_calibration", package = "fffprocessr") %>% 
-      list.files(full.names = TRUE) %>% 
-      read_csv()
+``` r
+# load a calibration curve:
+mw_data <- system.file("extdata/mw_calibration", package = "fffprocessr") %>% 
+  list.files(full.names = TRUE) %>% 
+  read_csv()
 
-    mw_data %>% 
-      with(calibrate_mw(peak_retention_time, mw_kda, type = "quadratic", predict = FALSE))
-    #> 
-    #> Call:
-    #> stats::lm(formula = log10(mw) ~ time + I(time^2))
-    #> 
-    #> Coefficients:
-    #> (Intercept)         time    I(time^2)  
-    #>     7.20192     -1.23814      0.05242
+mw_data %>% 
+  with(calibrate_mw(peak_retention_time, mw_kda, type = "quadratic", predict = FALSE))
+#> 
+#> Call:
+#> stats::lm(formula = log10(mw) ~ time + I(time^2))
+#> 
+#> Coefficients:
+#> (Intercept)         time    I(time^2)  
+#>     7.20192     -1.23814      0.05242
+```
 
 Predict molecular weight using the `predict = TRUE` argument. Or do an
 “inverse” prediction of time (generally for plotting purposes). The
 options for output are “time” and “mw”.
 
-    mw_data %>% 
-      with(
-        calibrate_mw(
-          peak_retention_time, 
-          mw_kda, 
-          type = "quadratic", # or "linear"
-          newdata = c(1, 10, 100, 1000), # molecular weights (or time if output = "mw")
-          output = "time", # or "mw"
-          predict = TRUE
-        )
-      )
-    #> [1] 13.25712 16.41176 18.15480 19.51300
+``` r
+mw_data %>% 
+  with(
+    calibrate_mw(
+      peak_retention_time, 
+      mw_kda, 
+      type = "quadratic", # or "linear"
+      newdata = c(1, 10, 100, 1000), # molecular weights (or time if output = "mw")
+      output = "time", # or "mw"
+      predict = TRUE
+    )
+  )
+#> [1] 13.25712 16.41176 18.15480 19.51300
+```
 
 ### Peak fitting
 
@@ -299,9 +377,7 @@ The function `deconvolve_fff()` will fit component peaks to fractograms
 that are incompletely resolved. By default, it approximates fractograms
 as the sum of skewed Gaussians, each of which takes the following form:
 
-<!-- $$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$ -->
-
-<img src="man/figures/CodeCogsEqn_1.png" width="35%" />
+![y = h e^{-\\frac{(x-\\mu)^2}{2\\sigma}} (1 + erf(\\gamma\\frac{(x-\\mu)}{\\sqrt{2} \\sigma}))](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y%20%3D%20h%20e%5E%7B-%5Cfrac%7B%28x-%5Cmu%29%5E2%7D%7B2%5Csigma%7D%7D%20%281%20%2B%20erf%28%5Cgamma%5Cfrac%7B%28x-%5Cmu%29%7D%7B%5Csqrt%7B2%7D%20%5Csigma%7D%29%29 "y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))")
 
 where *y* denotes the instantaneous concentration, *x* the retention
 volume, *h* the peak height, *mu* the mean, *sigma* the standard
@@ -310,9 +386,7 @@ deviation, *gamma* the shape parameter, and *erf* the error function.
 Alternatively, fractograms can be fitted as sums of ordinary Gaussians,
 or exponentially modified Gaussians of the form
 
-<!-- $$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$ -->
-
-<img src="man/figures/CodeCogsEqn_3.png" width="60%" />
+![y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y%20%3D%20%5Cfrac%7Bh%5Csigma%7D%7B%5Ctau%7D%5Csqrt%7B%5Cfrac%7B%5Cpi%7D%7B2%7D%7D%20exp%5Cleft%28%5Cfrac%7B1%7D%7B2%7D%28%5Cfrac%7B%5Csigma%7D%7B%5Ctau%7D%29%5E2%20-%20%5Cfrac%7Bx-%5Cmu%7D%7B%5Ctau%7D%5Cright%29erfc%5Cleft%28%5Cfrac%7B1%7D%7B%5Csqrt%7B2%7D%7D%5Cleft%28%5Cfrac%7B%5Csigma%7D%7B%5Ctau%7D%20-%20%5Cfrac%7Bx-%5Cmu%7D%7B%5Csigma%7D%5Cright%29%5Cright%29 "y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)")
 
 where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the
 other parameters are as defined above.
@@ -321,67 +395,85 @@ Users supply initial guesses for the peak height (`h`), mean (`mu`),
 standard deviation (`s`), and shape parameter (`g`)—see the example
 below for some reasonable guesses.
 
-    deconvolved <- data %>% 
-      filter(param == "65Cu", time > 10) %>% 
-      group_by(date, param, sample) %>% 
-      nest() %>% 
-      ungroup() %>% 
-      mutate(
-        model = map(
-          data, 
-          ~ deconvolve_fff(
-            .x$time, .x$conc, 
-            # these are the initial guesses for the model parameters
-            h = c(.8, .6, .2), mu = c(11, 14, 20), s = c(1, 1, 1), g = c(1, 2, 5),
-            fn = "skew_gaussian"
-          )
-        ),
-        fitted = map(model, "fitted"),
-        peaks = map(model, "peaks")
+``` r
+deconvolved <- data %>% 
+  filter(param == "65Cu", time > 10) %>% 
+  group_by(date, param, sample) %>% 
+  nest() %>% 
+  ungroup() %>% 
+  mutate(
+    model = map(
+      data, 
+      ~ deconvolve_fff(
+        .x$time, .x$conc, 
+        # these are the initial guesses for the model parameters
+        h = c(.8, .6, .2), mu = c(11, 14, 20), s = c(1, 1, 1), g = c(1, 2, 5),
+        fn = "skew_gaussian"
       )
+    ),
+    fitted = map(model, "fitted"),
+    peaks = map(model, "peaks")
+  )
+```
 
 Plot the data, the model, and the component peaks:
 
-    deconvolved %>% 
-      unnest(c(data, fitted, peaks)) %>% 
-      pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
-      ggplot(aes(time, value, col = name)) + 
-      facet_grid(rows = vars(param), cols = vars(sample)) +
-      geom_line()
+``` r
+deconvolved %>% 
+  unnest(c(data, fitted, peaks)) %>% 
+  pivot_longer(c(conc, fitted, starts_with("peak"))) %>% 
+  ggplot(aes(time, value, col = name)) + 
+  facet_grid(rows = vars(param), cols = vars(sample)) +
+  geom_line()
+```
 
 <img src="man/figures/README-deconvolve-cu-1.png" width="100%" />
 
 The exponentially modified Gaussian (`fn = "emg"`) can sometimes do a
 better job:
 
-    deconvolved_emg <- data %>% 
-        filter(param == "56Fe", time > 10, sample == "sample_bennery_raw") %>% 
-        group_by(date, param, sample) %>% 
-        nest() %>% 
-        ungroup() %>% 
-        mutate(
-            model = map(
-                data, 
-                ~ deconvolve_fff(
-                    .x$time, .x$conc, 
-                    # these are the initial guesses for the model parameters
-                    h = c(35, 50, 8), mu = c(14, 20, 28), s = c(1, 1, 1), g = c(1, 1, .5), 
-                    fn = "emg"
-                )
-            ),
-            fitted = map(model, "fitted"),
-            peaks = map(model, "peaks")
-        )
+``` r
+deconvolved_emg <- data %>% 
+    filter(param == "56Fe", time > 10, sample == "sample_bennery_raw") %>% 
+    group_by(date, param, sample) %>% 
+    nest() %>% 
+    ungroup() %>% 
+    mutate(
+        model = map(
+            data, 
+            ~ deconvolve_fff(
+                .x$time, .x$conc, 
+                # these are the initial guesses for the model parameters
+                h = c(35, 50, 8), mu = c(14, 20, 28), s = c(1, 1, 1), g = c(1, 1, .5), 
+                fn = "emg"
+            )
+        ),
+        fitted = map(model, "fitted"),
+        peaks = map(model, "peaks")
+    )
+```
 
 <img src="man/figures/README-deconvolve-fe-1.png" width="100%" />
 
 Use `integrate_peak()` to assign a concentration estimate to each peak:
 
-    deconvolved %>% 
-      unnest(c(data, starts_with("peak"))) %>% 
-      pivot_longer(starts_with("peak"), names_to = "peak") %>% 
-      group_by(date, sample, param, peak) %>% 
-      summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
+``` r
+deconvolved %>% 
+  unnest(c(data, starts_with("peak"))) %>% 
+  pivot_longer(starts_with("peak"), names_to = "peak") %>% 
+  group_by(date, sample, param, peak) %>% 
+  summarize(conc_ppb = integrate_peak(time, value, injvol = 0.001, flowrate = 0.001))
+#> # A tibble: 6 × 5
+#> # Groups:   date, sample, param [2]
+#>   date       sample             param peak  conc_ppb
+#>   <date>     <chr>              <chr> <chr>    <dbl>
+#> 1 2021-03-16 sample_bennery_raw 65Cu  peak1    0.581
+#> 2 2021-03-16 sample_bennery_raw 65Cu  peak2    5.45 
+#> 3 2021-03-16 sample_bennery_raw 65Cu  peak3    3.78 
+#> 4 2021-03-16 sample_jdk_raw     65Cu  peak1    0.615
+#> 5 2021-03-16 sample_jdk_raw     65Cu  peak2    2.31 
+#> 6 2021-03-16 sample_jdk_raw     65Cu  peak3    2.38
+```
 
 ## References
 
@@ -402,8 +494,3 @@ Wyatt, Philip J. 2018. “Measuring Nanoparticles in the Size Range to
 <https://doi.org/10.1007/s11051-018-4397-x>.
 
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
-<!-- You can also embed plots, for example: -->
-<!-- ```{r pressure, echo = FALSE} -->
-<!-- plot(pressure) -->
-<!-- ``` -->
-<!-- In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN. -->

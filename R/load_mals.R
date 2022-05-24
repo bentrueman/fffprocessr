@@ -22,7 +22,7 @@
 #' load_mals(path = path)
 load_mals <- function(
   path,
-  angles = fffprocessr:::angles,
+  angles = fffprocessr:::mals_calib$theta,
   date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d",
   keywords = NULL,
   angle_names = "ls\\d+-\\d+",

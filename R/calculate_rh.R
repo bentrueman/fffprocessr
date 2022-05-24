@@ -10,6 +10,8 @@
 #' @param Vin Injection flow rate, in L/min.
 #' @param temp Temperature, degrees Celsius.
 #' @param eta Dynamic viscosity, in N * s / m^2.
+#' @param dims A list with the elements `L`, `b1`, `b2`, and `z1`,
+#' as defined in https://doi.org/10.1016/j.chroma.2018.04.056 (units of cm).
 #'
 #' @return A vector of hydrodynamic radii in metres.
 #' @export
@@ -27,17 +29,18 @@ calculate_rh <- function(
   Vin = 0.0005, # injection flow (L/min)
   temp = 25, # temperature (degrees C)
   # predict viscosity using https://doi.org/10.1002/cjce.5450710617
-  eta = 8.9e-4 # dynamic viscosity of pure water at 25 deg. C (N * s / m^2 at 26 deg C)
+  eta = 8.9e-4, # dynamic viscosity of pure water at 25 deg. C (N * s / m^2 at 26 deg C)
+  dims = fffprocessr:::chamber_dims
 ) {
 
   # calculate zfoc (https://doi.org/10.1016/j.chroma.2018.04.056)
 
   ## AF42000 channel properties (some depend on Vin / Vc):
-  L <- 27.75 # channel length (cm) (measured)
+  L <- dims$L # channel length (cm) (measured)
   # next six params defined in https://doi.org/10.1016/j.chroma.2018.04.056
-  b1 <- 2 # cm (measured)
-  b2 <- .5 # cm (measured)
-  z1 <- 3.4 # cm (measured)
+  b1 <- dims$b1 # cm (measured)
+  b2 <- dims$b2 # cm (measured)
+  z1 <- dims$z1 # cm (measured)
   z2 <- L - 1 # cm (measured)
   S <- (b1 - b2) / (z2 - z1)
   Atot <- .5 * (b1 * z2 + b2 * (L - z1)) # total channel area (cm ^ 2)
