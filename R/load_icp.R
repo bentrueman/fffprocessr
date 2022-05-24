@@ -3,11 +3,11 @@
 #'
 #' @param path Relative path to the ICP-MS (.csv) input files.
 #' @param calibrate Logical. Convert the raw instantaneous detector counts per second to
-#' instantaneous concentrations? This requires a table for each date, in .xlsx format, with the
+#' instantaneous concentrations? For `data_format = "x-series II"`, this requires a table for each date, in .xlsx format, with the
 #' following columns: `file`, a character vector of filenames; `element`, a character vector
 #' describing each calibration curve (e.g., `56Fe`); `defined`, a numeric vector of defined
 #' standard concentrations; and `mean_cps` a numeric vector of mean counts per second at each
-#' concentration
+#' concentration.
 #' @param date_regex An optional regular expression for extracting non-ISO dates from filenames.
 #' @param date_format An optional non-standard date format corresponding to the output of
 #' `date_regex` (see `?strptime`).
@@ -17,7 +17,7 @@
 #' which files to load. These can be regular expressions.
 #' @param data_format Selects an appropriate `readr` function based on the data format. Current
 #' options are "x-series II" and "iCAP-RQ".
-#'
+#' @param int_stds A character vector of internal standards to omit from the output when `calibrate = TRUE`.
 #'
 #' @return A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
 #' @importFrom dplyr %>%
@@ -34,7 +34,8 @@ load_icp <- function(
   date_format = "%Y-%m-%d",
   calib_path = NULL,
   keywords = NULL,
-  data_format = "x-series II"
+  data_format = "x-series II",
+  int_stds = c("45Sc", "115In", "159Tb")
 ) {
 
   # calibration:
@@ -47,7 +48,7 @@ load_icp <- function(
 
   calib <- load_calib(
     calibrate, data_format, date_regex,
-    date_format, calib_file_list
+    date_format, calib_file_list, int_stds
   )
 
   # file list:
@@ -111,7 +112,8 @@ load_calib <- function(
   data_format,
   date_regex,
   date_format,
-  calib_file_list
+  calib_file_list,
+  int_stds
 ) {
   if(calibrate & data_format == "x-series II") {
     calib_file_list %>%
@@ -146,8 +148,12 @@ load_calib <- function(
         param = stringr::str_extract(.data$param, "\\d+[A-Z][a-z]?"),
         defined = stringr::str_replace(.data$run, ".+\\s(\\d+)ppb", "\\1") %>%
           stringr::str_replace("Blank", "0") %>%
-          as.numeric(),
-        mean_cps = stringr::str_remove_all(.data$mean_cps, ",") %>% as.numeric()
+          as.numeric()
+      ) %>%
+      dplyr::filter(!.data$param %in% int_stds) %>%
+      dplyr::mutate(
+        mean_cps = stringr::str_remove_all(.data$mean_cps, ",") %>%
+          as.numeric()
       ) %>%
       dplyr::group_by(date, .data$param) %>%
       dplyr::summarize(

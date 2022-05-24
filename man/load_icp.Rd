@@ -11,18 +11,19 @@ load_icp(
   date_format = "\%Y-\%m-\%d",
   calib_path = NULL,
   keywords = NULL,
-  data_format = "x-series II"
+  data_format = "x-series II",
+  int_stds = c("45Sc", "115In", "159Tb")
 )
 }
 \arguments{
 \item{path}{Relative path to the ICP-MS (.csv) input files.}
 
 \item{calibrate}{Logical. Convert the raw instantaneous detector counts per second to
-instantaneous concentrations? This requires a table for each date, in .xlsx format, with the
+instantaneous concentrations? For \code{data_format = "x-series II"}, this requires a table for each date, in .xlsx format, with the
 following columns: \code{file}, a character vector of filenames; \code{element}, a character vector
 describing each calibration curve (e.g., \verb{56Fe}); \code{defined}, a numeric vector of defined
 standard concentrations; and \code{mean_cps} a numeric vector of mean counts per second at each
-concentration}
+concentration.}
 
 \item{date_regex}{An optional regular expression for extracting non-ISO dates from filenames.}
 
@@ -37,6 +38,8 @@ which files to load. These can be regular expressions.}
 
 \item{data_format}{Selects an appropriate \code{readr} function based on the data format. Current
 options are "x-series II" and "iCAP-RQ".}
+
+\item{int_stds}{A character vector of internal standards to omit from the output when \code{calibrate = TRUE}.}
 }
 \value{
 A tibble with the columns 'file', 'date', 'param', 'time', and 'conc'.
