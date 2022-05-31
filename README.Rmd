@@ -132,7 +132,7 @@ data %>%
 
 ```
 
-To compare integrated peak areas with directly-quantified concentrations (no FFF), use `load_direct_quant()`, which reads and cleans ICP-MS data files generated using the iCAP-RQ.
+To compare integrated peak areas with directly-quantified concentrations (no FFF), use `load_direct_quant()`, which reads and cleans ICP-MS data files generated using the iCAP-RQ. Join the two data frames by sample and element (e.g., using `dplyr::left_join()`), and divide the fractogram-estimated concentration by the directly-quantified concentration to obtain percent recovery. 
 
 ## Estimating the radius of gyration  
 

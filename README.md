@@ -64,16 +64,16 @@ icp_data
 #> # A tibble: 8,445 × 6
 #>    file                                   sample date       param   time    conc
 #>    <chr>                                  <chr>  <date>     <chr>  <dbl>   <dbl>
-#>  1 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 27Al  0      4.98e+1
-#>  2 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 55Mn  0      4.86e-1
-#>  3 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 56Fe  0      2.99e+0
-#>  4 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 65Cu  0      3.99e-1
-#>  5 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 238U  0      1.22e-3
-#>  6 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 27Al  0.0674 4.91e+1
-#>  7 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 55Mn  0.0674 5.37e-1
-#>  8 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 56Fe  0.0674 2.92e+0
-#>  9 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 65Cu  0.0674 3.72e-1
-#> 10 /private/var/folders/fy/v4w9p72s7c996… sampl… 2021-03-16 238U  0.0674 3.06e-4
+#>  1 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 27Al  0      4.98e+1
+#>  2 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 55Mn  0      4.86e-1
+#>  3 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 56Fe  0      2.99e+0
+#>  4 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 65Cu  0      3.99e-1
+#>  5 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 238U  0      1.22e-3
+#>  6 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 27Al  0.0674 4.91e+1
+#>  7 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 55Mn  0.0674 5.37e-1
+#>  8 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 56Fe  0.0674 2.92e+0
+#>  9 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 65Cu  0.0674 3.72e-1
+#> 10 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 238U  0.0674 3.06e-4
 #> # … with 8,435 more rows
 ```
 
@@ -91,16 +91,16 @@ uv_data
 #> # A tibble: 9,363 × 6
 #>    file                                    sample date       param   time   conc
 #>    <chr>                                   <chr>  <date>     <chr>  <dbl>  <dbl>
-#>  1 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0173 0.0964
-#>  2 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0173 0.0720
-#>  3 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 LS90  0.0173 0.196 
-#>  4 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0538 0.0963
-#>  5 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0538 0.0722
-#>  6 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 LS90  0.0538 0.196 
-#>  7 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0902 0.0964
-#>  8 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.0902 0.0722
-#>  9 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 LS90  0.0902 0.196 
-#> 10 /private/var/folders/fy/v4w9p72s7c996w… sampl… 2021-03-16 UV25… 0.127  0.0964
+#>  1 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.0173 0.0964
+#>  2 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.0173 0.0720
+#>  3 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 LS90  0.0173 0.196 
+#>  4 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.0538 0.0963
+#>  5 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.0538 0.0722
+#>  6 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 LS90  0.0538 0.196 
+#>  7 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.0902 0.0964
+#>  8 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.0902 0.0722
+#>  9 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 LS90  0.0902 0.196 
+#> 10 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.127  0.0964
 #> # … with 9,353 more rows
 ```
 
@@ -172,7 +172,10 @@ data %>%
 
 To compare integrated peak areas with directly-quantified concentrations
 (no FFF), use `load_direct_quant()`, which reads and cleans ICP-MS data
-files generated using the iCAP-RQ.
+files generated using the iCAP-RQ. Join the two data frames by sample
+and element (e.g., using `dplyr::left_join()`), and divide the
+fractogram-estimated concentration by the directly-quantified
+concentration to obtain percent recovery.
 
 ## Estimating the radius of gyration
 
