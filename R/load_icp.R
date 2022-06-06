@@ -44,7 +44,7 @@ load_icp <- function(
 
   calib_file_list <- list.files(path = calib_path, pattern = "*.xlsx", full.names = TRUE)
 
-  if(calibrate & length(calib_file_list) == 0) stop("No calibration files found.")
+  if(calibrate & length(calib_file_list) == 0) stop("No calibration files found in .xlsx format.")
 
   calib <- load_calib(
     calibrate, data_format, date_regex,
