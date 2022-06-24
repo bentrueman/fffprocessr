@@ -42,7 +42,7 @@ calculate_w(
 \item{eta}{Dynamic viscosity, in N * s / m^2.}
 
 \item{dims}{A list with the elements \code{L}, \code{b1}, \code{b2}, and \code{z1},
-as defined in https://doi.org/10.1016/j.chroma.2018.04.056 (units of cm).}
+as defined in Wang et al. (2018, units of cm).}
 
 \item{tol}{Solution is arrived at iteratively; \code{tol} represents the difference between successive iterations.}
 
@@ -52,8 +52,17 @@ as defined in https://doi.org/10.1016/j.chroma.2018.04.056 (units of cm).}
 A numeric vector of length one representing the estimated FFF channel thickness.
 }
 \description{
-Estimate the FFF channel thickness using the method described in https://doi.org/10.1021/ac00052a025
+Estimate the FFF channel thickness using the method described in Litzen (1993).
 }
 \examples{
 calculate_w(t1 = 21.2, D = .35e-10, Vc = .0015, Vin = 2e-4)
+}
+\references{
+\enumerate{
+\item Wang, J.-L.; Alasonati, E.; Fisicaro, P.; Benedetti, M. F.; Martin, M. Theoretical and Experimental Investigation of the Focusing Position in Asymmetrical Flow Field-Flow Fractionation (AF4). Journal of Chromatography A 2018, 1561, 67–75. https://doi.org/10.1016/j.chroma.2018.04.056.
+\item Litzen, Anne. Separation Speed, Retention, and Dispersion in Asymmetrical Flow Field-Flow Fractionation as Functions of Channel Dimensions and Flow Rates. Anal. Chem. 1993, 65 (4), 461–470. https://doi.org/10.1021/ac00052a025.
+}
+}
+\seealso{
+\code{\link{calculate_rh}}
 }

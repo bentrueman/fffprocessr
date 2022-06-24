@@ -37,7 +37,7 @@ calculate_rh(
 \item{eta}{Dynamic viscosity, in N * s / m^2.}
 
 \item{dims}{A list with the elements \code{L}, \code{b1}, \code{b2}, and \code{z1},
-as defined in https://doi.org/10.1016/j.chroma.2018.04.056 (units of cm).}
+as defined in Wang et al. (2018, units of cm).}
 }
 \value{
 A vector of hydrodynamic radii in metres.
@@ -48,4 +48,14 @@ Calculate hydrodynamic radii
 \examples{
 tr <- seq(11.6, 15.6, by = .1)
 calculate_rh(tr)
+}
+\references{
+\enumerate{
+\item Wang, J.-L.; Alasonati, E.; Fisicaro, P.; Benedetti, M. F.; Martin, M. Theoretical and Experimental Investigation of the Focusing Position in Asymmetrical Flow Field-Flow Fractionation (AF4). Journal of Chromatography A 2018, 1561, 67–75. https://doi.org/10.1016/j.chroma.2018.04.056.
+\item Kumar, A. A Simple Correlation for Estimating Viscosities of Solutions of Salts in Aqueous, Non-Aqueous and Mixed Solvents Applicable to High Concentration, Temperature and Pressure. Can. J. Chem. Eng. 1993, 71 (6), 948–954. https://doi.org/10.1002/cjce.5450710617.
+\item Messaud, F. A.; Sanderson, R. D.; Runyon, J. R.; Otte, T.; Pasch, H.; Williams, S. K. R. An Overview on Field-Flow Fractionation Techniques and Their Applications in the Separation and Characterization of Polymers. Progress in Polymer Science 2009, 34 (4), 351–368. https://doi.org/10.1016/j.progpolymsci.2008.11.001.
+\item Wahlund, K. Gustav.; Giddings, J. Calvin. Properties of an Asymmetrical Flow Field-Flow Fractionation Channel Having One Permeable Wall. Anal. Chem. 1987, 59 (9), 1332–1339. https://doi.org/10.1021/ac00136a016.
+\item Tanase, M.; Zolla, V.; Clement, C. C.; Borghi, F.; Urbanska, A. M.; Rodriguez-Navarro, J. A.; Roda, B.; Zattoni, A.; Reschiglian, P.; Cuervo, A. M.; Santambrogio, L. Hydrodynamic Size-Based Separation and Characterization of Protein Aggregates from Total Cell Lysates. Nat Protoc 2015, 10 (1), 134–148. https://doi.org/10.1038/nprot.2015.009.
+\item Field-Flow Fractionation in Biopolymer Analysis; Williams, S. K. R., Caldwell, K. D., Eds.; Springer Vienna: Vienna, 2012. https://doi.org/10.1007/978-3-7091-0154-4.
+}
 }
