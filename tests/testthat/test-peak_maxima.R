@@ -1,4 +1,6 @@
 
+library("withr")
+
 path <- system.file("extdata", package = "fffprocessr")
 data <- combine_fff(load_icp(path))
 data <- data[data$param == "65Cu", ]

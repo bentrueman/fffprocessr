@@ -28,10 +28,10 @@ Imports:
     imputeTS,
     plyr,
     mgcv,
-    withr,
     glue
 Suggests: 
     covr,
+    withr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
