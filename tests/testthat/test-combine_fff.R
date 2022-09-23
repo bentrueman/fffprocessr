@@ -1,6 +1,6 @@
 
-path <- system.file("extdata", package = "fffprocessr")
 test_that("combine_fff() yields same number of rows as load_...() fns", {
+  path <- system.file("extdata", package = "fffprocessr")
   icp_data <- load_icp(path)
   uv_data <- load_uv(path, UV254_1, UV254_2, LS90)
   expect_equal(
@@ -13,6 +13,7 @@ test_that("combine_fff() yields same number of rows as load_...() fns", {
 })
 
 test_that("combine_fff() yields expected column means", {
+  path <- system.file("extdata", package = "fffprocessr")
   expect_equal(
     dplyr::summarize_if(
       combine_fff(load_icp(path), load_uv(path, UV254_1, UV254_2, LS90)),
@@ -23,7 +24,7 @@ test_that("combine_fff() yields expected column means", {
 })
 
 test_that("combine_fff() handles missing blank runs", {
-
+  path <- system.file("extdata", package = "fffprocessr")
   missing_blank <- tidyr::crossing(
     date = c("2021-01-01", "2021-02-01"),
     sample = c("blank", "sample_1"),
