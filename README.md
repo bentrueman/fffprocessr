@@ -5,7 +5,6 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/bentrueman/fffprocessr/workflows/R-CMD-check/badge.svg)](https://github.com/bentrueman/fffprocessr/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/bentrueman/fffprocessr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bentrueman/fffprocessr?branch=main)
 [![R-CMD-check](https://github.com/bentrueman/fffprocessr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bentrueman/fffprocessr/actions/workflows/R-CMD-check.yaml)
