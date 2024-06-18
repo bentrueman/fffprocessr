@@ -6,7 +6,7 @@
 \usage{
 load_mals(
   path,
-  angles = fffprocessr:::mals_calib$theta,
+  angles = mals_calib$theta,
   date_regex = "\\\\d{4}-\\\\d{2}-\\\\d{2}",
   date_format = "\%Y-\%m-\%d",
   keywords = NULL,

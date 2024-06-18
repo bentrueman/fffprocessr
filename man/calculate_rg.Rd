@@ -9,7 +9,7 @@ calculate_rg(
   window = 0.1,
   method = "zimm",
   order = 2,
-  calibration = fffprocessr:::mals_calib
+  calibration = mals_calib
 )
 }
 \arguments{

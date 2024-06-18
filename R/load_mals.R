@@ -22,12 +22,17 @@
 #' load_mals(path = path)
 load_mals <- function(
   path,
-  angles = fffprocessr:::mals_calib$theta,
+  angles = mals_calib$theta,
   date_regex = "\\d{4}-\\d{2}-\\d{2}", date_format = "%Y-%m-%d",
   keywords = NULL,
   angle_names = "ls\\d+-\\d+",
   ...
 ) {
+
+  long <- NULL
+  param <- NULL
+  time <- NULL
+  conc <- NULL
 
   angles <- suppressMessages(
     tibble::as_tibble(matrix(angles, byrow = TRUE, nrow = 7), .name_repair = "unique")
@@ -77,10 +82,10 @@ load_mals <- function(
       ),
       long = purrr::map(.data$renamed,
         ~ dplyr::select_at(.x, dplyr::vars(-tidyselect::matches("^X\\d$"))) %>%
-          tidyr::pivot_longer(-.data$time, names_to = "param", values_to = "conc")
+          tidyr::pivot_longer(-time, names_to = "param", values_to = "conc")
       )
     ) %>%
-    tidyr::unnest(.data$long) %>%
+    tidyr::unnest(long) %>%
     dplyr::mutate(
       date = stringr::str_extract(file, date_regex) %>% as.Date(date_format),
       sample = stringr::str_replace(
@@ -89,5 +94,5 @@ load_mals <- function(
       time = as.numeric(.data$time),
       conc = as.numeric(.data$conc)
     ) %>%
-    dplyr::select(file, date, sample, .data$param, .data$time, .data$conc)
+    dplyr::select(file, date, sample, param, time, conc)
 }

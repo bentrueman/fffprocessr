@@ -22,24 +22,10 @@ calculate_rg <- function(
   window = .1,
   method = "zimm",
   order = 2,
-  calibration = fffprocessr:::mals_calib
+  calibration = mals_calib
 ) {
   # mals calibration coefficients:
   mals_calib <- calibration
-
-  rg_select <- function(x) {
-    if(method == "zimm") {
-      dplyr::select(x,
-        file, date, sample, .data$param, .data$timeslice, .data$time, .data$conc, .data$theta,
-        .data$rayleigh_ratio, .data$rg_zimm
-      )
-    } else if(method == "watt") {
-      dplyr::select(x,
-        file, date, sample, .data$param, .data$timeslice, .data$time, .data$conc, .data$theta,
-        .data$rayleigh_ratio, .data$rg_watt
-      )
-    } else "Choose either method 'zimm' or 'watt'"
-  }
 
   data %>%
     dplyr::mutate(
@@ -79,5 +65,27 @@ calculate_rg <- function(
     ) %>%
     tidyr::unnest(c(tidyselect::starts_with("rg"), data)) %>%
     dplyr::select_if(~ !is.list(.x)) %>%
-    rg_select()
+    rg_select(method)
+}
+
+rg_select <- function(x, method) {
+  param <- NULL
+  timeslice <- NULL
+  time <- NULL
+  conc <- NULL
+  theta <- NULL
+  rayleigh_ratio <- NULL
+  rg_zimm <- NULL
+  rg_watt <- NULL
+  if(method == "zimm") {
+    dplyr::select(x,
+                  file, date, sample, param, timeslice, time, conc, theta,
+                  rayleigh_ratio, rg_zimm
+    )
+  } else if(method == "watt") {
+    dplyr::select(x,
+                  file, date, sample, param, timeslice, time, conc, theta,
+                  rayleigh_ratio, rg_watt
+    )
+  } else "Choose either method 'zimm' or 'watt'"
 }

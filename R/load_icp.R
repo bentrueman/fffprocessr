@@ -38,6 +38,10 @@ load_icp <- function(
   int_stds = c("45Sc", "115In", "159Tb")
 ) {
 
+  param <- NULL
+  time <- NULL
+  conc <- NULL
+
   # calibration:
 
   if(is.null(calib_path)) calib_path <- path
@@ -99,8 +103,8 @@ load_icp <- function(
       sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
     ) %>%
     dplyr::select(
-      file, .data$sample, date, .data$param,
-      .data$time, .data$conc
+      file, sample, date, param,
+      time, conc
     )
 
   out_clean
@@ -115,6 +119,7 @@ load_calib <- function(
   calib_file_list,
   int_stds
 ) {
+
   if(calibrate & data_format == "x-series II") {
     calib_file_list %>%
       rlang::set_names() %>%

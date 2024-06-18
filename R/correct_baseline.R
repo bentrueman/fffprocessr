@@ -36,6 +36,9 @@ correct_baseline <- function(
   y_var = "conc"
 ) {
 
+  data <- NULL
+  corr <- NULL
+
   input <- if(is.null(group_vars)) {
     x %>% tidyr::nest(data = tidyselect::everything())
   } else {
@@ -59,8 +62,8 @@ correct_baseline <- function(
       baseline = purrr::map2(.data$model, .data$data, ~ stats::predict(.x, newdata = .y)),
       corr = purrr::map2(.data$data, .data$baseline, ~ dplyr::pull(.x, .data[[y_var]]) - .y)
     ) %>%
-    tidyr::unnest(c(.data$data, .data$corr)) %>%
+    tidyr::unnest(c(data, corr)) %>%
     dplyr::select_if(~ !is.list(.x)) %>%
-    dplyr::select(-.data[[y_var]]) %>%
-    dplyr::rename(!!y_var := .data$corr)
+    dplyr::select(-tidyselect::all_of(y_var)) %>%
+    dplyr::rename(!!y_var := corr)
 }

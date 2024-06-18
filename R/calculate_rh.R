@@ -41,7 +41,7 @@ calculate_rh <- function(
   temp = 25, # temperature (degrees C)
   # predict viscosity using https://doi.org/10.1002/cjce.5450710617
   eta = 8.9e-4, # dynamic viscosity of pure water at 25 deg. C (N * s / m^2 at 26 deg C)
-  dims = fffprocessr:::chamber_dims
+  dims = chamber_dims
 ) {
 
   # calculate zfoc (https://doi.org/10.1016/j.chroma.2018.04.056)

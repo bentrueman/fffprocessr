@@ -72,8 +72,8 @@ peak_maxima <- function(
         dplyr::mutate(
           peaks = purrr::map(.data$data, ~ peak_id_sigma(.x, focus, peaks, max_iter, x_var, y_var))
         ) %>%
-        tidyr::unnest(.data$peaks) %>%
-        dplyr::select(-.data$data)
+        tidyr::unnest(peaks) %>%
+        dplyr::select(-data)
 
     } else stop("choose a valid method: 'gam' or 'sigma'")
 
@@ -81,7 +81,7 @@ peak_maxima <- function(
 
   peak_pos %>%
     dplyr::left_join(
-      data, by = tidyselect::all_of(c(group_vars, x_var)),
+      data, by = c(group_vars, x_var),
       suffix = c("", "_smooth")
     ) %>%
     dplyr::select(tidyselect::all_of(c(group_vars, "peak", x_var, y_var)))
@@ -121,15 +121,14 @@ peak_id_gam <- function(data, focus, k, peaks, group_vars, x_var, y_var) {
 
 peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
 
+  g <- NULL
+
   peak_index <- seq_len(peaks)
 
    # remove NAs:
 
   data <- data %>%
-    dplyr::filter(dplyr::if_all(
-      .cols = tidyselect::matches(tidyselect::all_of(c(x_var, y_var))),
-      .fns = function(x) !is.na(x)
-    ))
+    tidyr::drop_na(tidyselect::all_of(c(x_var, y_var)))
 
   peak_tbl <- tibble::tibble()
   peak_list <- list()
@@ -168,7 +167,7 @@ peak_id_sigma <- function(data, focus, peaks, max_iter, x_var, y_var) {
 
     peak_tbl <- dplyr::bind_rows(peak_list) %>%
       dplyr::bind_rows(peak_tbl) %>%
-      dplyr::select(-.data$g) %>%
+      dplyr::select(-g) %>%
       dplyr::distinct() %>%
       dplyr::arrange(dplyr::desc(.data[[y_var]])) %>%
       dplyr::filter(.data[[x_var]] > focus)

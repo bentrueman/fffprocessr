@@ -14,7 +14,7 @@ calculate_rh(
   Vin = 5e-04,
   temp = 25,
   eta = 0.00089,
-  dims = fffprocessr:::chamber_dims
+  dims = chamber_dims
 )
 }
 \arguments{

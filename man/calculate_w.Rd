@@ -15,7 +15,7 @@ calculate_w(
   Vin = 5e-04,
   temp = 25,
   eta = 0.00089,
-  dims = fffprocessr:::chamber_dims,
+  dims = chamber_dims,
   tol = 1e-06,
   maxiter = 10
 )

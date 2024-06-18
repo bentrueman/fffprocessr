@@ -18,6 +18,12 @@
 #' combine_fff(load_icp(path), load_uv(path, UV254_1))
 combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10) {
 
+  blank <- NULL
+  conc <- NULL
+  param <- NULL
+  time <- NULL
+  three_sigma <- NULL
+
   combined <- dplyr::bind_rows(icp, uv) %>%
     # add 3 * sigma detection limit as a new column:
     dplyr::group_by(date, sample, .data$param) %>%
@@ -28,13 +34,13 @@ combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10
     dplyr::group_by(date, .data$param) %>%
     dplyr::mutate(three_sigma = 3 * stats::sd(.data$blank, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-.data$blank)
+    dplyr::select(-blank)
 
   out <- if(subtract_blank) {
     combined  %>%
       tidyr::pivot_wider(
-        -file, names_from = sample,
-        values_from = .data$conc, values_fn = mean
+        id_cols = -file, names_from = sample,
+        values_from = conc, values_fn = mean
       ) %>%
       # linear interpolation of blank here
       # (for subtraction when times don't exactly match):
@@ -60,5 +66,5 @@ combine_fff <- function(icp = NULL, uv = NULL, subtract_blank = TRUE, focus = 10
   } else combined
 
   out %>%
-    dplyr::select(date, sample, .data$param, .data$time, .data$conc, .data$three_sigma)
+    dplyr::select(date, sample, param, time, conc, three_sigma)
 }

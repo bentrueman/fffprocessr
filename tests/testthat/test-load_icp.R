@@ -12,3 +12,9 @@ test_that("load_icp() yields expected column means", {
     tibble::tibble(time = 18.9, conc = 10)
   )
 })
+
+test_that("load_icp() accepts a file path or a character vector of files", {
+  skip_on_ci()
+  # this should be true of all the load_...() functions
+  expect_equal(0,1)
+})

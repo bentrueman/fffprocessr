@@ -7,7 +7,7 @@
 load_direct_quant(path, int_stds = c("45Sc", "115In", "159Tb"))
 }
 \arguments{
-\item{path}{Relative path to the ICP-MS (.csv) input files.}
+\item{path}{Relative path to the ICP-MS (.xlsx) input files.}
 
 \item{int_stds}{A character vector of internal standards to be removed from the output.}
 }

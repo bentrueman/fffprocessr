@@ -28,6 +28,15 @@ load_uv <- function(
   ...
 ) {
 
+  X1 <- NULL
+  X2 <- NULL
+  X4 <- NULL
+  X6 <- NULL
+
+  param <- NULL
+  time <- NULL
+  conc <- NULL
+
   file_list <- list.files(path = path, pattern = "*.txt", full.names = TRUE)
 
   keep_files <- if(is.null(keywords)) {rep(TRUE, length(file_list))} else{
@@ -57,13 +66,13 @@ load_uv <- function(
       .id = "file"
     ) %>%
     dplyr::rename(
-      time = .data$X1, {{nm1}} := .data$X2,
-      {{nm2}} := .data$X4, {{nm3}} := .data$X6
+      time = X1, {{nm1}} := X2,
+      {{nm2}} := X4, {{nm3}} := X6
     ) %>%
     # deselect unnamed columns:
     dplyr::select_at(dplyr::vars(-tidyselect::matches("^X\\d$"))) %>%
     dplyr::mutate(date = stringr::str_extract(file, date_regex) %>% as.Date(date_format)) %>%
-    tidyr::pivot_longer(-c(file, date, .data$time), names_to = "param", values_to = "conc") %>%
+    tidyr::pivot_longer(-c(file, date, time), names_to = "param", values_to = "conc") %>%
     dplyr::mutate(
       time = as.numeric(.data$time), conc = as.numeric(.data$conc),
       # extract sample name:
@@ -72,5 +81,5 @@ load_uv <- function(
       sample = dplyr::if_else(stringr::str_detect(sample, "[bB]lank"), "blank", sample),
       sample = dplyr::if_else(sample == "blank", sample, paste0("sample_", sample))
     ) %>%
-    dplyr::select(file, .data$sample, date, .data$param, .data$time, .data$conc)
+    dplyr::select(file, sample, date, param, time, conc)
 }
