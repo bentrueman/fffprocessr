@@ -8,6 +8,7 @@
 [![R-CMD-check](https://github.com/bentrueman/fffprocessr/workflows/R-CMD-check/badge.svg)](https://github.com/bentrueman/fffprocessr/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/bentrueman/fffprocessr/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bentrueman/fffprocessr?branch=main)
+[![R-CMD-check](https://github.com/bentrueman/fffprocessr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bentrueman/fffprocessr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `fffprocessr` is a package for processing field-flow fractionation data.
@@ -46,7 +47,7 @@ the loading functions. The external data folder should contain ICP-MS
 data files in .csv format, UV-MALS data files in .txt format, and ICP-MS
 calibration files in .xlsx format. The data loading functions assume the
 following naming convention: ISO 8601 date (YYYY-MM-DD), underscore,
-filename (e.g., 2021-01-23\_pockwock.csv). Sample names that include the
+filename (e.g., 2021-01-23_pockwock.csv). Sample names that include the
 word “blank” will be treated as blanks. Determine the path to the
 external data as follows:
 
@@ -74,7 +75,7 @@ icp_data
 #>  8 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 56Fe  0.0674 2.92e+0
 #>  9 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 65Cu  0.0674 3.72e-1
 #> 10 /Library/Frameworks/R.framework/Versi… sampl… 2021-03-16 238U  0.0674 3.06e-4
-#> # … with 8,435 more rows
+#> # ℹ 8,435 more rows
 ```
 
 UV-MALS data files (e.g., UV detector output and 1–2 MALS detector
@@ -101,7 +102,7 @@ uv_data
 #>  8 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.0902 0.0722
 #>  9 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 LS90  0.0902 0.196 
 #> 10 /Library/Frameworks/R.framework/Versio… sampl… 2021-03-16 UV25… 0.127  0.0964
-#> # … with 9,353 more rows
+#> # ℹ 9,353 more rows
 ```
 
 Combine the two cleaned data files using `combine_fff()`. Blank
@@ -184,7 +185,7 @@ FFF-MALS files at all scattering angles using `load_mals()`. These files
 should be stored in a separate folder, named as follows: ISO 8601 date
 (YYYY-MM-DD), underscore, filename, underscore, ls*x*-*y*, where *x* and
 *y* are the range of three consecutive scattering angles (e.g.,
-2021-01-23\_pockwock\_ls7-20.txt for angles 7, 12, and 20). Here we are
+2021-01-23_pockwock_ls7-20.txt for angles 7, 12, and 20). Here we are
 loading a dataset representing a mixture of latex beads with nominal
 sizes of 60, 125, and 350 nm.
 
@@ -211,7 +212,7 @@ collected at the smallest scattering angle (7°). This function solves
 the following equation for *r<sub>g</sub><sup>2</sup>*, the mean squared
 radius of gyration:
 
-![\\frac{Kc}{R(\\theta)} = \\frac{1}{M} + \\frac{\\langle{r^2\_g}\\rangle}{3M}\\left\[\\frac{4\\pi}{\\lambda}sin(\\frac{\\theta}{2})\\right\]^2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cfrac%7BKc%7D%7BR%28%5Ctheta%29%7D%20%3D%20%5Cfrac%7B1%7D%7BM%7D%20%2B%20%5Cfrac%7B%5Clangle%7Br%5E2_g%7D%5Crangle%7D%7B3M%7D%5Cleft%5B%5Cfrac%7B4%5Cpi%7D%7B%5Clambda%7Dsin%28%5Cfrac%7B%5Ctheta%7D%7B2%7D%29%5Cright%5D%5E2 "\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2")
+$$\frac{Kc}{R(\theta)} = \frac{1}{M} + \frac{\langle{r^2_g}\rangle}{3M}\left[\frac{4\pi}{\lambda}sin(\frac{\theta}{2})\right]^2$$
 
 where *K* is a constant, *c* and *M* are the concentration and molar
 mass of the analyte, respectively, *lambda* is the wavelength of the
@@ -221,7 +222,7 @@ colloids, *K*, *c*, and *M* are usually unknown. But
 *r<sub>g</sub><sup>2</sup>* can be estimated by a linear regression of
 *1/R* on *sin<sup>2</sup>(theta/2)*. That is,
 
-![\\langle{r^2\_g}\\rangle = \\frac{3\\beta\_1\\lambda^2}{16\\beta\_0\\pi^2}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clangle%7Br%5E2_g%7D%5Crangle%20%3D%20%5Cfrac%7B3%5Cbeta_1%5Clambda%5E2%7D%7B16%5Cbeta_0%5Cpi%5E2%7D "\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}")
+$$\langle{r^2_g}\rangle = \frac{3\beta_1\lambda^2}{16\beta_0\pi^2}$$
 
 where *beta<sub>0</sub>* and *beta<sub>1</sub>* are the intercept and
 slope of the linear regression. This is the Zimm model; see Kammer et
@@ -294,6 +295,7 @@ For the 350 nm particles, the approach outlined in Watt (2018) yields a
 very good estimate of the true particle size.
 
 ``` r
+
 mals %>% 
   filter(
     time > 39, 
@@ -381,8 +383,7 @@ The function `deconvolve_fff()` will fit component peaks to fractograms
 that are incompletely resolved. By default, it approximates fractograms
 as the sum of skewed Gaussians, each of which takes the following form:
 
-![y = h e^{-\\frac{(x-\\mu)^2}{2\\sigma}} (1 + erf(\\gamma\\frac{(x-\\mu)}{\\sqrt{2} \\sigma}))](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y%20%3D%20h%20e%5E%7B-%5Cfrac%7B%28x-%5Cmu%29%5E2%7D%7B2%5Csigma%7D%7D%20%281%20%2B%20erf%28%5Cgamma%5Cfrac%7B%28x-%5Cmu%29%7D%7B%5Csqrt%7B2%7D%20%5Csigma%7D%29%29 "y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))")
-
+$$y = h e^{-\frac{(x-\mu)^2}{2\sigma}} (1 + erf(\gamma\frac{(x-\mu)}{\sqrt{2} \sigma}))$$
 where *y* denotes the instantaneous concentration, *x* the retention
 volume, *h* the peak height, *mu* the mean, *sigma* the standard
 deviation, *gamma* the shape parameter, and *erf* the error function.
@@ -390,7 +391,7 @@ deviation, *gamma* the shape parameter, and *erf* the error function.
 Alternatively, fractograms can be fitted as sums of ordinary Gaussians,
 or exponentially modified Gaussians of the form
 
-![y = \\frac{h\\sigma}{\\tau}\\sqrt{\\frac{\\pi}{2}} exp\\left(\\frac{1}{2}(\\frac{\\sigma}{\\tau})^2 - \\frac{x-\\mu}{\\tau}\\right)erfc\\left(\\frac{1}{\\sqrt{2}}\\left(\\frac{\\sigma}{\\tau} - \\frac{x-\\mu}{\\sigma}\\right)\\right)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y%20%3D%20%5Cfrac%7Bh%5Csigma%7D%7B%5Ctau%7D%5Csqrt%7B%5Cfrac%7B%5Cpi%7D%7B2%7D%7D%20exp%5Cleft%28%5Cfrac%7B1%7D%7B2%7D%28%5Cfrac%7B%5Csigma%7D%7B%5Ctau%7D%29%5E2%20-%20%5Cfrac%7Bx-%5Cmu%7D%7B%5Ctau%7D%5Cright%29erfc%5Cleft%28%5Cfrac%7B1%7D%7B%5Csqrt%7B2%7D%7D%5Cleft%28%5Cfrac%7B%5Csigma%7D%7B%5Ctau%7D%20-%20%5Cfrac%7Bx-%5Cmu%7D%7B%5Csigma%7D%5Cright%29%5Cright%29 "y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)")
+$$y = \frac{h\sigma}{\tau}\sqrt{\frac{\pi}{2}} exp\left(\frac{1}{2}(\frac{\sigma}{\tau})^2 - \frac{x-\mu}{\tau}\right)erfc\left(\frac{1}{\sqrt{2}}\left(\frac{\sigma}{\tau} - \frac{x-\mu}{\sigma}\right)\right)$$
 
 where *tau* is the shape parameter, *erfc(x) = 1 - erf(x)*, and the
 other parameters are as defined above.
@@ -430,6 +431,12 @@ deconvolved %>%
   facet_grid(rows = vars(param), cols = vars(sample)) +
   geom_line()
 ```
+
+    #> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    #> ℹ Please use `linewidth` instead.
+    #> This warning is displayed once every 8 hours.
+    #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    #> generated.
 
 <img src="man/figures/README-deconvolve-cu-1.png" width="100%" />
 
