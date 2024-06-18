@@ -70,7 +70,7 @@ load_icp <- function(
   if(
     calibrate & sum(unique(calib$date) %in% unique(file_dates)) == 0
   ) stop(
-    "No calibration file dates match data file dates"
+    "No calibration file dates match data file dates."
   )
 
   # read data:
